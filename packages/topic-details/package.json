@@ -1,0 +1,16 @@
+{
+  "name": "topic-details",
+  "title": "Topic details toggle",
+  "description": "A home-page switch that shows each page's description under its title.",
+  "category": "home",
+  "version": "1.0.0",
+  "requires": [],
+  "css": ["topic-details.css"],
+  "js": ["topic-details.js"],
+  "build": "build.py",
+  "options": {
+    "label": { "default": "Topic details", "description": "Checkbox label." },
+    "defaultOn": { "default": false, "description": "Show descriptions until the reader turns them off." },
+    "remember": { "default": true, "description": "Remember the reader's choice." }
+  }
+}

@@ -1,0 +1,18 @@
+/* summaries: inserted sheet section + the all-sheets page */
+.sheet { border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); padding: 14px 18px; }
+.sheet > :last-child { margin-bottom: 0; }
+.sheet h3:first-child, .sheet h4:first-child { margin-top: 0; }
+.sheet ul { padding-left: 1.2em; }
+.sheet .tablewrap, .sheet table.t { margin-block: 8px; }
+.sheet-back { margin: 10px 0 0; font: 500 .8rem var(--f-display); text-align: right; }
+.sheet-back a { text-decoration: none; }
+.sheet-home-link { text-decoration: none; font: 500 .82rem var(--f-display); }
+.sheet-filters { margin: 4px 0 8px; }
+.sheet-filters .btn { padding: 6px 12px; font-size: .78rem; }
+.sheet-links a { color: var(--term); }
+.sheets-page section.note { padding-top: 40px; }
+@media print {
+  .sheets-page section.note { padding-top: 10px; break-inside: avoid-page; }
+  .sheet { border: 0; padding: 0; }
+  .sheet-back, .sheet-filters, .sheet-links { display: none !important; }
+}

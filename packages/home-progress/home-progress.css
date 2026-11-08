@@ -1,0 +1,3 @@
+/* home-progress */
+.entry .state .hp-meter { display: block; max-width: 9rem; height: 3px; margin-top: 4px; }
+.hp-complete .entry .state { color: var(--ok); }

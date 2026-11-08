@@ -1,0 +1,16 @@
+{
+  "name": "coming-later",
+  "title": "Coming-later rows",
+  "description": "Pages that are planned but not written yet appear greyed out on the home page and in the page switcher.",
+  "category": "home",
+  "version": "1.0.0",
+  "requires": [],
+  "css": ["coming-later.css"],
+  "build": "build.py",
+  "options": {
+    "statuses": { "default": ["planned"], "description": "Page statuses shown as coming later." },
+    "label": { "default": "Coming later", "description": "Badge on the row; per-page override with \"statusLabel\" in site.json." },
+    "inPicker": { "default": true, "description": "List them (disabled) in the page switcher." },
+    "searchable": { "default": true, "description": "Let search find them." }
+  }
+}

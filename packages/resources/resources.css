@@ -1,0 +1,2 @@
+/* resources: un-numbered rows get no number column gap */
+.entries li[data-num=""] .entry .num:empty { visibility: hidden; }

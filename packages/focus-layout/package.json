@@ -1,0 +1,20 @@
+{
+  "name": "focus-layout",
+  "title": "Focused, collapsible layout",
+  "description": "Keeps each section to its key idea, main box and widget; derivations, extra examples and quick checks fold away. Adds expand/collapse-all and opens folds that links point into.",
+  "category": "content",
+  "version": "1.0.0",
+  "requires": [],
+  "css": ["focus-layout.css"],
+  "js": ["focus-layout.js"],
+  "options": {
+    "toggle": { "default": true, "description": "Expand-all / collapse-all button in the top bar of pages with folds." },
+    "expandLabel": { "default": "Expand all", "description": "Toggle label when something is folded." },
+    "collapseLabel": { "default": "Collapse all", "description": "Toggle label when everything is open." },
+    "openOnHash": { "default": true, "description": "Open the folds around a linked #target (and on in-page link clicks)." },
+    "printOpen": { "default": true, "description": "Unfold everything while printing, then restore." },
+    "moreIcon": { "default": "▸", "description": "Marker before 'more' fold titles." },
+    "checkIcon": { "default": "✎", "description": "Marker before quick-check fold titles." },
+    "remember": { "default": false, "description": "Remember which folds a reader opened, per page." }
+  }
+}

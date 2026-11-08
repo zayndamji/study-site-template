@@ -1,0 +1,16 @@
+{
+  "name": "home-progress",
+  "title": "Home progress meters",
+  "description": "Shows how many sections of each page you have marked reviewed, on its home-page row.",
+  "category": "home",
+  "version": "1.0.0",
+  "requires": [],
+  "css": ["home-progress.css"],
+  "js": ["home-progress.js"],
+  "options": {
+    "label": { "default": "{done} / {total} reviewed", "description": "Row text. Fields: {done} {total} {percent}." },
+    "doneLabel": { "default": "✓ Reviewed", "description": "Row text when every section is reviewed; empty to keep using label." },
+    "meter": { "default": true, "description": "Draw a thin progress bar under the text." },
+    "hideUnstarted": { "default": true, "description": "Show nothing for pages with no reviewed sections." }
+  }
+}

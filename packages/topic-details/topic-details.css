@@ -1,0 +1,5 @@
+/* topic-details */
+.topic-toggle { font: .75rem var(--f-display); color: var(--muted); white-space: nowrap; cursor: pointer; }
+.topic-toggle input { accent-color: var(--term); vertical-align: middle; margin: 0 4px 0 0; }
+.show-topics .entry .sub { display: block; }
+@media (max-width: 560px) { .topic-toggle { flex-basis: 100%; } }

@@ -1,0 +1,3 @@
+/* resume-link */
+.resume-link { text-decoration: none; font: 500 .82rem var(--f-display); }
+.catalog-tools .resume-link { margin-left: auto; }

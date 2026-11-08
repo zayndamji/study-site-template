@@ -1,0 +1,18 @@
+{
+  "name": "one-minute",
+  "title": "In-one-minute opener",
+  "description": "An opening section of a few bullets that gives the whole page at a glance.",
+  "category": "content",
+  "version": "1.0.0",
+  "requires": [],
+  "css": ["one-minute.css"],
+  "build": "build.py",
+  "options": {
+    "title": { "default": "The {noun_lower} in one minute", "description": "Section heading. Fields: {noun} {noun_lower} {title} {id}." },
+    "number": { "default": "00", "description": "Heading number slot and rail number; empty for none." },
+    "id": { "default": "overview", "description": "Section id (anchor)." },
+    "reviewable": { "default": false, "description": "Give the section a 'Mark as reviewed' button." },
+    "kinds": { "default": null, "description": "Kinds that may use it (list); null = all." },
+    "maxBullets": { "default": 7, "description": "Warn when the opener has more bullets than this (it should stay a one-minute read)." }
+  }
+}

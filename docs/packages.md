@@ -56,7 +56,7 @@ packages/<name>/
 }
 ```
 
-Every option **must** have a `default` and a `description`. Users override any
+Every option **must** have a `default` and a `description`. Mark an option `"private": true` to keep it out of the browser bundle (packages without JS never ship options to the browser). Users override any
 subset; unknown keys produce a build warning. The merged options reach the
 browser as `Study.options('<name>')` and the build hooks as `opts`.
 

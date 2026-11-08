@@ -1,0 +1,15 @@
+{
+  "name": "resume-link",
+  "title": "Continue reading",
+  "description": "A 'Continue: <page> →' link on the home page back to the last page you opened.",
+  "category": "home",
+  "version": "1.0.0",
+  "requires": [],
+  "css": ["resume-link.css"],
+  "js": ["resume-link.js"],
+  "options": {
+    "label": { "default": "Continue: {label} →", "description": "Link text. Fields: {title} {label} {id} {noun}." },
+    "where": { "default": "intro", "description": "\"intro\" (home intro line) or \"tools\" (after search and filters)." },
+    "kinds": { "default": null, "description": "Only remember pages of these kinds (list); null = all kinds." }
+  }
+}

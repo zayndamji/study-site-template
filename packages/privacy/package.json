@@ -1,0 +1,18 @@
+{
+  "name": "privacy",
+  "title": "Privacy mode",
+  "description": "Keeps identifying words out of the built site (build fails if they appear), and optionally blocks search indexing and third-party font requests.",
+  "category": "site",
+  "version": "1.0.0",
+  "requires": [],
+  "build": "build.py",
+  "options": {
+    "forbid": { "default": [], "private": true, "description": "Words or phrases that must not appear anywhere in the built site (case-insensitive), e.g. a course code or a school name." },
+    "forbidFile": { "default": "", "private": true, "description": "Optional path (relative to the site) of a text file with one forbidden term per line; keep it out of version control if the terms themselves are sensitive." },
+    "scanSources": { "default": true, "description": "Also scan content/, custom/ and site packages/ sources, not just the output." },
+    "failBuild": { "default": true, "description": "Stop the build when a forbidden term is found (otherwise only `check` reports it)." },
+    "noindex": { "default": true, "description": "Add <meta name=\"robots\" content=\"noindex, nofollow\">." },
+    "noReferrer": { "default": true, "description": "Add <meta name=\"referrer\" content=\"no-referrer\">." },
+    "localFonts": { "default": false, "description": "Drop third-party font stylesheets so the site makes no external requests (falls back to system fonts unless the site ships its own)." }
+  }
+}

@@ -1,0 +1,13 @@
+/* focus-layout: fold variants on top of core details.reveal */
+details.reveal.more > summary, details.reveal.check > summary { list-style: none; }
+details.reveal.more > summary::-webkit-details-marker, details.reveal.check > summary::-webkit-details-marker { display: none; }
+details.reveal.more > summary::before { content: var(--fl-more, "\25B8") " "; display: inline-block; transition: transform .15s; }
+details.reveal.more[open] > summary::before { transform: rotate(90deg); }
+details.reveal.more { background: transparent; border-style: dashed; }
+details.reveal.more > summary { color: var(--muted); font-weight: 500; }
+details.reveal.more > summary:hover { color: var(--term); }
+details.reveal.check > summary::before { content: var(--fl-check, "\270E") " "; }
+details.reveal.check { border-color: var(--term); }
+.fl-toggle[hidden] { display: none; }
+.fl-flash { animation: fl-flash 1.2s ease-out; }
+@keyframes fl-flash { from { box-shadow: 0 0 0 3px var(--term-soft); } to { box-shadow: 0 0 0 0 transparent; } }

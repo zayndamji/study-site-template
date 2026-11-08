@@ -1,0 +1,4 @@
+/* one-minute: the opener reads as a compact list, not a wall of text */
+section.one-minute .om-list, section.one-minute > ul { list-style: none; padding: 0; margin: 4px 0 0; display: grid; gap: 8px; }
+section.one-minute .om-list > li, section.one-minute > ul > li { position: relative; padding-left: 20px; margin: 0; }
+section.one-minute .om-list > li::before, section.one-minute > ul > li::before { content: ""; position: absolute; left: 4px; top: .72em; width: 6px; height: 6px; border-radius: 50%; background: var(--term); }

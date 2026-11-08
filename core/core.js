@@ -82,7 +82,7 @@
   applyTheme(theme);
   function bindTheme() {
     document.querySelectorAll('[data-theme-toggle]').forEach((b) => {
-      const label = () => { b.textContent = 'Theme: ' + theme[0].toUpperCase() + theme.slice(1); };
+      const label = () => { b.innerHTML = '<span class="theme-prefix">Theme: </span>' + theme[0].toUpperCase() + theme.slice(1); b.title = 'Colour theme: ' + theme; };
       label();
       b.addEventListener('click', () => {
         theme = theme === 'system' ? 'light' : theme === 'light' ? 'dark' : 'system';
@@ -272,7 +272,7 @@
         g.querySelectorAll('[data-search-row]').forEach((row) => {
           const hay = normalize(row.dataset.search);
           const byNum = num && row.dataset.num !== undefined && row.dataset.num !== '' && Number(row.dataset.num) === Number(num[1]);
-          const matches = !query || byNum || (!num && query.split(/\s+/).every((w) => hay.includes(w)));
+          const matches = !query ? true : row.hasAttribute('data-never-match') ? false : byNum || (!num && query.split(/\s+/).every((w) => hay.includes(w)));
           const inFilter = filter === 'all' || row.dataset.group === filter || row.dataset.kind === filter;
           row.hidden = !matches || !inFilter;
           if (!row.hidden) visible++;
