@@ -1,0 +1,50 @@
+<section class="note" id="wp-demo">
+  <h2>Presets that explain themselves</h2>
+
+  <div class="widget" id="wp-pendulum">
+    <div class="lbl">Period of a pendulum (presets from a script)</div>
+    <p class="how">Pick a preset, or type your own length and gravity. The period of a small swing is <span class="m"><i>T</i> = 2π√(<i>L</i>/<i>g</i>)</span>.</p>
+    <div id="wp-row"></div>
+    <p class="preset-note" id="wp-note" aria-live="polite" hidden></p>
+    <div class="controls">
+      <label class="field">length L (m) <input id="wp-L" type="number" step="any" min="0"></label>
+      <label class="field">gravity g (m/s²) <input id="wp-g" type="number" step="any" min="0"></label>
+    </div>
+    <div class="out" id="wp-out" aria-live="polite"></div>
+  </div>
+  <script>
+  (function () {
+    const $ = (id) => document.getElementById(id);
+    const presets = [
+      { name: 'one metre, Earth', value: [1, 9.81], note: 'A one-metre pendulum takes about two seconds to swing there and back.' },
+      { name: 'seconds pendulum', value: [0.994, 9.81], note: 'Just under a metre gives exactly one second per swing each way: the classic clock pendulum.' },
+      { name: 'four times longer', value: [4, 9.81], note: 'Four times the length only doubles the period, because the length sits under a square root.' },
+      { name: 'on the Moon', value: [1, 1.62], note: 'Weaker gravity means a slower swing: about 2.5 times the period on Earth.' },
+      { name: 'zero length', value: [0, 9.81], note: 'An edge case: the formula gives a period of zero, which is why real pendulums need a length.' },
+    ];
+    function render() {
+      const L = Number($('wp-L').value), g = Number($('wp-g').value);
+      $('wp-out').innerHTML = g > 0 && L >= 0 ? '<span class="k">period</span>' + (2 * Math.PI * Math.sqrt(L / g)).toFixed(2) + ' s'
+        : 'Gravity must be positive and the length not negative.';
+    }
+    const row = Study.presets.mount($('wp-row'), presets, (p) => { $('wp-L').value = p.value[0]; $('wp-g').value = p.value[1]; render(); }, { note: $('wp-note') });
+    ['wp-L', 'wp-g'].forEach((id) => $(id).addEventListener('input', () => { row.clear('Your own pendulum.'); render(); }));
+  })();
+  </script>
+
+  <div class="widget" id="wp-temp">
+    <div class="lbl">Temperature conversion (declarative presets)</div>
+    <div class="presets" data-target="wp-temp">
+      <button data-preset='0' data-note="Water freezes at 0 °C, which is 32 °F: the two scales do not share a zero.">0 °C</button>
+      <button data-preset='100' data-note="Water boils at 100 °C (at sea level), which is 212 °F: 180 Fahrenheit degrees for 100 Celsius degrees.">100 °C</button>
+      <button data-preset='-40' data-note="The one temperature where both scales read the same number.">−40 °C</button>
+    </div>
+    <div class="out" id="wp-temp-out" aria-live="polite"></div>
+  </div>
+  <script>
+  document.getElementById('wp-temp').addEventListener('preset', (e) => {
+    const c = Number(e.detail), f = c * 9 / 5 + 32;
+    document.getElementById('wp-temp-out').innerHTML = '<span class="k">Fahrenheit</span>' + String(f).replace('-', '−') + ' °F';
+  });
+  </script>
+</section>

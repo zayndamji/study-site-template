@@ -1,0 +1,15 @@
+{
+  "name": "widget-presets",
+  "title": "Annotated presets",
+  "description": "Rows of preset buttons for any widget; the chosen preset's one-line note says why it is worth trying.",
+  "category": "widgets",
+  "version": "1.0.0",
+  "requires": [],
+  "css": ["widget-presets.css"],
+  "js": ["widget-presets.js"],
+  "options": {
+    "selectFirst": { "default": true, "description": "Start every preset row with its first preset selected (and, for declarative rows, sent to the target)." },
+    "noteLabel": { "default": "", "description": "Short text shown before each note, e.g. \"Why:\". Empty = no label." },
+    "eventName": { "default": "preset", "description": "Name of the CustomEvent a declarative row dispatches on its target element." }
+  }
+}

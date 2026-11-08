@@ -1,0 +1,34 @@
+<section class="note" id="p2-demo">
+  <h2>A draggable coordinate plane</h2>
+  <div class="widget" id="p2-throw">
+    <div class="lbl">Throwing a ball</div>
+    <p class="how">Drag the handle to set the launch velocity (metres per second, sideways and up). Click empty space to aim there.</p>
+    <svg id="p2-svg"><title>The path of a thrown ball and its launch velocity</title></svg>
+    <div class="out" id="p2-out" aria-live="polite"></div>
+  </div>
+  <script>
+  (function () {
+    const { Plane, drag, snap, clamp } = Study.plot;
+    const { fmt, $ } = Study.math;
+    const g = 9.8, svg = $('p2-svg');
+    const P = Plane(svg, { xmin: 0, xmax: 20, ymin: 0, ymax: 10, step: 1, labelEvery: 5, labelEveryY: 5 });
+    let v = [8, 7];
+    function render() {
+      const [vx, vy] = v, T = 2 * vy / g, range = vx * T, top = vy * vy / (2 * g);
+      const pts = [];
+      for (let i = 0; i <= 60; i++) { const t = T * i / 60; pts.push([vx * t, vy * t - g * t * t / 2]); }
+      P.clear();
+      P.pline(pts.filter(P.inView), 'c1');
+      P.arrow([0, 0], [vx, vy], 'c2');
+      P.dot([range, 0], 4, 'c3');
+      P.text([range, 0], 'lands', 'c3 halo', -18, -8);
+      P.handle('v', [vx, vy], 'c2');
+      $('p2-out').innerHTML = '<span class="k">flight</span>' + fmt(T, 2) + ' s   <span class="k">range</span>' + fmt(range, 1) +
+        ' m   <span class="k">highest</span>' + fmt(top, 1) + ' m';
+    }
+    const place = (p) => [clamp(snap(p[0], 0.5), 0.5, 20), clamp(snap(p[1], 0.5), 0.5, 10)];
+    drag(svg, P, (id, p) => { v = place(p); render(); }, (p) => { v = place(p); render(); });
+    render();
+  })();
+  </script>
+</section>

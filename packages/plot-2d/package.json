@@ -1,0 +1,45 @@
+{
+  "name": "plot-2d",
+  "title": "2D coordinate plane",
+  "description": "SVG coordinate planes with grid, axes, arrows, lines and draggable handles for interactive widgets.",
+  "category": "widgets",
+  "version": "1.0.0",
+  "requires": [
+    "math-kit"
+  ],
+  "css": [
+    "plot-2d.css"
+  ],
+  "js": [
+    "plot-2d.js"
+  ],
+  "build": "build.py",
+  "options": {
+    "width": {
+      "default": 440,
+      "description": "Default viewBox width of a plane in SVG units (a plane's own w overrides it). The svg still scales to its container."
+    },
+    "arrowHead": {
+      "default": 11,
+      "description": "Maximum arrow-head length in SVG units."
+    },
+    "handleRadius": {
+      "default": 7,
+      "description": "Radius of the visible dot drawn by P.handle()."
+    },
+    "hitRadius": {
+      "default": 16,
+      "description": "Radius of the invisible touch target around each handle (keep it ≥ 16 for fingers)."
+    },
+    "colors": {
+      "default": [],
+      "description": "Up to four CSS colours for the classes c1…c4 in light mode. Empty = core tokens (term, bad, ok, warn-edge).",
+      "private": true
+    },
+    "darkColors": {
+      "default": [],
+      "description": "Up to four CSS colours for c1…c4 in dark mode. Empty = same as \"colors\" (or the core tokens).",
+      "private": true
+    }
+  }
+}

@@ -1,0 +1,42 @@
+<section class="note" id="mk-demo">
+  <h2>Exact arithmetic with the math kit</h2>
+  <p>Floating point says <span class="m">0.1 + 0.2 = 0.30000000000000004</span>. Exact fractions say <span class="m">1/10 + 2/10 = 3/10</span>. Display math gets a little extra room:</p>
+  <div class="mblock"><span class="row">3/4 + 5/6 = 9/12 + 10/12 = 19/12</span></div>
+
+  <div class="widget" id="mk-frac">
+    <div class="lbl">Exact fraction calculator</div>
+    <p class="how">Type each amount as an integer, a fraction such as 3/4, or a decimal such as −0.25. Results stay exact.</p>
+    <div class="controls">
+      <label class="field">p <input id="mk-p" value="3/4" inputmode="decimal"></label>
+      <label class="field">q <input id="mk-q" value="5/6" inputmode="decimal"></label>
+    </div>
+    <div class="out" id="mk-out" aria-live="polite"></div>
+  </div>
+  <script>
+  (function () {
+    const { $, parse, add, sub, mul, div, isZero, str, fmt, value } = Study.math;
+    function render() {
+      const p = parse($('mk-p').value), q = parse($('mk-q').value);
+      if (p === null || q === null) { $('mk-out').textContent = 'Each amount must be a number or a fraction.'; return; }
+      const row = (k, x) => '<div><span class="k">' + k + '</span>' + str(x) + ' ≈ ' + fmt(value(x)) + '</div>';
+      $('mk-out').innerHTML = row('p + q', add(p, q)) + row('p − q', sub(p, q)) + row('p × q', mul(p, q)) +
+        (isZero(q) ? '<div><span class="k">p ÷ q</span>undefined (q = 0)</div>' : row('p ÷ q', div(p, q)));
+    }
+    ['mk-p', 'mk-q'].forEach((id) => $(id).addEventListener('input', render));
+    render();
+  })();
+  </script>
+
+  <div class="widget" id="mk-grid">
+    <div class="lbl">Rendering a grid of numbers</div>
+    <p class="how">A 3 × 3 magic square drawn with <code>Study.math.mat()</code>: every row, column and diagonal adds to 15.</p>
+    <div class="out" id="mk-grid-out"></div>
+  </div>
+  <script>
+  (function () {
+    const { $, mat } = Study.math;
+    const sq = [[2, 7, 6], [9, 5, 1], [4, 3, 8]];
+    $('mk-grid-out').innerHTML = mat(sq) + ' <span class="k">row sums</span>' + sq.map((r) => r.reduce((a, b) => a + b, 0)).join(', ');
+  })();
+  </script>
+</section>

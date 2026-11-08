@@ -1,0 +1,61 @@
+/* math-kit: roomier inline/display math and bracketed matrices.
+   Spacing comes from CSS variables that the build sets from the package
+   options (see build.py); the fallbacks below are the option defaults. */
+
+.m, .mblock, .eq, .mat {
+  letter-spacing: var(--mk-letter-spacing, 0.03em);
+  word-spacing: var(--mk-word-spacing, 0.14em);
+}
+.m i, .mblock i, .eq i, .mat i { letter-spacing: 0.02em; }
+.mblock { line-height: var(--mk-block-line-height, 2); }
+
+/* <span class="mat"> is a grid of entries; JS sets grid-template-columns.
+   The brackets are drawn by ::before / ::after so they always span the full
+   height of the grid, whatever the number of rows. */
+.mat {
+  position: relative;
+  display: inline-grid;
+  vertical-align: middle;
+  gap: var(--mk-matrix-gap, 3px 16px);
+  padding: 4px 11px;
+  margin: 2px 3px;
+  font-family: var(--f-math);
+  font-style: normal;
+  text-align: center;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.mat > span { white-space: nowrap; }
+.mat::before, .mat::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 5px;
+  border: 1.5px solid currentColor;
+  pointer-events: none;
+}
+.mat::before { left: 0; border-right: 0; }
+.mat::after { right: 0; border-left: 0; }
+/* round brackets (parentheses) */
+.mat.mat-round::before, .mat.mat-round::after { width: 7px; }
+.mat.mat-round::before { border-radius: 50% 0 0 50% / 14px 0 0 14px; border-top-color: transparent; border-bottom-color: transparent; }
+.mat.mat-round::after { border-radius: 0 50% 50% 0 / 0 14px 14px 0; border-top-color: transparent; border-bottom-color: transparent; }
+/* vertical bars (determinants) */
+.mat.mat-bar::before, .mat.mat-bar::after { width: 0; border-top: 0; border-bottom: 0; }
+/* no brackets: an aligned grid of entries only */
+.mat.mat-none::before, .mat.mat-none::after { display: none; }
+
+/* a little room for a matrix inside running text */
+.m .mat, .eq .mat, .mblock .mat { margin-block: 3px; }
+
+@media print {
+  .mat::before, .mat::after { border-color: #000; }
+}
+
+/* hand-written matrices: <span class="mat" data-cols="2">…</span> */
+.mat[data-cols="1"] { grid-template-columns: auto; }
+.mat[data-cols="2"] { grid-template-columns: repeat(2, auto); }
+.mat[data-cols="3"] { grid-template-columns: repeat(3, auto); }
+.mat[data-cols="4"] { grid-template-columns: repeat(4, auto); }
+.mat[data-cols="5"] { grid-template-columns: repeat(5, auto); }
+.mat[data-cols="6"] { grid-template-columns: repeat(6, auto); }

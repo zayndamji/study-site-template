@@ -1,0 +1,42 @@
+/* worked-examples: one card per example — head, task, collapsible solution,
+   and buttons that load the example into a widget on the page. */
+.exm { margin: 18px 0; padding: 14px 18px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); min-width: 0; }
+.exm-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; margin-bottom: 4px; }
+.exm-n { font: 700 0.72rem var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--term); }
+.exm-n:empty { display: none; }
+.exm-t { font: 600 1.02rem var(--f-display); }
+.exm-tag { display: inline-block; font: 600 0.72rem var(--f-mono); padding: 1px 8px; border-radius: 999px; background: var(--paper); color: var(--muted); border: 1px solid var(--rule); }
+.exm-task { margin: 4px 0 8px; }
+.exm-task > :last-child { margin-bottom: 0; }
+.exm-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 4px; }
+
+/* the solution: a <details> whose content follows its <summary> directly */
+details.exm-sol { margin: 10px 0 0; padding: 0 16px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); min-width: 0; }
+details.exm-sol > summary { cursor: pointer; margin: 0 -16px; padding: 9px 16px; font: 600 var(--step--1) var(--f-display); color: var(--term); }
+details.exm-sol[open] > summary { border-bottom: 1px solid var(--rule); margin-bottom: 12px; }
+details.exm-sol[open] { padding-bottom: 4px; }
+details.exm-sol > .widget:first-of-type { margin-top: 0; }
+details.exm-sol > .widget:last-child { margin-bottom: 10px; }
+
+/* a grid of cards on wide screens; an opened card takes the full row */
+.exm-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: 14px; align-items: start; margin: 18px 0; }
+.exm-list > .exm { margin: 0; }
+.exm-list > .exm:has(details.exm-sol[open]) { grid-column: 1 / -1; }
+
+/* the widget a load button points at, briefly highlighted */
+.exm-flash { animation: exm-flash var(--exm-flash-ms, 1.2s) ease-out; }
+@keyframes exm-flash {
+  0%, 35% { box-shadow: 0 0 0 3px var(--term); }
+  100% { box-shadow: 0 0 0 3px transparent; }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* core switches animations off; show a plain outline for the flash period instead */
+  .exm-flash { outline: 3px solid var(--term); outline-offset: 2px; }
+}
+
+@media print {
+  .exm { break-inside: avoid; }
+  .exm-actions { display: none; }
+  .exm-list { display: block; }
+  .exm-list > .exm { margin: 12px 0; }
+}

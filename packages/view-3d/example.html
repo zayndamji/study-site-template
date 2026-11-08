@@ -1,0 +1,31 @@
+<section class="note" id="v3-demo">
+  <h2>A rotatable 3D picture</h2>
+  <div class="widget" id="v3-helix">
+    <div class="lbl">A spiral staircase</div>
+    <p class="how">Drag to rotate, or focus the picture and use the arrow keys (Shift for bigger steps, Home to reset). From above, the helix looks like a circle; from the side, like a wave.</p>
+    <svg id="v3-svg"></svg>
+    <div class="controls">
+      <button class="btn" type="button" id="v3-in">Zoom in</button>
+      <button class="btn" type="button" id="v3-out">Zoom out</button>
+    </div>
+  </div>
+  <script>
+  (function () {
+    const V = Study.view3d.View(document.getElementById('v3-svg'), { scale: 55 });
+    const helix = [];
+    for (let i = 0; i <= 120; i++) { const t = i / 120 * 4 * Math.PI; helix.push([1.4 * Math.cos(t), 1.4 * Math.sin(t), -1.6 + 3.2 * i / 120]); }
+    const box = [[-1.4, -1.4], [1.4, -1.4], [1.4, 1.4], [-1.4, 1.4]];
+    V.draw = () => {
+      V.axes(2.2);
+      V.pline(box.map(([x, y]) => [x, y, -1.6]), 'thin muted', true);
+      V.pline(box.map(([x, y]) => [x, y, 1.6]), 'thin muted', true);
+      V.pline(helix, 'c1');
+      V.dot(helix[0], 4, 'c2'); V.text(helix[0], 'start', 'c2 halo');
+      V.dot(helix[helix.length - 1], 4, 'c3'); V.text(helix[helix.length - 1], 'top', 'c3 halo');
+    };
+    V.redraw();
+    document.getElementById('v3-in').addEventListener('click', () => V.scale(Math.min(120, V.scale() * 1.2)));
+    document.getElementById('v3-out').addEventListener('click', () => V.scale(Math.max(25, V.scale() / 1.2)));
+  })();
+  </script>
+</section>

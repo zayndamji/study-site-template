@@ -1,0 +1,57 @@
+{
+  "name": "math-kit",
+  "title": "Math kit",
+  "description": "Exact fractions, number formatting, small vector and 2×2 helpers, bracketed matrices and roomier math spacing for widget scripts.",
+  "category": "widgets",
+  "version": "1.0.0",
+  "requires": [],
+  "css": [
+    "math-kit.css"
+  ],
+  "js": [
+    "math-kit.js"
+  ],
+  "build": "build.py",
+  "options": {
+    "letterSpacing": {
+      "default": "0.03em",
+      "description": "Extra letter spacing for .m, .mblock, .eq and .mat (any CSS length, or \"normal\" to turn it off).",
+      "private": true
+    },
+    "wordSpacing": {
+      "default": "0.14em",
+      "description": "Extra word spacing for .m, .mblock, .eq and .mat (any CSS length, or \"normal\").",
+      "private": true
+    },
+    "blockLineHeight": {
+      "default": "2",
+      "description": "Line height of .mblock display math (CSS line-height value).",
+      "private": true
+    },
+    "matrixGap": {
+      "default": "3px 16px",
+      "description": "Row and column gap between matrix entries (CSS gap value).",
+      "private": true
+    },
+    "bracket": {
+      "default": "square",
+      "description": "Default bracket style drawn by Study.math.mat() and col(): \"square\", \"round\" or \"bar\" (determinant bars)."
+    },
+    "unicodeMinus": {
+      "default": true,
+      "description": "Write negative numbers with the Unicode minus sign (−) instead of a hyphen."
+    },
+    "infinity": {
+      "default": "∞",
+      "description": "Text Study.math.fmt() returns for an infinite value (negative infinity gets a minus in front)."
+    },
+    "notANumber": {
+      "default": "—",
+      "description": "Text Study.math.fmt() returns for NaN."
+    },
+    "globalAlias": {
+      "default": null,
+      "description": "Also expose the flat helper names (F, fadd, fmt, mat, …, plus Plane, View3D, presetButtons from the other widget packages) as window[globalAlias], for migrating old page scripts. null = off."
+    }
+  }
+}

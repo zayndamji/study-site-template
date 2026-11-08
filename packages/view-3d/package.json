@@ -1,0 +1,21 @@
+{
+  "name": "view-3d",
+  "title": "3D viewer",
+  "description": "A small orthographic 3D viewer in SVG: drag or use the arrow keys to rotate vectors, lines and plane patches.",
+  "category": "widgets",
+  "version": "1.0.0",
+  "requires": ["math-kit", "plot-2d"],
+  "css": ["view-3d.css"],
+  "js": ["view-3d.js"],
+  "options": {
+    "yaw": { "default": -0.75, "description": "Starting rotation about the vertical axis, in radians (a view's own yaw overrides it)." },
+    "pitch": { "default": 0.42, "description": "Starting tilt towards the viewer, in radians (a view's own pitch overrides it)." },
+    "pitchLimit": { "default": 1.4, "description": "Largest tilt either way, in radians, so the view never flips over (π/2 ≈ 1.57 is straight down)." },
+    "dragSpeed": { "default": 0.01, "description": "Radians of rotation per pixel dragged." },
+    "keyStep": { "default": 0.1, "description": "Radians per arrow-key press (Shift + arrow = four times this)." },
+    "keyboard": { "default": true, "description": "Make each viewer focusable and rotatable with the arrow keys (Home resets the view)." },
+    "label": { "default": "3D view. Drag, or focus and use the arrow keys, to rotate. Home resets.", "description": "aria-label given to viewers that have none of their own." },
+    "axisNames": { "default": ["x", "y", "z"], "description": "Labels V.axes() writes at the positive ends of the three axes." },
+    "arrowHead": { "default": 11, "description": "Maximum arrow-head length in SVG units." }
+  }
+}
