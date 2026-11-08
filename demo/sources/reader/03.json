@@ -1,0 +1,22 @@
+{"pages": [
+ {"heading": "3.1 Random variables and their distributions",
+  "paragraphs": [
+   "Many questions about a random experiment are really questions about a number computed from its outcome: the total shown by two dice, the number of heads in a run of flips, the amount won in a game. A random variable makes this precise. It is a function X that assigns a real number X(ω) to each outcome ω of the sample space. The function itself is fixed; what is random is the outcome fed into it.",
+   "Every statement about X describes an event. The event {X = k} is the set of outcomes that X sends to k, so its probability is already determined by the probability on outcomes. For two fair dice and the sum S, the event {S = 7} contains the six outcomes (1, 6), (2, 5), …, (6, 1), so P(S = 7) = 6/36 = 1/6.",
+   "When X takes finitely or countably many values, its probability mass function, or PMF, lists p(k) = P(X = k) for each value k. A PMF has no negative entries and its entries sum to 1. The PMF forgets which outcomes produced each value: the first die alone and a single die rolled on its own have the same PMF, as do the minimum of two dice and seven minus their maximum."]},
+ {"heading": "3.2 Expected value",
+  "paragraphs": [
+   "The expected value of X is the average of its values, each weighted by its probability: E[X] = Σ k · P(X = k). Grouping the outcomes by the value of X shows that the same number is Σ X(ω) · P({ω}), summed over outcomes. For one fair die, E[X] = 21/6 = 7/2. The die never shows 3.5; the expected value is a long-run average, not a prediction of any single roll.",
+   "To average a function of X there is no need to work out the PMF of g(X) first: E[g(X)] = Σ g(k) · P(X = k). For a die, E[X²] = 91/6. Note that this is not (E[X])² = 49/4. Averaging and then squaring is not the same as squaring and then averaging.",
+   "Expected values give a natural notion of fairness. If a bet costs 1 and pays 6 when a die shows a six, the net gain is 5 with probability 1/6 and −1 with probability 5/6. Its expected value is 5/6 − 5/6 = 0, so the bet is fair. Fairness says nothing about risk: a player still loses most rounds, and the gains come in rare large amounts."]},
+ {"heading": "3.3 Joint distributions and linearity",
+  "paragraphs": [
+   "Two random variables on the same experiment have a joint PMF, p(x, y) = P(X = x and Y = y). Summing a row or column recovers a marginal PMF: P(X = x) = Σ_y p(x, y). The marginals alone do not fix the joint PMF. X and Y are independent when every cell factors as P(X = x) · P(Y = y). Two dice rolled separately are independent; the first die X and the maximum M of both are not, since X = 6 forces M = 6.",
+   "Expectation is linear: E[X + Y] = E[X] + E[Y] and E[aX + b] = a · E[X] + b. The proof is one line, splitting the sum over outcomes, and it uses no independence at all. For the sum of two dice this gives E[S] = 7 without computing the PMF of S.",
+   "Linearity is strongest when combined with indicators. The indicator of an event A equals 1 when A occurs and 0 otherwise, so its expected value is P(A). Shuffle n items and count those that stay in their original place. Position i keeps its item with probability 1/n, so the expected count is n · 1/n = 1, for every n, even though the indicators depend on one another."]},
+ {"heading": "3.4 Variance and spread",
+  "paragraphs": [
+   "Two random variables can share an expected value and still behave very differently, so we also measure spread. With μ = E[X], the variance is Var(X) = E[(X − μ)²], the average squared distance from the mean. Expanding the square gives the shortcut Var(X) = E[X²] − μ². For one die, Var(X) = 91/6 − 49/4 = 35/12. The standard deviation SD(X) = √Var(X) is in the units of X; for a die it is about 1.71.",
+   "Shifting a random variable moves its mean but not its spread, and scaling by a multiplies the variance by a²: Var(aX + b) = a² Var(X).",
+   "For sums, means always add but variances add only under extra conditions. If X and Y are independent, Var(X + Y) = Var(X) + Var(Y), so the sum of two dice has variance 35/6. Without independence the rule can fail in either direction: Var(X + X) = 4 Var(X), while X + (7 − X) is always 7 and has variance 0. The fair bet of 3.2 has mean 0 but variance 5."]}
+]}

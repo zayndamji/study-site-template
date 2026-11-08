@@ -1,0 +1,671 @@
+<!--page {"lede": "A random variable turns each outcome into a number. Its distribution says how likely each number is, its expected value says where those numbers balance, and its variance says how far they spread.", "overview": ["A <b>random variable</b> is a function from outcomes to numbers, so <span class=\"m\">{<i>X</i> = <i>k</i>}</span> is an ordinary event.", "Its <b>PMF</b> <span class=\"m\"><i>p</i>(<i>k</i>) = P(<i>X</i> = <i>k</i>)</span> is non-negative and sums to 1. A <b>joint PMF</b> describes two variables at once; summing out one of them gives a <b>marginal</b>.", "<b>Expected value</b> <span class=\"m\">E[<i>X</i>] = Σ <i>k</i> · P(<i>X</i> = <i>k</i>)</span> is a probability-weighted average: 7/2 for one die.", "<b>Linearity</b>: <span class=\"m\">E[<i>X</i> + <i>Y</i>] = E[<i>X</i>] + E[<i>Y</i>]</span> always. With indicators it shows that a random shuffle leaves 1 item in place on average.", "<b>Variance</b> <span class=\"m\">Var(<i>X</i>) = E[<i>X</i>²] − (E[<i>X</i>])²</span> measures spread. Variances add for independent variables, but not in general."]} -->
+<style>
+.l03-dice { display: grid; grid-template-columns: auto repeat(6, minmax(0, 1fr)); gap: 3px; max-width: 26rem; margin: 10px 0; }
+.l03-dice .h { font: 600 0.72rem var(--f-mono); color: var(--muted); display: flex; align-items: center; justify-content: center; padding: 2px 5px; }
+.l03-dice button { font: 1rem var(--f-math); padding: 6px 0; border: 1px solid var(--rule); border-radius: 6px; background: var(--paper); color: var(--ink); cursor: pointer; min-width: 0; }
+.l03-dice button[aria-pressed="true"] { background: var(--term); border-color: var(--term); color: var(--surface); }
+.l03-perm { display: flex; flex-wrap: wrap; gap: 3px; margin: 8px 0; font-family: var(--f-math); align-items: center; }
+.l03-perm span { min-width: 1.9em; text-align: center; padding: 3px 2px; border: 1px solid var(--rule); border-radius: 5px; font-size: 0.9rem; }
+.l03-perm span.fx { background: var(--term-soft); border-color: var(--term); color: var(--term); font-weight: 600; }
+.l03-perm .cap { border: 0; min-width: 0; padding: 3px 6px 3px 0; color: var(--muted); font: 600 0.72rem var(--f-mono); }
+svg.plane polygon.l03-bar { fill-opacity: 0.82; }
+#l03-joint-svg polygon { stroke: var(--surface); stroke-width: 0.7; stroke-linejoin: round; }
+#l03-joint-svg .l03-top { fill: var(--pc); }
+#l03-joint-svg .l03-sx { fill: color-mix(in srgb, var(--pc) 72%, #000); }
+#l03-joint-svg .l03-sy { fill: color-mix(in srgb, var(--pc) 58%, var(--surface)); }
+#l03-joint-svg .l03-zero { fill: none; stroke: var(--muted); stroke-dasharray: 2 2; }
+#l03-joint-svg .l03-zero.c2 { stroke: var(--pc); stroke-width: 2; stroke-dasharray: none; }
+.l03-marg th.on, .l03-marg td.on { background: var(--term-soft); }
+.l03-marg td, .l03-marg th { text-align: center; font-family: var(--f-math); white-space: nowrap; }
+</style>
+
+<section class="note" id="rv">
+  <h2><span class="n">01</span> Random variables and PMFs</h2>
+  <p class="src">Slides s2–3 · <span class="cite" data-page="9">Reader §3.1</span></p>
+  <div class="key"><span class="lbl">The idea</span><p>A random variable is a fixed rule that turns each outcome into a number. Asking about its value is asking about an event, so its probabilities come straight from the outcomes.</p></div>
+
+  <div class="box def"><span class="lbl">Definition · Random variable and PMF</span>
+    <blockquote class="quote"><p>A random variable X assigns a number X(ω) to every outcome ω in Ω.</p><cite>s2</cite></blockquote>
+    <blockquote class="quote"><p>The PMF of a discrete X is p(k) = P(X = k) for each value k.</p><cite>s3</cite></blockquote>
+    <p>Each <span class="m">{<i>X</i> = <i>k</i>}</span> is the set of outcomes sent to <span class="m"><i>k</i></span>. These events split <span class="m">Ω</span> into pieces, so the values of a PMF are never negative and add up to 1.</p>
+  </div>
+
+  <p>Roll two fair dice. The 36 ordered outcomes <span class="m">(<i>a</i>, <i>b</i>)</span> are equally likely, and many numbers can be read off each one:</p>
+  <blockquote class="quote"><p>Two dice: X = first die, S = sum, M = maximum, D = first minus second.</p><cite>s2</cite></blockquote>
+  <p>The randomness is entirely in which outcome happens. The function <span class="m"><i>S</i>(<i>a</i>, <i>b</i>) = <i>a</i> + <i>b</i></span> is as fixed as any formula.</p>
+
+  <div class="widget" id="l03-grid">
+    <div class="lbl">Try it · Events of the form {X = k}</div>
+    <p class="how">Pick a random variable and a value <span class="m"><i>k</i></span>, or tap a cell to use its value. Rows are the first die, columns the second; each cell shows the variable's value at that outcome, and the highlighted cells form the event.</p>
+    <div id="l03-grid-presets"></div>
+    <div class="controls">
+      <label class="field">random variable
+        <select id="l03-grid-rv">
+          <option value="X">X = first die</option>
+          <option value="Y">Y = second die</option>
+          <option value="S">S = X + Y (sum)</option>
+          <option value="M">M = max(X, Y)</option>
+          <option value="N">N = min(X, Y)</option>
+          <option value="D">D = X − Y (difference)</option>
+        </select>
+      </label>
+      <label class="field">value k <input id="l03-grid-k" type="number" step="1"></label>
+    </div>
+    <div class="l03-dice" id="l03-grid-cells"></div>
+    <div class="out" id="l03-grid-out" aria-live="polite"></div>
+  </div>
+  <script>
+  window.L03 = (function () {
+    const { F, add, sub, mul, str, value, fmt, isInt } = Study.math;
+    const { Plane } = Study.plot;
+    /** pmf: array of [k, fraction], sorted by k. Returns exact E, E[X²] and Var. */
+    function stats(pmf) {
+      let E = F(0), E2 = F(0);
+      pmf.forEach(([k, p]) => { E = add(E, mul(k, p)); E2 = add(E2, mul(k * k, p)); });
+      return { E, E2, V: sub(E2, mul(E, E)) };
+    }
+    /** An exact fraction, with a decimal when it is not a whole number. */
+    function show(p) { return isInt(p) ? str(p) : str(p) + ' ≈ ' + fmt(value(p), 3); }
+    /** Group a list of [k, p] pairs by k into a sorted PMF. */
+    function collect(pairs) {
+      const m = new Map();
+      pairs.forEach(([k, p]) => m.set(k, add(m.has(k) ? m.get(k) : F(0), p)));
+      return [...m.entries()].filter(([, p]) => value(p) > 0).sort((a, b) => a[0] - b[0]);
+    }
+    /** Bar chart of a PMF in an svg: exact labels, a dashed line at the mean, a bar for ±1 SD. */
+    function bars(svg, pmf, label) {
+      const ks = pmf.map((d) => d[0]), lo = Math.min(...ks), hi = Math.max(...ks), pad = 0.8, lpad = 1.25;
+      const maxP = Math.max(...pmf.map((d) => value(d[1]))), ymax = maxP * 1.45;
+      const P = Plane(svg, { xmin: lo - lpad, xmax: hi + pad, ymin: -ymax * 0.11, ymax, w: 440, h: 250, grid: false, axes: false, labels: false });
+      const mid = (t) => { t.setAttribute('text-anchor', 'middle'); return t; };
+      const step = maxP > 0.55 ? 0.2 : maxP > 0.25 ? 0.1 : 0.05;
+      for (let y = step; y < ymax * 0.8; y += step) {
+        P.line([lo - lpad, y], [hi + pad, y], 'grid', P.bg);
+        P.text([lo - lpad, y], fmt(y, 2), 'small halo', 3, 4);
+      }
+      P.line([lo - lpad, 0], [hi + pad, 0], 'axis', P.bg);
+      pmf.forEach(([k, p]) => {
+        const v = value(p);
+        P.poly([[k - 0.36, 0], [k + 0.36, 0], [k + 0.36, v], [k - 0.36, v]], 'c1 l03-bar');
+        mid(P.text([k, v], str(p), 'small halo', 0, -5));
+        mid(P.text([k, 0], fmt(k, 0), 'small', 0, 15));
+      });
+      const st = stats(pmf), mu = value(st.E), sd = Math.sqrt(value(st.V));
+      P.line([mu, 0], [mu, ymax * 0.9], 'c2 dash');
+      mid(P.text([mu, ymax * 0.9], (label || 'E[X]') + ' = ' + str(st.E), 'c2 halo', 0, -3));
+      if (sd > 1e-12) {
+        const yb = ymax * 0.8;
+        P.line([mu - sd, yb], [mu + sd, yb], 'c3');
+        P.line([mu - sd, yb - ymax * 0.03], [mu - sd, yb + ymax * 0.03], 'c3');
+        P.line([mu + sd, yb - ymax * 0.03], [mu + sd, yb + ymax * 0.03], 'c3');
+        const right = (hi + pad) - (mu + sd) > (mu - sd) - (lo - lpad);
+        const t = P.text([right ? mu + sd : mu - sd, yb], '±1 SD', 'c3 halo', right ? 5 : -5, 4);
+        if (!right) t.setAttribute('text-anchor', 'end');
+      }
+      return st;
+    }
+    return { stats, show, collect, bars };
+  })();
+
+  (function () {
+    const { F, str } = Study.math;
+    const $ = (id) => document.getElementById(id);
+    const RV = {
+      X: { name: 'X', f: (a) => a }, Y: { name: 'Y', f: (a, b) => b }, S: { name: 'S', f: (a, b) => a + b },
+      M: { name: 'M', f: (a, b) => Math.max(a, b) }, N: { name: 'N', f: (a, b) => Math.min(a, b) }, D: { name: 'D', f: (a, b) => a - b },
+    };
+    const sel = $('l03-grid-rv'), kIn = $('l03-grid-k'), cells = $('l03-grid-cells'), out = $('l03-grid-out');
+    const num = (v) => String(v).replace('-', '−');
+    // build the 7 × 7 grid once: header row, then a header cell and six outcome buttons per row
+    const btn = {};
+    cells.appendChild(Object.assign(document.createElement('span'), { className: 'h', textContent: '1st╲2nd' }));
+    for (let b = 1; b <= 6; b++) cells.appendChild(Object.assign(document.createElement('span'), { className: 'h', textContent: b }));
+    for (let a = 1; a <= 6; a++) {
+      cells.appendChild(Object.assign(document.createElement('span'), { className: 'h', textContent: a }));
+      for (let b = 1; b <= 6; b++) {
+        const el = document.createElement('button');
+        el.type = 'button';
+        el.addEventListener('click', () => { kIn.value = RV[sel.value].f(a, b); row.clear('Your own event: the value at the cell you tapped.'); render(); });
+        btn[a + ',' + b] = el;
+        cells.appendChild(el);
+      }
+    }
+    function render() {
+      const rv = RV[sel.value], k = Math.round(Number(kIn.value));
+      const hits = [], counts = new Map();
+      for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++) {
+        const v = rv.f(a, b), el = btn[a + ',' + b], on = v === k;
+        el.textContent = num(v);
+        el.setAttribute('aria-pressed', on ? 'true' : 'false');
+        el.setAttribute('aria-label', 'outcome (' + a + ', ' + b + '): ' + rv.name + ' = ' + num(v));
+        if (on) hits.push('(' + a + ', ' + b + ')');
+        counts.set(v, (counts.get(v) || 0) + 1);
+      }
+      const p = F(hits.length, 36), ev = '{' + rv.name + ' = ' + num(k) + '}';
+      const list = hits.length === 0 ? '∅ (no outcome gives this value)' : hits.length <= 12 ? '{' + hits.join(', ') + '}' : hits.length + ' outcomes';
+      const pmf = [...counts.entries()].sort((x, y) => x[0] - y[0]).map(([v, c]) => num(v) + ' ↦ ' + str(F(c, 36))).join(' · ');
+      out.innerHTML = '<span class="k">event</span>' + ev + ' = ' + list +
+        '<br><span class="k">probability</span>P' + ev.replace('{', '(').replace('}', ')') + ' = ' + hits.length + '/36' + (hits.length && str(p) !== hits.length + '/36' ? ' = ' + str(p) : '') +
+        '<br><span class="k">PMF of ' + rv.name + '</span>' + pmf;
+    }
+    const presets = [
+      { name: 'S = 7', value: ['S', 7], note: 'The six outcomes on the anti-diagonal: 7 is the most likely sum, with probability 6/36 = 1/6.' },
+      { name: 'S = 2', value: ['S', 2], note: 'Only (1, 1) gives a sum of 2, so p(2) = 1/36. The PMF of S is far from flat.' },
+      { name: 'M = 6', value: ['M', 6], note: 'An L shape along the last row and column: 11 outcomes contain a six, so P(M = 6) = 11/36.' },
+      { name: 'M = 1', value: ['M', 1], note: 'Again only (1, 1): {M = 1} and {S = 2} are the same event, even though M and S are different random variables.' },
+      { name: 'N = 1', value: ['N', 1], note: 'The mirror image of M = 6: 11 outcomes contain a one. The PMF of N is the PMF of M read backwards.' },
+      { name: 'X = 3', value: ['X', 3], note: 'A whole row: X ignores the second die completely, so every value has probability 6/36 = 1/6.' },
+      { name: 'D = 0', value: ['D', 0], note: 'The diagonal of doubles. D takes 11 values, from −5 to 5, and has the same triangular shape as S, shifted.' },
+    ];
+    const row = Study.presets.mount($('l03-grid-presets'), presets, (pr) => { sel.value = pr.value[0]; kIn.value = pr.value[1]; render(); });
+    sel.addEventListener('change', () => { row.clear('Your own event.'); render(); });
+    kIn.addEventListener('input', () => { row.clear('Your own event.'); render(); });
+  })();
+  </script>
+
+  <details class="reveal more"><summary>Same PMF, different random variables</summary><div class="body">
+    <blockquote class="quote"><p>Different random variables can have the same PMF.</p><cite>s3</cite></blockquote>
+    <p>The first die <span class="m"><i>X</i></span> and the second die <span class="m"><i>Y</i></span> are different functions: at the outcome (2, 5) one is 2 and the other 5. Yet both have the PMF <span class="m"><i>p</i>(<i>k</i>) = 1/6</span> for <span class="m"><i>k</i> = 1, …, 6</span>. A PMF records how likely each value is, not which outcomes produce it.</p>
+    <p>A less obvious pair: the minimum <span class="m"><i>N</i></span> and <span class="m">7 − <i>M</i></span>. Both give 1 with probability 11/36, 2 with probability 9/36, and so on down to 6 with probability 1/36; in general <span class="m">P(<i>N</i> = <i>k</i>) = (13 − 2<i>k</i>)/36</span>. <span class="beyond"></span></p>
+  </div></details>
+
+  <details class="reveal check"><summary>Quick check</summary><div class="body">
+    <p>How many outcomes are in <span class="m">{<i>M</i> = 4}</span>, and what is <span class="m">P(<i>M</i> = 4)</span>?</p>
+    <p><b>Answer.</b> The outcomes with largest value 4 are (4, 1), (4, 2), (4, 3), (4, 4), (1, 4), (2, 4), (3, 4): seven of them, so <span class="m">P(<i>M</i> = 4) = 7/36</span>. In general <span class="m">P(<i>M</i> = <i>k</i>) = (2<i>k</i> − 1)/36</span>.</p>
+  </div></details>
+</section>
+
+<section class="note" id="expect">
+  <h2><span class="n">02</span> Expected value</h2>
+  <p class="src">Slides s4–6 · <span class="cite" data-page="10">Reader §3.2</span></p>
+  <div class="key"><span class="lbl">The idea</span><p>The expected value is the probability-weighted average of the values: the point where the bars of the PMF would balance.</p></div>
+
+  <div class="box def"><span class="lbl">Definition · Expected value</span>
+    <blockquote class="quote"><p>E[X] = Σ k · P(X = k): the values of X weighted by their probabilities.</p><cite>s4</cite></blockquote>
+    <blockquote class="quote"><p>One fair die: E[X] = (1 + 2 + 3 + 4 + 5 + 6)/6 = 7/2.</p><cite>s4</cite></blockquote>
+    <p>A die never shows 3.5: <q class="quote">E[X] need not be a value that X can take.</q> <span class="ref">s4</span></p>
+  </div>
+
+  <div class="box thm"><span class="lbl">Rule · Expectation of a function</span>
+    <blockquote class="quote"><p>E[g(X)] = Σ g(k) · P(X = k): no new PMF is needed.</p><cite>s5</cite></blockquote>
+  </div>
+
+  <div class="widget" id="l03-pmf">
+    <div class="lbl">Try it · PMF explorer</div>
+    <p class="how">Pick a random variable. The bars are its PMF with exact probabilities; the dashed line marks <span class="m">E[<i>X</i>]</span> and the short solid bar spans one standard deviation either side of it (section 05).</p>
+    <div id="l03-pmf-presets"></div>
+    <svg id="l03-pmf-svg"><title>Bar chart of the chosen PMF with its mean marked</title></svg>
+    <div class="out" id="l03-pmf-out" aria-live="polite"></div>
+  </div>
+  <script>
+  (function () {
+    const { F, str, fmt, value } = Study.math;
+    const $ = (id) => document.getElementById(id);
+    const two = []; for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++) two.push([a, b]);
+    const over2 = (f) => L03.collect(two.map(([a, b]) => [f(a, b), F(1, 36)]));
+    const presets = [
+      { name: 'one die', value: [1, 2, 3, 4, 5, 6].map((k) => [k, F(1, 6)]),
+        note: 'Flat bars. E[X] = 7/2 sits between 3 and 4, a value the die can never show.' },
+      { name: 'sum of two dice', value: over2((a, b) => a + b),
+        note: 'A triangle peaked at 7. The mean is 7 and the variance 35/6, exactly twice a single die’s 35/12.' },
+      { name: 'max of two dice', value: over2((a, b) => Math.max(a, b)),
+        note: 'P(M = k) = (2k − 1)/36 leans towards 6, and the mean 161/36 ≈ 4.47 follows the mass to the right of 7/2.' },
+      { name: 'heads in 3 flips', value: [0, 1, 2, 3].map((k) => [k, F([1, 3, 3, 1][k], 8)]),
+        note: 'Symmetric about 3/2, so the mean is the centre of symmetry. Var = 3/4.' },
+      { name: 'loaded die', value: [1, 2, 3, 4, 5, 6].map((k) => [k, k === 6 ? F(1, 2) : F(1, 10)]),
+        note: 'A six half the time pulls the mean up to 9/2, and the variance rises to 13/4, above the fair die’s 35/12 ≈ 2.92.' },
+      { name: 'fair game', value: [[-1, F(5, 6)], [5, F(1, 6)]],
+        note: 'Pay 1, get 6 back on a six: the net gain is 5 or −1. The mean is exactly 0, yet the variance is 5. Fair is not the same as safe.' },
+      { name: 'difference X − Y', value: over2((a, b) => a - b),
+        note: 'The sum’s triangle moved to centre 0: same shape, same variance 35/6, different mean.' },
+      { name: 'indicator of a six', value: [[0, F(5, 6)], [1, F(1, 6)]],
+        note: 'A 0/1 variable: its mean is just P(six) = 1/6, and its variance is p(1 − p) = 5/36.' },
+    ];
+    function render(pmf) {
+      const st = L03.bars($('l03-pmf-svg'), pmf);
+      const terms = pmf.map(([k, p]) => fmt(k, 0) + '·' + str(p)).join(' + ');
+      $('l03-pmf-out').innerHTML = '<span class="k">E[X]</span>' + terms + ' = ' + L03.show(st.E) +
+        '<br><span class="k">E[X²]</span>' + L03.show(st.E2) +
+        '<br><span class="k">Var(X)</span>' + str(st.E2) + ' − (' + str(st.E) + ')² = ' + L03.show(st.V) +
+        '<br><span class="k">SD(X)</span>√(' + str(st.V) + ') ≈ ' + fmt(Math.sqrt(value(st.V)), 3);
+    }
+    Study.presets.mount($('l03-pmf-presets'), presets, (pr) => render(pr.value));
+  })();
+  </script>
+
+  <div class="pitfall"><span class="lbl">Pitfall</span>
+    <p>Averaging a function is not applying the function to the average.</p>
+    <blockquote class="quote"><p>In general E[g(X)] ≠ g(E[X]): here (E[X])² = 49/4, not 91/6.</p><cite>s5</cite></blockquote>
+  </div>
+
+  <details class="reveal more"><summary>Why the two formulas for E[X] agree</summary><div class="body">
+    <blockquote class="quote"><p>Equivalently, E[X] = Σ X(ω) · P({ω}) over all outcomes ω.</p><cite>s4</cite></blockquote>
+    <p>Sort the outcomes into the groups <span class="m">{<i>X</i> = <i>k</i>}</span>. Inside one group every term is <span class="m"><i>k</i> · P({ω})</span>, and those probabilities add up to <span class="m">P(<i>X</i> = <i>k</i>)</span>:</p>
+    <div class="mblock"><span class="row">Σ<sub>ω</sub> <i>X</i>(ω) P({ω}) = Σ<sub><i>k</i></sub> Σ<sub>ω : <i>X</i>(ω) = <i>k</i></sub> <i>k</i> P({ω}) = Σ<sub><i>k</i></sub> <i>k</i> P(<i>X</i> = <i>k</i>).</span></div>
+    <p>The same regrouping with <span class="m"><i>g</i>(<i>X</i>(ω))</span> in place of <span class="m"><i>X</i>(ω)</span> proves the rule for <span class="m">E[<i>g</i>(<i>X</i>)]</span>. For the die, <span class="m">E[<i>X</i>²] = (1 + 4 + 9 + 16 + 25 + 36)/6 = 91/6</span>.</p>
+    <p>Physically, if each bar of the PMF were a weight placed at its value on a ruler, the ruler would balance at <span class="m">E[<i>X</i>]</span>. <span class="beyond"></span></p>
+  </div></details>
+
+  <details class="reveal more"><summary>Fair games</summary><div class="body">
+    <blockquote class="quote"><p>A bet is fair when the expected net gain is 0.</p><cite>s6</cite></blockquote>
+    <p>Pay 1 to roll a die; a six returns 6. The net gain is 5 with probability 1/6 and −1 with probability 5/6, so</p>
+    <div class="eq">E[gain] = 5 · 1/6 + (−1) · 5/6 = 5/6 − 5/6 = 0.</div>
+    <p>Load the <b>fair game</b> preset above: the mean sits at 0, but <span class="m">E[gain²] = 25 · 1/6 + 1 · 5/6 = 5</span>, so the variance is 5 and the standard deviation about 2.24. You lose most rounds and win rarely but big.</p>
+  </div></details>
+
+  <details class="reveal check"><summary>Quick check</summary><div class="body">
+    <p>A ticket costs 1 and pays 10 with probability 1/10 (and nothing otherwise). Is the bet fair?</p>
+    <p><b>Answer.</b> The net gain is 9 with probability 1/10 and −1 with probability 9/10, so <span class="m">E[gain] = 9/10 − 9/10 = 0</span>. Yes, it is fair.</p>
+  </div></details>
+</section>
+
+<section class="note" id="joint">
+  <h2><span class="n">03</span> Joint distributions and independence</h2>
+  <p class="src">Slides s7–8 · <span class="cite" data-page="11">Reader §3.3</span></p>
+  <div class="key"><span class="lbl">The idea</span><p>A joint PMF is a table of probabilities for pairs of values. Its row and column sums are the marginals, and the variables are independent exactly when every cell is the product of its two marginals.</p></div>
+
+  <div class="box def"><span class="lbl">Definition · Joint and marginal PMFs</span>
+    <blockquote class="quote"><p>The joint PMF of X and Y is p(x, y) = P(X = x and Y = y).</p><cite>s7</cite></blockquote>
+    <blockquote class="quote"><p>Marginal PMF: P(X = x) = Σ_y p(x, y), summing out the other variable.</p><cite>s7</cite></blockquote>
+  </div>
+  <div class="box def"><span class="lbl">Definition · Independent random variables</span>
+    <blockquote class="quote"><p>X and Y are independent when p(x, y) = P(X = x) · P(Y = y) for all x, y.</p><cite>s8</cite></blockquote>
+    <p>One failing cell is enough to show dependence:</p>
+    <blockquote class="quote"><p>First die X and maximum M are dependent: P(X = 6, M = 1) = 0.</p><cite>s8</cite></blockquote>
+  </div>
+
+  <div class="widget" id="l03-joint">
+    <div class="lbl">Try it · A joint PMF in 3D</div>
+    <p class="how">Drag to rotate (or focus the picture and use the arrow keys; Home resets). Each bar's height is <span class="m"><i>p</i>(<i>x</i>, <i>y</i>)</span> on one scale shared by all presets; dashed squares are cells of probability 0. Choose a cell to compare it with the product of its marginals.</p>
+    <div id="l03-joint-presets"></div>
+    <svg id="l03-joint-svg"></svg>
+    <div class="controls">
+      <label class="field"><span id="l03-joint-xn">x</span><select id="l03-joint-x"></select></label>
+      <label class="field"><span id="l03-joint-yn">y</span><select id="l03-joint-y"></select></label>
+    </div>
+    <div class="out" id="l03-joint-out" aria-live="polite"></div>
+    <div class="tablewrap"><table class="t l03-marg" id="l03-joint-marg"></table></div>
+  </div>
+  <script>
+  (function () {
+    const { F, add, mul, str, eq, value } = Study.math;
+    const $ = (id) => document.getElementById(id);
+    const fair = () => F(1, 36), loaded = (a) => mul(a === 6 ? F(1, 2) : F(1, 10), F(1, 6));
+    const presets = [
+      { name: 'two dice', value: { xn: 'X', yn: 'Y', xl: 'X = first die', yl: 'Y = second die', f: (a, b) => [a, b], sel: [6, 1] },
+        note: 'A flat table: all 36 cells are 1/36 = 1/6 · 1/6, so every cell factors and the dice are independent.' },
+      { name: 'X and max', value: { xn: 'X', yn: 'M', xl: 'X = first die', yl: 'M = max', f: (a, b) => [a, Math.max(a, b)], sel: [6, 1] },
+        note: 'A staircase: p(k, k) = k/36 on the diagonal, 1/36 above it, 0 below. The cell (6, 1) is 0 but its marginals multiply to 1/216.' },
+      { name: 'X and sum', value: { xn: 'X', yn: 'S', xl: 'X = first die', yl: 'S = sum', f: (a, b) => [a, a + b], sel: [1, 7] },
+        note: 'A diagonal band of 36 bars of 1/36 in a 6 × 11 grid; its column sums are the triangular PMF of S. The cell (1, 7) happens to factor (1/36 = 1/6 · 1/6), but (1, 12) is impossible, so X and S are dependent.' },
+      { name: 'X and X', value: { xn: 'X', yn: 'Y', xl: 'X = first die', yl: 'Y = X (a copy)', f: (a) => [a, a], sel: [1, 2] },
+        note: 'Six tall bars of 1/6 on the diagonal: Y is completely determined by X. The marginals are uniform, exactly as for two independent dice.' },
+      { name: 'min and max', value: { xn: 'N', yn: 'M', xl: 'N = min', yl: 'M = max', f: (a, b) => [Math.min(a, b), Math.max(a, b)], sel: [2, 5] },
+        note: 'Only the triangle N ≤ M is possible: 2/36 off the diagonal (two orders), 1/36 on it, 0 below.' },
+      { name: 'loaded X, fair Y', value: { xn: 'X', yn: 'Y', xl: 'X = loaded die', yl: 'Y = fair die', f: (a, b) => [a, b], w: loaded, sel: [6, 3] },
+        note: 'Independent but not flat: the row X = 6 is five times taller (1/12 against 1/60), yet every cell still equals the product of its marginals.' },
+    ];
+    let cur = null, xs = [], ys = [], joint = new Map(), mx = new Map(), my = new Map(), sx = 1, sy = 1;
+    const key = (x, y) => x + ',' + y;
+    const pj = (x, y) => joint.get(key(x, y)) || F(0);
+    function build(pr) {
+      cur = pr; joint = new Map(); mx = new Map(); my = new Map();
+      for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++) {
+        const [x, y] = pr.f(a, b), p = (pr.w || fair)(a, b);
+        joint.set(key(x, y), add(pj(x, y), p));
+        mx.set(x, add(mx.get(x) || F(0), p)); my.set(y, add(my.get(y) || F(0), p));
+      }
+      xs = [...mx.keys()].sort((a, b) => a - b); ys = [...my.keys()].sort((a, b) => a - b);
+      [sx, sy] = pr.sel;
+      $('l03-joint-xn').textContent = pr.xl; $('l03-joint-yn').textContent = pr.yl;
+      $('l03-joint-x').innerHTML = xs.map((v) => '<option' + (v === sx ? ' selected' : '') + '>' + v + '</option>').join('');
+      $('l03-joint-y').innerHTML = ys.map((v) => '<option' + (v === sy ? ' selected' : '') + '>' + v + '</option>').join('');
+    }
+    const Z0 = -0.65, HS = 10.8; // base height; height per unit of probability (1/6 → 1.8)
+    const V = Study.view3d.View($('l03-joint-svg'), { w: 420, h: 330, scale: 62, yaw: -0.6, pitch: 0.55,
+      label: '3D bar chart of a joint PMF. Drag, or focus and use the arrow keys, to rotate. Home resets.' });
+    V.draw = () => {
+      if (!cur) return;
+      if (V.pitch < 0.1) V.pitch = 0.1; // keep the camera above the floor
+      const nx = xs.length, ny = ys.length, c = Math.min(0.72, 5.2 / Math.max(nx, ny)), hw = c * 0.36;
+      const px = (i) => (i - (nx - 1) / 2) * c, py = (j) => (j - (ny - 1) / 2) * c;
+      const X0 = px(-0.5), X1 = px(nx - 0.5), Y0 = py(-0.5), Y1 = py(ny - 0.5);
+      for (let i = 0; i <= nx; i++) V.line([px(i - 0.5), Y0, Z0], [px(i - 0.5), Y1, Z0], 'grid');
+      for (let j = 0; j <= ny; j++) V.line([X0, py(j - 0.5), Z0], [X1, py(j - 0.5), Z0], 'grid');
+      xs.forEach((x, i) => V.text([px(i), Y0 - c * 0.5, Z0], String(x), 'small', -3, 4));
+      ys.forEach((y, j) => V.text([X1 + c * 0.5, py(j), Z0], String(y), 'small', -3, 4));
+      V.text([0, Y0 - c * 1.4, Z0], cur.xn, 'ink halo', -4, 6);
+      V.text([X1 + c * 1.4, 0, Z0], cur.yn, 'ink halo', -4, 6);
+      const list = [];
+      xs.forEach((x, i) => ys.forEach((y, j) => {
+        const h = value(pj(x, y)) * HS;
+        list.push({ x, y, cx: px(i), cy: py(j), h, d: V.depth([px(i), py(j), Z0 + h / 2]) });
+      }));
+      list.sort((a, b) => a.d - b.d);
+      list.forEach((b) => {
+        const on = b.x === sx && b.y === sy, col = on ? 'c2' : 'c1';
+        const x0 = b.cx - hw, x1 = b.cx + hw, y0 = b.cy - hw, y1 = b.cy + hw, z1 = Z0 + b.h;
+        if (b.h < 1e-9) { V.pline([[x0, y0, Z0], [x1, y0, Z0], [x1, y1, Z0], [x0, y1, Z0]], 'l03-zero' + (on ? ' c2' : ''), true); return; }
+        const faces = [
+          { n: [-1, 0, 0], q: [[x0, y0], [x0, y1]], c: 'l03-sx' }, { n: [1, 0, 0], q: [[x1, y0], [x1, y1]], c: 'l03-sx' },
+          { n: [0, -1, 0], q: [[x0, y0], [x1, y0]], c: 'l03-sy' }, { n: [0, 1, 0], q: [[x0, y1], [x1, y1]], c: 'l03-sy' },
+        ];
+        faces.forEach((f) => {
+          if (V.depth(f.n) <= 0) return; // faces turned away from the viewer are hidden
+          const [[ax, ay], [bx, by]] = f.q;
+          V.pline([[ax, ay, Z0], [bx, by, Z0], [bx, by, z1], [ax, ay, z1]], col + ' ' + f.c, true);
+        });
+        V.pline([[x0, y0, z1], [x1, y0, z1], [x1, y1, z1], [x0, y1, z1]], col + ' l03-top', true);
+      });
+    };
+    function readout() {
+      const p = pj(sx, sy), prod = mul(mx.get(sx), my.get(sy)), same = eq(p, prod);
+      let bad = null;
+      if (!same) bad = [sx, sy];
+      else xs.some((x) => ys.some((y) => (eq(pj(x, y), mul(mx.get(x), my.get(y))) ? false : (bad = [x, y], true))));
+      const X = cur.xn, Y = cur.yn;
+      const cell = 'p(' + sx + ', ' + sy + ') = P(' + X + ' = ' + sx + ', ' + Y + ' = ' + sy + ') = ' + str(p);
+      const pr = 'P(' + X + ' = ' + sx + ') · P(' + Y + ' = ' + sy + ') = ' + str(mx.get(sx)) + ' · ' + str(my.get(sy)) + ' = ' + str(prod);
+      const verdict = bad === null
+        ? 'every one of the ' + xs.length * ys.length + ' cells equals the product of its marginals: ' + X + ' and ' + Y + ' are <b>independent</b>.'
+        : (bad[0] === sx && bad[1] === sy ? 'this cell' : 'the cell (' + bad[0] + ', ' + bad[1] + ')') + ' does not factor: ' + X + ' and ' + Y + ' are <b>dependent</b>.';
+      $('l03-joint-out').innerHTML = '<span class="k">cell</span>' + cell + '<br><span class="k">product</span>' + pr + (same ? '  (equal)' : '  (not equal)') +
+        '<br><span class="k">verdict</span>' + verdict;
+      const rowsOf = (vals, m, name, s) => '<tr><th>' + name.toLowerCase() + '</th>' + vals.map((v) => '<td' + (v === s ? ' class="on"' : '') + '>' + v + '</td>').join('') + '</tr>' +
+        '<tr><th>P(' + name + ' = ·)</th>' + vals.map((v) => '<td' + (v === s ? ' class="on"' : '') + '>' + str(m.get(v)) + '</td>').join('') + '</tr>';
+      $('l03-joint-marg').innerHTML = '<tbody>' + rowsOf(xs, mx, X, sx) + rowsOf(ys, my, Y, sy) + '</tbody>';
+    }
+    const row = Study.presets.mount($('l03-joint-presets'), presets, (pr) => { build(pr.value); V.redraw(); readout(); });
+    $('l03-joint-x').addEventListener('change', (e) => { sx = Number(e.target.value); V.redraw(); readout(); });
+    $('l03-joint-y').addEventListener('change', (e) => { sy = Number(e.target.value); V.redraw(); readout(); });
+  })();
+  </script>
+
+  <details class="reveal more"><summary>The marginals do not determine the joint PMF</summary><div class="body">
+    <blockquote class="quote"><p>The marginals do not determine the joint PMF.</p><cite>s7</cite></blockquote>
+    <p>Compare the presets <b>two dice</b> and <b>X and X</b>. In both, each variable is uniform on 1, …, 6, so the marginal tables are identical. The joint tables could hardly be more different: 36 short bars of 1/36 against six tall bars of 1/6. Independence is a property of the joint PMF, and you cannot check it from the marginals alone.</p>
+    <p>Rotate the <b>loaded X, fair Y</b> preset to look along the X axis: every row has the same shape and only its height changes. That is what factoring <span class="m"><i>p</i>(<i>x</i>, <i>y</i>) = P(<i>X</i> = <i>x</i>) · P(<i>Y</i> = <i>y</i>)</span> looks like. <span class="beyond"></span></p>
+  </div></details>
+
+  <details class="reveal check"><summary>Quick check</summary><div class="body">
+    <p>For the first die <span class="m"><i>X</i></span> and the maximum <span class="m"><i>M</i></span>, find <span class="m">P(<i>X</i> = 3, <i>M</i> = 5)</span> and compare it with <span class="m">P(<i>X</i> = 3) · P(<i>M</i> = 5)</span>.</p>
+    <p><b>Answer.</b> <span class="m"><i>X</i> = 3</span> and <span class="m"><i>M</i> = 5</span> happen together only for the outcome (3, 5), so the joint probability is 1/36. The product is <span class="m">1/6 · 9/36 = 1/24</span>. They differ, which confirms that <span class="m"><i>X</i></span> and <span class="m"><i>M</i></span> are dependent.</p>
+  </div></details>
+</section>
+
+<section class="note" id="linear">
+  <h2><span class="n">04</span> Linearity of expectation</h2>
+  <p class="src">Slides s9–10 · <span class="cite" data-page="11">Reader §3.3</span></p>
+  <div class="key"><span class="lbl">The idea</span><p>The mean of a sum is the sum of the means, always, whether or not the parts are independent. Break a complicated count into simple 0/1 pieces and add up their probabilities.</p></div>
+
+  <div class="box thm"><span class="lbl">Theorem · Linearity of expectation</span>
+    <blockquote class="quote"><p>E[X + Y] = E[X] + E[Y] for any random variables X and Y.</p><cite>s9</cite></blockquote>
+    <blockquote class="quote"><p>E[aX + b] = a · E[X] + b for constants a and b.</p><cite>s9</cite></blockquote>
+    <p><q class="quote">Independence is not needed.</q> <span class="ref">s9</span></p>
+  </div>
+
+  <div class="widget stepper">
+    <div class="lbl">Step by step · E[sum of two dice] = 7</div>
+    <ol class="steps">
+      <li>Name the parts. Let <span class="m"><i>X</i></span> be the first die and <span class="m"><i>Y</i></span> the second, so the sum is <span class="m"><i>S</i> = <i>X</i> + <i>Y</i></span>.</li>
+      <li>One die: <span class="m">E[<i>X</i>] = 1 · 1/6 + 2 · 1/6 + … + 6 · 1/6 = 21/6 = 7/2</span>.</li>
+      <li>The second die has the same PMF, so <span class="m">E[<i>Y</i>] = 7/2</span> as well.</li>
+      <li>Linearity: <span class="m">E[<i>S</i>] = E[<i>X</i> + <i>Y</i>] = E[<i>X</i>] + E[<i>Y</i>] = 7/2 + 7/2 = 7</span>. The PMF of <span class="m"><i>S</i></span> was never needed.</li>
+      <li>Check against the PMF anyway: <span class="m">Σ <i>k</i> · <i>p</i>(<i>k</i>) = (2·1 + 3·2 + 4·3 + 5·4 + 6·5 + 7·6 + 8·5 + 9·4 + 10·3 + 11·2 + 12·1)/36 = 252/36 = 7</span>.</li>
+      <li>No step used independence. If the second “die” simply copied the first (<span class="m"><i>Y</i> = <i>X</i></span>), the same steps give <span class="m">E[2<i>X</i>] = 7</span>, which is also <span class="m">2 · E[<i>X</i>]</span> by the second rule.</li>
+    </ol>
+  </div>
+
+  <div class="box def"><span class="lbl">Definition · Indicator variable</span>
+    <blockquote class="quote"><p>The indicator of an event A is 1 if A occurs and 0 if it does not.</p><cite>s10</cite></blockquote>
+    <blockquote class="quote"><p>E[indicator of A] = 1 · P(A) + 0 · P(not A) = P(A).</p><cite>s10</cite></blockquote>
+    <p><q class="quote">Write a count as a sum of indicators; its mean is a sum of probabilities.</q> <span class="ref">s10</span></p>
+  </div>
+
+  <div class="widget" id="l03-perm">
+    <div class="lbl">Try it · Fixed points of random shuffles</div>
+    <p class="how">Each trial shuffles <span class="m"><i>n</i></span> items uniformly at random and counts the <b>fixed points</b>, the items left in their own place. The solid line is the running average; the dashed line is the exact answer 1. Add trials, or press New sample for a fresh run (each seed always gives the same run).</p>
+    <div id="l03-perm-presets"></div>
+    <div class="controls">
+      <button class="btn" type="button" id="l03-perm-1">+1 trial</button>
+      <button class="btn" type="button" id="l03-perm-100">+100</button>
+      <button class="btn" type="button" id="l03-perm-1000">+1000</button>
+      <button class="btn primary" type="button" id="l03-perm-new">New sample</button>
+    </div>
+    <div class="l03-perm" id="l03-perm-last"></div>
+    <svg id="l03-perm-svg"><title>Running average of the number of fixed points against the number of trials</title></svg>
+    <div class="out" id="l03-perm-out" aria-live="polite"></div>
+  </div>
+  <script>
+  (function () {
+    const { Plane } = Study.plot;
+    const { fmt } = Study.math;
+    const $ = (id) => document.getElementById(id);
+    function mulberry32(a) {
+      return function () {
+        a |= 0; a = (a + 0x6D2B79F5) | 0;
+        let t = Math.imul(a ^ (a >>> 15), 1 | a);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+    const MAX = 20000, SHOW = 20;
+    let n = 1, seed = 1, rng = null, trials = 0, total = 0, none = 0, avgs = [], last = [], lastF = 0;
+    function reset() { rng = mulberry32(seed * 7919 + n); trials = 0; total = 0; none = 0; avgs = []; last = []; lastF = 0; }
+    function trial() {
+      const a = Array.from({ length: n }, (_, i) => i);
+      for (let i = n - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; }
+      let f = 0;
+      for (let i = 0; i < n; i++) if (a[i] === i) f++;
+      trials++; total += f; if (f === 0) none++;
+      avgs.push(total / trials); last = a; lastF = f;
+    }
+    function run(k) { for (let i = 0; i < k && trials < MAX; i++) trial(); render(); }
+    function nice(x) { const p = Math.pow(10, Math.floor(Math.log10(x))); const m = x / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p; }
+    function render() {
+      const xmax = Math.max(10, trials), st = nice(xmax / 8);
+      const ymax = Math.max(2, Math.ceil(Math.max(...avgs, 0)));
+      const P = Plane($('l03-perm-svg'), { xmin: 0, xmax, ymin: 0, ymax, w: 440, h: 200, stepx: st, stepy: 0.5, labelEvery: st * 2, labelEveryY: 1, labelDp: 0 });
+      P.line([0, 1], [xmax, 1], 'c2 dash');
+      P.text([xmax, 1], 'exact E = 1', 'c2 halo', -84, 18);
+      const every = Math.max(1, Math.floor(trials / 400)), pts = [];
+      for (let i = 0; i < trials; i += every) pts.push([i + 1, avgs[i]]);
+      if (trials) { pts.push([trials, avgs[trials - 1]]); P.pline(pts, 'c1'); P.dot(pts[pts.length - 1], 3.5, 'c1'); }
+      const shown = last.slice(0, SHOW);
+      $('l03-perm-last').innerHTML = trials === 0 ? '' : '<span class="cap">last shuffle' + (n > SHOW ? ' (first ' + SHOW + ' of ' + n + ')' : '') + '</span>' +
+        shown.map((v, i) => '<span' + (v === i ? ' class="fx" title="fixed point"' : '') + '>' + (v + 1) + '</span>').join('') +
+        '<span class="cap">→ ' + lastF + ' fixed</span>';
+      $('l03-perm-out').innerHTML = '<span class="k">n</span>' + n + '   <span class="k">trials</span>' + trials + (trials >= MAX ? ' (limit)' : '') +
+        '<br><span class="k">average fixed points</span>' + (trials ? fmt(total / trials, 3) : '—') + '   <span class="k">exact</span>1' +
+        '<br><span class="k">share with none fixed</span>' + (trials ? fmt(none / trials, 3) : '—') + '   <span class="k">seed</span>' + seed;
+    }
+    const presets = [
+      { name: 'n = 1', value: 1, note: 'One item can only stay put: every trial gives exactly 1, with no randomness at all.' },
+      { name: 'n = 2', value: 2, note: 'Each trial gives 0 or 2 fixed points, never 1, yet the average heads to 1. An expected value need not be a possible value.' },
+      { name: 'n = 3', value: 3, note: 'Exactly: P(0) = 1/3, P(1) = 1/2, P(3) = 1/6, and 0·1/3 + 1·1/2 + 3·1/6 = 1.' },
+      { name: 'n = 5', value: 5, note: 'Five indicators, each with mean 1/5. They are dependent (if four items are fixed, so is the fifth), but linearity does not care.' },
+      { name: 'n = 10', value: 10, note: 'Ten chances, each of probability 1/10. The share of shuffles with no fixed point is already close to 0.368.' },
+      { name: 'n = 52', value: 52, note: 'A shuffled deck of cards: on average exactly one card ends up where it started.' },
+      { name: 'n = 365', value: 365, note: 'Still 1. The answer does not depend on n: n indicators, each with probability 1/n.' },
+    ];
+    Study.presets.mount($('l03-perm-presets'), presets, (pr) => { n = pr.value; reset(); run(200); });
+    $('l03-perm-1').addEventListener('click', () => run(1));
+    $('l03-perm-100').addEventListener('click', () => run(100));
+    $('l03-perm-1000').addEventListener('click', () => run(1000));
+    $('l03-perm-new').addEventListener('click', () => { seed++; reset(); run(200); });
+  })();
+  </script>
+
+  <details class="reveal more"><summary>Proof of linearity</summary><div class="body">
+    <p>Use the outcome form of the expected value. Since <span class="m">(<i>X</i> + <i>Y</i>)(ω) = <i>X</i>(ω) + <i>Y</i>(ω)</span>,</p>
+    <div class="mblock"><span class="row">E[<i>X</i> + <i>Y</i>] = Σ<sub>ω</sub> (<i>X</i>(ω) + <i>Y</i>(ω)) P({ω}) = Σ<sub>ω</sub> <i>X</i>(ω) P({ω}) + Σ<sub>ω</sub> <i>Y</i>(ω) P({ω}) = E[<i>X</i>] + E[<i>Y</i>].</span>
+    <span class="row">E[<i>aX</i> + <i>b</i>] = Σ<sub>ω</sub> (<i>a X</i>(ω) + <i>b</i>) P({ω}) = <i>a</i> E[<i>X</i>] + <i>b</i> · Σ<sub>ω</sub> P({ω}) = <i>a</i> E[<i>X</i>] + <i>b</i>.</span></div>
+    <p>Nothing here mentions how <span class="m"><i>X</i></span> and <span class="m"><i>Y</i></span> relate, which is why independence is never needed.</p>
+  </div></details>
+
+  <details class="reveal more"><summary>Why a shuffle has 1 fixed point on average</summary><div class="body">
+    <blockquote class="quote"><p>Fixed points of a random permutation of n items: n · 1/n = 1.</p><cite>s10</cite></blockquote>
+    <p>Let <span class="m"><i>I<sub>j</sub></i></span> be the indicator that item <span class="m"><i>j</i></span> lands in position <span class="m"><i>j</i></span>. In a uniformly random arrangement, position <span class="m"><i>j</i></span> is equally likely to receive any of the <span class="m"><i>n</i></span> items, so <span class="m">E[<i>I<sub>j</sub></i>] = 1/<i>n</i></span>. The number of fixed points is <span class="m"><i>I</i><sub>1</sub> + … + <i>I<sub>n</sub></i></span>, so its mean is <span class="m"><i>n</i> · 1/<i>n</i> = 1</span>.</p>
+    <div class="beyond-block"><span class="lbl">Beyond the slides · No fixed point at all</span>
+      <p>The widget also tracks how often a shuffle has <em>no</em> fixed point. For 3 items that probability is exactly 1/3, for 5 items 11/30, for 10 items 16481/44800 ≈ 0.36788, and as <span class="m"><i>n</i></span> grows it approaches <span class="m">1/<i>e</i> ≈ 0.3679</span>. Linearity gives the mean easily, but probabilities like this one need much more careful counting.</p>
+    </div>
+  </div></details>
+
+  <details class="reveal check"><summary>Quick check</summary><div class="body">
+    <p>Roll a die 12 times. What is the expected number of sixes?</p>
+    <p><b>Answer.</b> Add 12 indicators, one per roll, each with mean 1/6: <span class="m">12 · 1/6 = 2</span>.</p>
+  </div></details>
+</section>
+
+<section class="note" id="variance">
+  <h2><span class="n">05</span> Variance and standard deviation</h2>
+  <p class="src">Slides s11–12 · <span class="cite" data-page="12">Reader §3.4</span></p>
+  <div class="key"><span class="lbl">The idea</span><p>Variance is the average squared distance from the mean. Means always add; variances add when the variables are independent.</p></div>
+
+  <div class="box def"><span class="lbl">Definition · Variance and standard deviation</span>
+    <blockquote class="quote"><p>Var(X) = E[(X − μ)²], where μ = E[X].</p><cite>s11</cite></blockquote>
+    <blockquote class="quote"><p>SD(X) = √Var(X), in the same units as X.</p><cite>s11</cite></blockquote>
+  </div>
+  <div class="box thm"><span class="lbl">Rules · Computing variances</span>
+    <blockquote class="quote"><p>Shortcut: Var(X) = E[X²] − (E[X])².</p><cite>s11</cite></blockquote>
+    <blockquote class="quote"><p>Var(aX + b) = a² · Var(X): shifting does not change the spread.</p><cite>s12</cite></blockquote>
+    <blockquote class="quote"><p>If X and Y are independent, Var(X + Y) = Var(X) + Var(Y).</p><cite>s12</cite></blockquote>
+  </div>
+
+  <div class="widget" id="l03-sums">
+    <div class="lbl">Try it · Means add; variances only sometimes</div>
+    <p class="how">Each preset builds two random variables <span class="m"><i>X</i></span> and <span class="m"><i>Y</i></span> from one roll of two dice and draws the PMF of <span class="m"><i>X</i> + <i>Y</i></span>. Compare the last two columns of the table.</p>
+    <div id="l03-sums-presets"></div>
+    <svg id="l03-sums-svg"><title>Bar chart of the PMF of X + Y with its mean marked</title></svg>
+    <div class="tablewrap"><table class="t" id="l03-sums-tab"></table></div>
+    <div class="out" id="l03-sums-out" aria-live="polite"></div>
+  </div>
+  <script>
+  (function () {
+    const { F, add, mul, str, eq } = Study.math;
+    const $ = (id) => document.getElementById(id);
+    const fair = () => F(1, 36), ld = (k) => (k === 6 ? F(1, 2) : F(1, 10)), loaded = (a, b) => mul(ld(a), ld(b));
+    const presets = [
+      { name: 'X + Y, independent', value: { xl: 'first die', yl: 'second die', f: (a, b) => [a, b] },
+        note: 'Two separate dice: Var(S) = 35/12 + 35/12 = 35/6, just as the rule for independent variables says.' },
+      { name: 'X + X', value: { xl: 'first die', yl: 'the same die again', f: (a) => [a, a] },
+        note: 'The same die twice: the mean doubles to 7, but the variance quadruples to 35/3, twice what adding variances would give.' },
+      { name: 'X + (7 − X)', value: { xl: 'first die', yl: '7 − first die', f: (a) => [a, 7 - a] },
+        note: 'The sum is always 7, so its variance is 0, although each part has variance 35/12. The means still add: 7/2 + 7/2 = 7.' },
+      { name: 'min + max', value: { xl: 'min', yl: 'max', f: (a, b) => [Math.min(a, b), Math.max(a, b)] },
+        note: 'min + max is just the sum of the dice, so Var = 35/6. But Var(min) + Var(max) = 2555/648 ≈ 3.94: min and max are dependent.' },
+      { name: 'X + max', value: { xl: 'first die', yl: 'max', f: (a, b) => [a, Math.max(a, b)] },
+        note: 'A big first die also tends to make the maximum big, so the sum spreads more than Var(X) + Var(M) predicts.' },
+      { name: 'X − Y', value: { xl: 'first die', yl: '−(second die)', f: (a, b) => [a, -b] },
+        note: 'Written as X + (−Y). Var(−Y) = (−1)² · Var(Y), so the variances still add to 35/6, while the mean drops to 0.' },
+      { name: 'two loaded dice', value: { xl: 'loaded die', yl: 'loaded die', f: (a, b) => [a, b], w: loaded },
+        note: 'Independent dice that show a six half the time: E = 9/2 + 9/2 = 9 and Var = 13/4 + 13/4 = 13/2.' },
+    ];
+    function render(pr) {
+      const xs = [], ys = [], ss = [];
+      for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++) {
+        const [x, y] = pr.f(a, b), p = (pr.w || fair)(a, b);
+        xs.push([x, p]); ys.push([y, p]); ss.push([x + y, p]);
+      }
+      const sX = L03.stats(L03.collect(xs)), sY = L03.stats(L03.collect(ys));
+      const sS = L03.bars($('l03-sums-svg'), L03.collect(ss), 'E[X + Y]');
+      const eAdd = add(sX.E, sY.E), vAdd = add(sX.V, sY.V);
+      $('l03-sums-tab').innerHTML = '<thead><tr><th></th><th>X (' + pr.xl + ')</th><th>Y (' + pr.yl + ')</th><th>X + Y</th><th>sum of the X and Y columns</th></tr></thead><tbody>' +
+        '<tr><th>E</th><td>' + str(sX.E) + '</td><td>' + str(sY.E) + '</td><td>' + L03.show(sS.E) + '</td><td>' + L03.show(eAdd) + '</td></tr>' +
+        '<tr><th>Var</th><td>' + str(sX.V) + '</td><td>' + str(sY.V) + '</td><td>' + L03.show(sS.V) + '</td><td>' + L03.show(vAdd) + '</td></tr></tbody>';
+      $('l03-sums-out').innerHTML = '<span class="k">means</span>' + (eq(sS.E, eAdd) ? 'E[X + Y] = E[X] + E[Y], as linearity promises.' : 'E[X + Y] ≠ E[X] + E[Y] (this cannot happen).') +
+        '<br><span class="k">variances</span>' + (eq(sS.V, vAdd) ? 'Var(X + Y) = Var(X) + Var(Y) here.' : 'Var(X + Y) ≠ Var(X) + Var(Y): the parts are not independent.');
+    }
+    Study.presets.mount($('l03-sums-presets'), presets, (pr) => render(pr.value));
+  })();
+  </script>
+
+  <div class="pitfall"><span class="lbl">Pitfall</span>
+    <p>“Variances add” is not a general rule like linearity of expectation. It needs independence (or at least zero covariance), and without it the answer can be bigger or smaller.</p>
+    <blockquote class="quote"><p>Without independence it can fail: Var(X + X) = 4 · Var(X).</p><cite>s12</cite></blockquote>
+  </div>
+
+  <details class="reveal more"><summary>The variance of one die, step by step</summary><div class="body">
+    <div class="widget stepper">
+      <div class="lbl">Step by step · Var(die) = 35/12</div>
+      <ol class="steps">
+        <li>The mean: <span class="m">μ = E[<i>X</i>] = 7/2</span>.</li>
+        <li>The mean square: <span class="m">E[<i>X</i>²] = (1 + 4 + 9 + 16 + 25 + 36)/6 = 91/6</span>.</li>
+        <li>Shortcut: <span class="m">Var(<i>X</i>) = 91/6 − (7/2)² = 182/12 − 147/12 = 35/12 ≈ 2.917</span>.</li>
+        <li>Standard deviation: <span class="m">SD(<i>X</i>) = √(35/12) ≈ 1.708</span>, in pips, like the die itself.</li>
+        <li>Check with the definition: the squared distances from 7/2 are 25/4, 9/4, 1/4, 1/4, 9/4, 25/4, and their average is <span class="m">(70/4)/6 = 35/12</span>.</li>
+      </ol>
+    </div>
+  </div></details>
+
+  <details class="reveal more"><summary>Why the rules hold</summary><div class="body">
+    <p><b>Shortcut.</b> Expand the square and use linearity, with <span class="m">μ</span> a constant: <span class="m">E[(<i>X</i> − μ)²] = E[<i>X</i>²] − 2μ E[<i>X</i>] + μ² = E[<i>X</i>²] − μ²</span>.</p>
+    <p><b>Scaling.</b> <span class="m"><i>aX</i> + <i>b</i></span> has mean <span class="m"><i>a</i>μ + <i>b</i></span>, so its distance from its mean is <span class="m"><i>a</i>(<i>X</i> − μ)</span>, and squaring brings out <span class="m"><i>a</i>²</span>. The shift <span class="m"><i>b</i></span> cancels.</p>
+    <div class="beyond-block"><span class="lbl">Beyond the slides · Covariance</span>
+      <p>For any <span class="m"><i>X</i></span> and <span class="m"><i>Y</i></span>, expanding the square in the same way gives</p>
+      <div class="eq">Var(<i>X</i> + <i>Y</i>) = Var(<i>X</i>) + Var(<i>Y</i>) + 2 Cov(<i>X</i>, <i>Y</i>),  Cov(<i>X</i>, <i>Y</i>) = E[<i>XY</i>] − E[<i>X</i>] E[<i>Y</i>].</div>
+      <p>When <span class="m"><i>X</i></span> and <span class="m"><i>Y</i></span> are independent, the joint PMF factors, so <span class="m">E[<i>XY</i>] = Σ<sub><i>x</i>,<i>y</i></sub> <i>xy</i> P(<i>X</i> = <i>x</i>) P(<i>Y</i> = <i>y</i>) = E[<i>X</i>] E[<i>Y</i>]</span> and the covariance is 0. For the first die and the maximum, <span class="m">Cov(<i>X</i>, <i>M</i>) = 35/24</span>, which is why the <b>X + max</b> preset shows <span class="m">10115/1296 ≈ 7.80</span> instead of <span class="m">6335/1296 ≈ 4.89</span>.</p>
+    </div>
+  </div></details>
+
+  <details class="reveal check"><summary>Quick check</summary><div class="body">
+    <p>For one fair die <span class="m"><i>X</i></span>, what are <span class="m">E[3<i>X</i> + 2]</span> and <span class="m">Var(3<i>X</i> + 2)</span>?</p>
+    <p><b>Answer.</b> <span class="m">E[3<i>X</i> + 2] = 3 · 7/2 + 2 = 25/2</span> and <span class="m">Var(3<i>X</i> + 2) = 9 · 35/12 = 105/4</span>. The +2 moves the mean but not the spread.</p>
+  </div></details>
+</section>
+
+<!-- summary -->
+
+<section class="note" id="selftest">
+  <h2><span class="n">?</span> Self-test</h2>
+  <div class="widget quiz" data-id="03-selftest">
+    <div class="quiz-head"><div class="lbl">Self-test · Random variables and expectation</div></div>
+
+    <div class="q" data-answer="b">
+      <div class="q-prompt">What is the expected value of one roll of a fair six-sided die?</div>
+      <div class="q-opts"><button data-v="a">3</button><button data-v="b">7/2</button><button data-v="c">4</button><button data-v="d">6</button></div>
+      <div class="q-feedback" hidden></div>
+      <template class="q-explain"><span class="m">E[<i>X</i>] = (1 + 2 + 3 + 4 + 5 + 6)/6 = 21/6 = 7/2</span>. The die never shows 3.5; an expected value need not be a possible value (s4).</template>
+    </div>
+
+    <div class="q" data-answer="c">
+      <div class="q-prompt">Roll two fair dice. What is <span class="m">P(<i>M</i> = 3)</span>, where <span class="m"><i>M</i></span> is the larger of the two numbers?</div>
+      <div class="q-opts"><button data-v="a">1/36</button><button data-v="b">3/36</button><button data-v="c">5/36</button><button data-v="d">9/36</button></div>
+      <div class="q-feedback" hidden></div>
+      <template class="q-explain">The outcomes with maximum 3 are (3, 1), (3, 2), (3, 3), (1, 3), (2, 3): five of 36. The answer 9/36 counts <span class="m">P(<i>M</i> ≤ 3)</span> instead.</template>
+    </div>
+
+    <div class="q" data-answer="b">
+      <div class="q-prompt">Twenty people leave their coats; the coats are handed back in a uniformly random order. What is the expected number of people who get their own coat?</div>
+      <div class="q-opts"><button data-v="a">0</button><button data-v="b">1</button><button data-v="c">10</button><button data-v="d">1/20</button></div>
+      <div class="q-feedback" hidden></div>
+      <template class="q-explain">Each person gets their own coat with probability 1/20. Adding 20 indicators gives <span class="m">20 · 1/20 = 1</span>, even though the indicators are dependent (s10).</template>
+    </div>
+
+    <div class="q" data-answer="c">
+      <div class="q-prompt"><span class="m"><i>X</i></span> and <span class="m"><i>Y</i></span> are independent, each with variance 2. What is <span class="m">Var(<i>X</i> − <i>Y</i>)</span>?</div>
+      <div class="q-opts"><button data-v="a">0</button><button data-v="b">2</button><button data-v="c">4</button><button data-v="d">8</button></div>
+      <div class="q-feedback" hidden></div>
+      <template class="q-explain">Write <span class="m"><i>X</i> − <i>Y</i> = <i>X</i> + (−<i>Y</i>)</span>. The two parts are independent and <span class="m">Var(−<i>Y</i>) = (−1)² Var(<i>Y</i>) = 2</span>, so the variances add to 4. Variances never subtract (s12).</template>
+    </div>
+
+    <div class="q" data-answer="b">
+      <div class="q-prompt">For two dice, are the first die <span class="m"><i>X</i></span> and the maximum <span class="m"><i>M</i></span> independent?</div>
+      <div class="q-opts">
+        <button data-v="a">Yes, because each of them has a valid PMF</button>
+        <button data-v="b">No, because P(X = 6, M = 1) = 0 but P(X = 6) · P(M = 1) = 1/216</button>
+        <button data-v="c">Yes, because E[X + M] = E[X] + E[M]</button>
+        <button data-v="d">There is no way to tell from the joint PMF</button>
+      </div>
+      <div class="q-feedback" hidden></div>
+      <template class="q-explain">Independence needs every cell of the joint PMF to factor, and one failing cell is enough to rule it out (s8). Linearity holds for all random variables, so it says nothing about independence.</template>
+    </div>
+
+    <div class="q" data-answer="b">
+      <div class="q-prompt">For one fair die <span class="m"><i>X</i></span>, what is <span class="m">E[<i>X</i>²]</span>?</div>
+      <div class="q-opts"><button data-v="a">49/4</button><button data-v="b">91/6</button><button data-v="c">35/12</button><button data-v="d">7</button></div>
+      <div class="q-feedback" hidden></div>
+      <template class="q-explain"><span class="m">E[<i>X</i>²] = (1 + 4 + 9 + 16 + 25 + 36)/6 = 91/6</span>. 49/4 is <span class="m">(E[<i>X</i>])²</span>, and their difference 35/12 is the variance (s5, s11).</template>
+    </div>
+  </div>
+</section>

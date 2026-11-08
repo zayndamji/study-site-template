@@ -1,0 +1,68 @@
+{
+ "title": "Lecture 03 slides",
+ "slides": [
+  {"title": "Random variables and expectation", "bullets": [
+   "Lecture 03 · Probability Notebook",
+   "Numbers attached to outcomes, and their distributions",
+   "Averages: expected value and linearity",
+   "Spread: variance and standard deviation"]},
+  {"title": "A random variable is a function", "bullets": [
+   "A random variable X assigns a number X(ω) to every outcome ω in Ω.",
+   "Nothing about X is random: the randomness is in which outcome occurs.",
+   "{X = k} is an event: the set of outcomes ω with X(ω) = k.",
+   "Two dice: X = first die, S = sum, M = maximum, D = first minus second."]},
+  {"title": "Probability mass function", "bullets": [
+   "The PMF of a discrete X is p(k) = P(X = k) for each value k.",
+   "Every p(k) ≥ 0, and the values of p add up to 1.",
+   "Sum of two dice: p(7) = 6/36 = 1/6, while p(2) = p(12) = 1/36.",
+   "Different random variables can have the same PMF."]},
+  {"title": "Expected value", "bullets": [
+   "E[X] = Σ k · P(X = k): the values of X weighted by their probabilities.",
+   "Equivalently, E[X] = Σ X(ω) · P({ω}) over all outcomes ω.",
+   "One fair die: E[X] = (1 + 2 + 3 + 4 + 5 + 6)/6 = 7/2.",
+   "E[X] need not be a value that X can take."]},
+  {"title": "Expectation of a function of X", "bullets": [
+   "E[g(X)] = Σ g(k) · P(X = k): no new PMF is needed.",
+   "One fair die: E[X²] = (1 + 4 + 9 + 16 + 25 + 36)/6 = 91/6.",
+   "In general E[g(X)] ≠ g(E[X]): here (E[X])² = 49/4, not 91/6."]},
+  {"title": "Fair games", "bullets": [
+   "A bet is fair when the expected net gain is 0.",
+   "Pay 1 to roll a die; a six returns 6, so the net gain is 5 or −1.",
+   "E[gain] = 5 · 1/6 + (−1) · 5/6 = 0: the bet is fair.",
+   "A fair bet can still be risky: the mean says nothing about spread."]},
+  {"title": "Joint distributions", "bullets": [
+   "The joint PMF of X and Y is p(x, y) = P(X = x and Y = y).",
+   "Marginal PMF: P(X = x) = Σ_y p(x, y), summing out the other variable.",
+   "The marginals do not determine the joint PMF."]},
+  {"title": "Independent random variables", "bullets": [
+   "X and Y are independent when p(x, y) = P(X = x) · P(Y = y) for all x, y.",
+   "Two fair dice: every cell of the joint PMF is 1/36 = 1/6 · 1/6.",
+   "First die X and maximum M are dependent: P(X = 6, M = 1) = 0.",
+   "But P(X = 6) · P(M = 1) = 1/6 · 1/36 = 1/216, which is not 0."]},
+  {"title": "Linearity of expectation", "bullets": [
+   "E[X + Y] = E[X] + E[Y] for any random variables X and Y.",
+   "E[aX + b] = a · E[X] + b for constants a and b.",
+   "Independence is not needed.",
+   "Sum of two dice: E[S] = 7/2 + 7/2 = 7, with no PMF of S required."]},
+  {"title": "Indicator variables", "bullets": [
+   "The indicator of an event A is 1 if A occurs and 0 if it does not.",
+   "E[indicator of A] = 1 · P(A) + 0 · P(not A) = P(A).",
+   "Write a count as a sum of indicators; its mean is a sum of probabilities.",
+   "Fixed points of a random permutation of n items: n · 1/n = 1."]},
+  {"title": "Variance and standard deviation", "bullets": [
+   "Var(X) = E[(X − μ)²], where μ = E[X].",
+   "Shortcut: Var(X) = E[X²] − (E[X])².",
+   "SD(X) = √Var(X), in the same units as X.",
+   "One fair die: Var(X) = 91/6 − 49/4 = 35/12, so SD ≈ 1.71."]},
+  {"title": "Variance of sums", "bullets": [
+   "Var(aX + b) = a² · Var(X): shifting does not change the spread.",
+   "If X and Y are independent, Var(X + Y) = Var(X) + Var(Y).",
+   "Two dice: Var(S) = 35/12 + 35/12 = 35/6.",
+   "Without independence it can fail: Var(X + X) = 4 · Var(X)."]},
+  {"title": "Summary", "bullets": [
+   "A random variable is a number attached to each outcome.",
+   "PMFs and joint PMFs describe it; marginals sum out the other variable.",
+   "Expectation is always linear.",
+   "Variances add for independent random variables."]}
+ ]
+}

@@ -1,0 +1,21 @@
+<ul>
+  <li><b>Random variable</b>: a function <span class="m"><i>X</i> : Ω → ℝ</span>; <span class="m">{<i>X</i> = <i>k</i>}</span> is an event.</li>
+  <li><b>PMF</b>: <span class="m"><i>p</i>(<i>k</i>) = P(<i>X</i> = <i>k</i>) ≥ 0</span>, summing to 1. Different variables can share a PMF.</li>
+  <li><b>Joint PMF</b> <span class="m"><i>p</i>(<i>x</i>, <i>y</i>)</span>; <b>marginal</b> <span class="m">P(<i>X</i> = <i>x</i>) = Σ<sub><i>y</i></sub> <i>p</i>(<i>x</i>, <i>y</i>)</span>. Marginals do not determine the joint PMF.</li>
+  <li><b>Independent</b>: <span class="m"><i>p</i>(<i>x</i>, <i>y</i>) = P(<i>X</i> = <i>x</i>) P(<i>Y</i> = <i>y</i>)</span> for every cell; one failing cell means dependent.</li>
+  <li><b>Expected value</b>: <span class="m">E[<i>X</i>] = Σ <i>k</i> P(<i>X</i> = <i>k</i>)</span>; <span class="m">E[<i>g</i>(<i>X</i>)] = Σ <i>g</i>(<i>k</i>) P(<i>X</i> = <i>k</i>)</span>, but <span class="m">E[<i>g</i>(<i>X</i>)] ≠ <i>g</i>(E[<i>X</i>])</span> in general.</li>
+  <li><b>Linearity</b>: <span class="m">E[<i>X</i> + <i>Y</i>] = E[<i>X</i>] + E[<i>Y</i>]</span>, <span class="m">E[<i>aX</i> + <i>b</i>] = <i>a</i>E[<i>X</i>] + <i>b</i></span>, with no independence needed.</li>
+  <li><b>Indicators</b>: <span class="m">E[1<sub><i>A</i></sub>] = P(<i>A</i>)</span>. A count is a sum of indicators: a random shuffle of <span class="m"><i>n</i></span> items has 1 fixed point on average.</li>
+  <li><b>Variance</b>: <span class="m">Var(<i>X</i>) = E[(<i>X</i> − μ)²] = E[<i>X</i>²] − μ²</span>; <span class="m">SD = √Var</span>; <span class="m">Var(<i>aX</i> + <i>b</i>) = <i>a</i>² Var(<i>X</i>)</span>.</li>
+  <li><b>Sums</b>: if <span class="m"><i>X</i>, <i>Y</i></span> are independent, <span class="m">Var(<i>X</i> + <i>Y</i>) = Var(<i>X</i>) + Var(<i>Y</i>)</span>. Otherwise it can fail: <span class="m">Var(<i>X</i> + <i>X</i>) = 4 Var(<i>X</i>)</span>.</li>
+</ul>
+<div class="tablewrap"><table class="t">
+  <thead><tr><th>random variable</th><th>E</th><th>Var</th></tr></thead>
+  <tbody>
+    <tr><td>one fair die</td><td>7/2</td><td>35/12</td></tr>
+    <tr><td>sum of two dice</td><td>7</td><td>35/6</td></tr>
+    <tr><td>max of two dice</td><td>161/36</td><td>2555/1296</td></tr>
+    <tr><td>indicator, P(A) = <i>p</i></td><td><i>p</i></td><td><i>p</i>(1 − <i>p</i>)</td></tr>
+    <tr><td>bet: +5 w.p. 1/6, −1 w.p. 5/6</td><td>0</td><td>5</td></tr>
+  </tbody>
+</table></div>
