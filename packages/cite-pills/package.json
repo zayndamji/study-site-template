@@ -1,0 +1,20 @@
+{
+  "name": "cite-pills",
+  "title": "Citation pills",
+  "description": "Textbook-style citations (\"Ex 1.2 · p. 42\") as small pills with an icon, optionally linking to the page in a PDF.",
+  "category": "sources",
+  "version": "1.0.0",
+  "requires": [],
+  "css": ["cite-pills.css"],
+  "js": ["cite-pills.js"],
+  "options": {
+    "icon": { "default": "book", "description": "Icon before each pill and the section source line: \"book\", \"page\" or \"none\"." },
+    "pageLabel": { "default": "p. {page}", "description": "Text added after the citation when it has data-page; {page} is replaced. Empty = no page text." },
+    "title": { "default": "Source, page {page}", "description": "Tooltip of pills with a page; {page} and {pdfPage} are replaced. Empty = none." },
+    "offset": { "default": 0, "description": "Added to a numeric data-page to get {pdfPage} (the PDF's page index when printed page numbers do not start at 1). An element's data-pdf-page wins." },
+    "href": { "default": null, "description": "null, or a link template such as \"source.pdf#page={pdfPage}\" (fields {page} {pdfPage}); when set, pills with a page become links." },
+    "newTab": { "default": true, "description": "Open pill links in a new tab." },
+    "sourcePill": { "default": true, "description": "Also style the section source line (p.src under each h2) as a pill with the same icon." },
+    "sources": { "default": {}, "description": "Several sources: {\"id\": {icon, pageLabel, title, offset, href}} overrides for elements with data-source=\"id\"." }
+  }
+}

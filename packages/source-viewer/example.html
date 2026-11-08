@@ -1,0 +1,22 @@
+<!-- source-viewer demo. The images live in demo/static/assets/sources/ (placeholder cards):
+     deck "A" is one file per frame, deck "demos" is sprite sheets of 2x2 frames.
+     data-sv-page="demo" pins the page id used by the auto pattern ("{page}s" -> "demos"),
+     so the demo works whatever id the demo page gets. In real notes leave it out: the
+     page id from body[data-page] is used. -->
+<section class="note" id="sv-auto" data-sv-page="demo">
+  <h2><span class="n">01</span> Citations found in the text</h2>
+  <p class="src">Source: s1–3 · s5</p>
+  <p>Inside the elements matched by the <code>selectors</code> option, text such as <code>s2</code> or <code>s2–4</code> becomes a chip. Click one to see the cited frame; use Prev/Next or the ← / → keys to look around it, Esc to close.</p>
+  <div class="box def"><span class="lbl">Definition · Widget</span>
+    <p>A <span class="term">widget</span> is a placeholder thing used to show the format. <span class="ref">s4</span></p>
+  </div>
+  <blockquote class="quote"><p>A short passage copied word for word from the source.</p><cite>Deck B, s6</cite></blockquote>
+  <p>Text outside those elements stays plain: s2 here is not a chip, and neither is <span class="ref">items2 or s2x</span>.</p>
+</section>
+<section class="note" id="sv-explicit" data-sv-page="demo">
+  <h2><span class="n">02</span> Explicit chips</h2>
+  <p>Write a chip by hand when the text should not follow a pattern:
+    <button class="sv-chip" data-deck="A" data-from="2" data-to="3" data-prefix="s">Deck A, frames 2–3</button>, or a single frame
+    <span class="sv-ref" data-deck="A" data-from="4">the last frame</span> (a <code>span.sv-ref</code> is upgraded to a button).
+    A deck name may use <code>{page}</code>: <button class="sv-chip" data-deck="{page}s" data-from="6">s6</button>.</p>
+</section>
