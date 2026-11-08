@@ -1,0 +1,36 @@
+{
+ "decks": {
+  "01s": {
+   "n": 13,
+   "w": 960,
+   "h": 540,
+   "pattern": "{deck}/{n:03}.webp",
+   "label": "Lecture 01 slides",
+   "prefix": "s"
+  },
+  "02s": {
+   "n": 13,
+   "w": 960,
+   "h": 540,
+   "pattern": "{deck}/{n:03}.webp",
+   "label": "Lecture 02 slides",
+   "prefix": "s"
+  },
+  "03s": {
+   "n": 13,
+   "w": 960,
+   "h": 540,
+   "pattern": "{deck}/{n:03}.webp",
+   "label": "Lecture 03 slides",
+   "prefix": "s"
+  },
+  "04s": {
+   "n": 11,
+   "w": 960,
+   "h": 540,
+   "pattern": "{deck}/{n:03}.webp",
+   "label": "Lecture 04 slides",
+   "prefix": "s"
+  }
+ }
+}
