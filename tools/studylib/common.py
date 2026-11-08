@@ -73,6 +73,19 @@ DEFAULTS = {
         'showRange': True,
         'emptyText': 'No matching pages.',
     },
+    'labels': {
+        'theme': 'Theme: ', 'themeTitle': 'Colour theme: {mode}',
+        'themeSystem': 'System', 'themeLight': 'Light', 'themeDark': 'Dark',
+        'reviewMark': 'Mark section as reviewed', 'reviewDone': '\u2713 Reviewed',
+        'progress': '{done} / {total} sections reviewed',
+        'stepBack': 'Back', 'stepNext': 'Next step', 'stepAll': 'Show all', 'stepStatus': 'Step {k} of {n}',
+        'quizReset': 'Reset', 'quizCorrect': 'Correct', 'quizWrong': 'Not quite',
+        'quizScore': '{right} / {answered} correct \u00b7 {left} left', 'quizCount': '{n} questions',
+        'quizCountOne': '1 question',
+        'skipLink': 'Skip to content', 'switchPage': 'Switch page', 'searchLabel': 'Search pages',
+        'filterLabel': 'Filter pages', 'showEverything': 'Show everything',
+        'matches': '{n} matching pages', 'matchesOne': '1 matching page',
+    },
     'kinds': {},
     'groups': [],
     'pages': [],
@@ -261,6 +274,8 @@ def resolve_packages(cfg: dict, site_dir: Path, warn) -> list:
         pkg = Package(name, path, meta, opts)
         hp = path / meta.get('build', 'build.py')
         if meta.get('build') is not False and hp.exists():
+            if str(path) not in sys.path:
+                sys.path.insert(0, str(path))  # lets build.py import helper modules beside it
             spec = importlib.util.spec_from_file_location('study_pkg_' + re.sub(r'\W', '_', name), hp)
             mod = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(mod)

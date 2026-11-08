@@ -30,6 +30,10 @@
   let booted = false;
   const readyQueue = [];
 
+  const L = Object.assign({}, data.config.labels || {});
+  const t = (key, vals) => String(L[key] === undefined ? key : L[key]).replace(/\{(\w+)\}/g, (m, k) => (vals && vals[k] !== undefined ? vals[k] : m));
+  const $$ = (rootEl, sel) => [...((rootEl && rootEl.matches && rootEl.matches(sel)) ? [rootEl] : []), ...(rootEl || document).querySelectorAll(sel)];
+
   const store = {
     key: (k) => prefix + k,
     get(k, d) { try { const v = localStorage.getItem(prefix + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
@@ -60,6 +64,8 @@
     page: null,
     store,
     h,
+    t,
+    $$,
     on(evt, fn) { bus.addEventListener(evt, (e) => fn(e.detail)); },
     emit(evt, detail) { bus.dispatchEvent(new CustomEvent(evt, { detail })); },
     options(name) { return (data.packages && data.packages[name]) || {}; },
@@ -82,7 +88,8 @@
   applyTheme(theme);
   function bindTheme() {
     document.querySelectorAll('[data-theme-toggle]').forEach((b) => {
-      const label = () => { b.innerHTML = '<span class="theme-prefix">Theme: </span>' + theme[0].toUpperCase() + theme.slice(1); b.title = 'Colour theme: ' + theme; };
+      const name = (m) => t('theme' + m[0].toUpperCase() + m.slice(1));
+      const label = () => { b.textContent = ''; b.append(h('span', { class: 'theme-prefix', text: t('theme') }), name(theme)); b.title = t('themeTitle', { mode: name(theme) }); };
       label();
       b.addEventListener('click', () => {
         theme = theme === 'system' ? 'light' : theme === 'light' ? 'dark' : 'system';
@@ -129,7 +136,7 @@
         const sync = () => {
           const on = reviewed.has(s.id);
           btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-          btn.textContent = on ? '✓ Reviewed' : 'Mark section as reviewed';
+          btn.textContent = on ? t('reviewDone') : t('reviewMark');
           a.classList.toggle('done', on);
         };
         btn.addEventListener('click', () => {
@@ -146,7 +153,7 @@
       const done = reviewable.filter((s) => reviewed.has(s.id)).length;
       store.set('total:' + unit, reviewable.length);
       if (prog) {
-        prog.querySelector('.txt').textContent = done + ' / ' + reviewable.length + ' sections reviewed';
+        prog.querySelector('.txt').textContent = t('progress', { done, total: reviewable.length });
         prog.querySelector('.meter > span').style.width = (reviewable.length ? 100 * done / reviewable.length : 0) + '%';
       }
     }
@@ -175,10 +182,10 @@
       if (!items.length) return;
       let k = 1;
       const bar = h('div', { class: 'controls' });
-      bar.innerHTML = '<button type="button" class="btn" data-a="back">Back</button>' +
-        '<button type="button" class="btn primary" data-a="next">Next step</button>' +
-        '<button type="button" class="btn" data-a="all">Show all</button>' +
-        '<span class="status" aria-live="polite"></span>';
+      bar.append(h('button', { type: 'button', class: 'btn', 'data-a': 'back', text: t('stepBack') }),
+        h('button', { type: 'button', class: 'btn primary', 'data-a': 'next', text: t('stepNext') }),
+        h('button', { type: 'button', class: 'btn', 'data-a': 'all', text: t('stepAll') }),
+        h('span', { class: 'status', 'aria-live': 'polite' }));
       st.appendChild(bar);
       const status = bar.querySelector('.status');
       function render() {
@@ -186,7 +193,7 @@
         bar.querySelector('[data-a=back]').disabled = k <= 1;
         bar.querySelector('[data-a=next]').disabled = k >= items.length;
         bar.querySelector('[data-a=all]').disabled = k >= items.length;
-        status.textContent = 'Step ' + k + ' of ' + items.length;
+        status.textContent = t('stepStatus', { k, n: items.length });
       }
       bar.addEventListener('click', (e) => {
         const b = e.target.closest('button'); if (!b) return;
@@ -208,7 +215,7 @@
       const qs = [...qz.querySelectorAll('.q')];
       const head = qz.querySelector('.quiz-head');
       const score = h('span', { class: 'score' });
-      const reset = h('button', { type: 'button', class: 'btn', text: 'Reset' });
+      const reset = h('button', { type: 'button', class: 'btn', text: t('quizReset') });
       if (head) { head.appendChild(score); head.appendChild(reset); }
       function show(q, picked) {
         const ans = q.dataset.answer;
@@ -222,13 +229,13 @@
         if (!fb) return;
         fb.hidden = false;
         const ex = q.querySelector('template.q-explain');
-        fb.innerHTML = '<span class="verdict ' + (ok ? 'ok' : 'no') + '">' + (ok ? 'Correct' : 'Not quite') + '</span>' + (ex ? ex.innerHTML : '');
+        fb.innerHTML = '<span class="verdict ' + (ok ? 'ok' : 'no') + '">' + (ok ? t('quizCorrect') : t('quizWrong')) + '</span>' + (ex ? ex.innerHTML : '');
         Study.enhance(fb);
       }
       function tally() {
         const n = Object.keys(saved).length;
         const right = qs.filter((q, i) => saved[i] === q.dataset.answer).length;
-        score.textContent = n ? right + ' / ' + n + ' correct · ' + (qs.length - n) + ' left' : qs.length + (qs.length === 1 ? ' question' : ' questions');
+        score.textContent = n ? t('quizScore', { right, answered: n, left: qs.length - n }) : (qs.length === 1 ? t('quizCountOne') : t('quizCount', { n: qs.length }));
       }
       qs.forEach((q, i) => {
         q.querySelectorAll('.q-opts button').forEach((b) => {
@@ -280,7 +287,7 @@
         g.hidden = !visible; count += visible;
       });
       if (empty) empty.hidden = count > 0;
-      if (status) status.textContent = count + (count === 1 ? ' matching page' : ' matching pages');
+      if (status) status.textContent = count === 1 ? t('matchesOne') : t('matches', { n: count });
       Study.emit('home:filter', { query, filter, count });
     }
     search.addEventListener('input', render);

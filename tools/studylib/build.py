@@ -52,6 +52,10 @@ class Ctx:
                 return p.options.get(key, default)
         return default
 
+    def label(self, key):
+        """A core reader-facing string from site.json "labels"."""
+        return self.config.get('labels', {}).get(key, '')
+
     def has(self, pkg):
         return any(p.name == pkg for p in self.packages)
 
@@ -156,7 +160,7 @@ class Ctx:
         foot = footer if footer is not None else esc(fmt(site.get('footer'), site=site['title']))
         return ('<!doctype html>\n'
                 f'<html lang="{esc(site.get("lang", "en"))}">\n<head>\n' + '\n'.join(head_bits) + '\n</head>\n'
-                f'<body {" ".join(attrs)}>\n<a class="skip-link" href="#main">Skip to content</a>\n'
+                f'<body {" ".join(attrs)}>\n<a class="skip-link" href="#main">{esc(self.label("skipLink"))}</a>\n'
                 f'{topbar}\n{body}\n<footer class="page">{foot}</footer>\n</body>\n</html>\n')
 
     def render_brand(self):
@@ -190,8 +194,9 @@ class Ctx:
             opts.append(f'<option value="{esc(p["href"])}"{sel}{dis}>{esc(fmt(nav["pickerOption"], **vals))}</option>')
         if group is not None:
             opts.append('</optgroup>')
-        return ('<label class="page-picker"><span class="sr-only">Switch page</span>'
-                f'<select aria-label="Switch page">{"".join(opts)}</select></label>')
+        sw = esc(self.label('switchPage'))
+        return (f'<label class="page-picker"><span class="sr-only">{sw}</span>'
+                f'<select aria-label="{sw}">{"".join(opts)}</select></label>')
 
     def render_prevnext(self, page):
         nav = self.config['nav']
@@ -222,7 +227,7 @@ class Ctx:
         if extra:
             bits.append(extra)
         bits.append(self.render_prevnext(page))
-        bits.append('<button class="btn" type="button" data-theme-toggle>Theme</button>')
+        bits.append(f'<button class="btn" type="button" data-theme-toggle>{esc(self.label("theme").strip(": ") or "Theme")}</button>')
         return '<header class="topbar">' + ''.join(b for b in bits if b) + '</header>'
 
 
@@ -265,8 +270,9 @@ def favicon_svg(cfg):
 
 def browser_options(pkg):
     """Options shipped to the browser: everything except options marked "private": true."""
-    hidden = {k for k, v in pkg.meta['options'].items() if isinstance(v, dict) and v.get('private')}
-    return {k: v for k, v in pkg.options.items() if k not in hidden}
+    declared = pkg.meta['options']
+    hidden = {k for k, v in declared.items() if isinstance(v, dict) and v.get('private')}
+    return {k: v for k, v in pkg.options.items() if k in declared and k not in hidden}
 
 
 def bundle(ctx: Ctx):
@@ -280,6 +286,7 @@ def bundle(ctx: Ctx):
             'siteTitle': cfg['site']['title'],
             'storagePrefix': cfg['site']['storagePrefix'],
             'defaultTheme': cfg['site'].get('defaultTheme', 'system'),
+            'labels': cfg.get('labels', {}),
             'kinds': {n: {k: v for k, v in kd.items() if k in ('noun', 'plural', 'short', 'review')}
                       for n, kd in ctx.kinds.items()},
         },
@@ -333,6 +340,7 @@ def render_unit(ctx: Ctx, page):
     headbits.append(f'<h1>{title}</h1>')
     if lede:
         headbits.append(f'<p class="lede">{lede}</p>')
+    headbits += ctx.call('page_head', page)
     headbits.append('</header>')
     head = '\n'.join(styles)
     for s in meta.get('styles', []):
@@ -361,7 +369,7 @@ def render_home(ctx: Ctx):
     tools = []
     if home.get('search', True):
         tools.append(f'<label class="search">{SEARCH_ICON}<input type="search" id="catalog-search" '
-                     f'placeholder="{esc(home.get("searchPlaceholder"))}" aria-label="Search pages" autocomplete="off">'
+                     f'placeholder="{esc(home.get("searchPlaceholder"))}" aria-label="{esc(ctx.label("searchLabel"))}" autocomplete="off">'
                      '<kbd aria-hidden="true">/</kbd></label>')
     sections, rendered, rendered_kinds = [], set(), set()
     for gi, g in enumerate(ctx.groups):
@@ -407,7 +415,7 @@ def render_home(ctx: Ctx):
     if len(buttons) > 1:
         b = [f'<button type="button" data-filter="all" aria-pressed="true">{esc(home.get("allLabel"))}</button>']
         b += [f'<button type="button" data-filter="{esc(i)}" aria-pressed="false">{esc(t)}</button>' for i, t in buttons]
-        tools.append('<nav class="group-filters" aria-label="Filter pages">' + ''.join(b) + '</nav>')
+        tools.append(f'<nav class="group-filters" aria-label="{esc(ctx.label("filterLabel"))}">' + ''.join(b) + '</nav>')
 
     tools += ctx.call('home_tools')
     main = (f'<h1 class="sr-only">{esc(cfg["site"]["title"])}</h1>\n'
@@ -416,7 +424,7 @@ def render_home(ctx: Ctx):
             '<p class="sr-only" id="search-status" role="status" aria-live="polite"></p>\n'
             '<div class="catalog">\n' + '\n'.join(sections) + '\n</div>\n'
             f'<div id="empty-state" class="empty-state" hidden><p>{esc(home.get("emptyText"))}</p>'
-            '<button class="btn" type="button" id="clear-search">Show everything</button></div>')
+            f'<button class="btn" type="button" id="clear-search">{esc(ctx.label("showEverything"))}</button></div>')
     main += ''.join(ctx.call('home_after'))
     doc = ctx.render_document(title=cfg['site']['title'], main=main, kind='home', rail=False, body_class='home')
     # the home page uses a full-width main instead of the reading column
