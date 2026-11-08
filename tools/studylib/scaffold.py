@@ -26,7 +26,10 @@ def _copy_tree(src: Path, dst: Path, page_id: str):
             continue
         rel = Path(*[part.replace('{id}', page_id) for part in f.relative_to(src).parts])
         (dst / rel).parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(f, dst / rel)
+        if f.suffix in ('.html', '.json', '.js', '.css', '.md', '.txt'):
+            (dst / rel).write_text(f.read_text(encoding='utf-8').replace('{id}', page_id), encoding='utf-8')
+        else:
+            shutil.copy2(f, dst / rel)
 
 
 def new_site(dest: Path, title='Study Notebook', noun='Unit', demo=False, template_rel=None):

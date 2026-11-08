@@ -89,7 +89,9 @@ def cmd_packages(a):
 
 
 def cmd_info(a):
-    p = PACKAGES_DIR / a.package
+    from studylib.common import find_package, load_config
+    site = Path(a.site).resolve() if a.site else None
+    p = find_package(a.package, site, load_config(site) if site else None) or PACKAGES_DIR / a.package
     if not (p / 'package.json').exists():
         raise StudyError(f'no package "{a.package}"; run `study.py packages` to list them')
     m = read_package_meta(p)
@@ -143,6 +145,7 @@ def main(argv=None):
     p.set_defaults(fn=cmd_packages)
     i = sub.add_parser('info', help="show a package's options")
     i.add_argument('package')
+    i.add_argument('--site', default=None, help="also look in this site's packages/ folder")
     i.set_defaults(fn=cmd_info)
     s = sub.add_parser('serve', help='serve the built site')
     s.add_argument('site', nargs='?', default='.')

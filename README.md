@@ -5,9 +5,6 @@ with a section rail, review progress, quizzes, step-by-step derivations, interac
 searchable home page. Static HTML/CSS/JS, no framework, no runtime dependencies; the build tool needs
 only Python 3.9+.
 
-It is built to be used by **AI agents** as much as by people: one config file, plain-HTML content
-files, small documented packages, a scaffold command and a checker that says exactly what is wrong.
-
 ## Quick start
 
 ```bash

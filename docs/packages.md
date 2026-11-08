@@ -91,6 +91,7 @@ Rules:
 - **Prefix CSS classes and storage keys** with something owned by the package
   (e.g. `.sv-` for source-viewer, `Study.store.set('summaries:filter', …)`). The
   core already prefixes all keys with the site's `storagePrefix`.
+- In `enhance(root)`, use `Study.$$(root, selector)` (also matches `root` itself). Core reader-facing text comes from `site.json` → `labels`; read it with `Study.t(key, vals)`.
 - **Use the core tokens** (`var(--term)`, `var(--rule)`, …) so themes and dark
   mode work. Provide print rules where it matters.
 - **No external network requests** and no libraries from CDNs. Vanilla JS only.
@@ -105,9 +106,10 @@ package's merged options) first.
 | Hook | Called | Return |
 |---|---|---|
 | `configure(ctx, opts)` | once, before pages are read; may edit `ctx.config` (e.g. add a page kind to `ctx.config['kinds']`, set `ctx.config['nav']['showPlanned']`) | — |
-| `head(ctx, opts, page)` | per document; `page` is `None` for home and package pages | HTML for `<head>` |
+| `head(ctx, opts, page)` | per document (validate options in `configure`, not here); `page` is `None` for home and package pages | HTML for `<head>` |
 | `topbar(ctx, opts, page)` | per document | HTML inserted before Prev/Next |
 | `content(ctx, opts, page, html)` | per unit page, before layout | the new body HTML |
+| `page_head(ctx, opts, page)` | per unit page, inside its title block after the lede | HTML |
 | `home_intro(ctx, opts)` | home page intro line | HTML |
 | `home_tools(ctx, opts)` | home page toolbar (after search and filters) | HTML |
 | `home_row(ctx, opts, page, row)` | every catalog entry; `row` is the default `<li>` or `None` for pages that are not `ready` | replacement HTML, or `None` to keep `row` |
