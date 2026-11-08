@@ -1,0 +1,2 @@
+/* Site-wide styles for this site. Bundled after the core and packages, so rules here win.
+   Prefer the core tokens: var(--term), var(--rule), var(--surface), var(--muted)… */

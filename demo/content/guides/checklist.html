@@ -1,0 +1,32 @@
+<!--page {"lede": "A short list of questions to ask yourself before, during and after a probability problem. Most wrong answers skip one of them.", "fidelityLegend": false} -->
+<section class="note" id="before">
+  <h2>Before you calculate</h2>
+  <ol>
+    <li><strong>What is the experiment?</strong> Describe one run of it in a sentence: “roll two dice”, “draw three cards without replacement”.</li>
+    <li><strong>What is one outcome?</strong> Write two or three outcomes explicitly. Decide whether order matters and whether repeats are allowed.</li>
+    <li><strong>Are the outcomes equally likely?</strong> Only then may you count: <span class="m">P(<i>E</i>) = |<i>E</i>| / |Ω|</span>. The sums of two dice are <em>not</em> equally likely; the 36 ordered pairs are.</li>
+    <li><strong>Which event is asked for, exactly?</strong> Translate “at least one”, “exactly one”, “given that” into set language before computing.</li>
+  </ol>
+</section>
+
+<section class="note" id="during">
+  <h2>While you calculate</h2>
+  <ol>
+    <li><strong>Is the complement easier?</strong> “At least one” is usually <span class="m">1 − P(none)</span>.</li>
+    <li><strong>Are you multiplying probabilities?</strong> Then you are assuming independence, or you need conditional probabilities: <span class="m">P(<i>A</i> ∩ <i>B</i>) = P(<i>A</i>) P(<i>B</i> | <i>A</i>)</span>.</li>
+    <li><strong>Are you adding probabilities?</strong> Then the events must not overlap, or you must subtract the overlap.</li>
+    <li><strong>Is there a base rate?</strong> For “given a positive test…” questions, write down how common the condition is before anything else.</li>
+    <li><strong>Can linearity help?</strong> An expected count is a sum of indicator variables, whether or not they are independent.</li>
+  </ol>
+  <div class="pitfall"><span class="lbl">Pitfall</span><p><span class="m">P(<i>A</i> | <i>B</i>)</span> and <span class="m">P(<i>B</i> | <i>A</i>)</span> are different numbers. Swapping them is the most common error in the subject.</p></div>
+</section>
+
+<section class="note" id="after">
+  <h2>After you calculate</h2>
+  <ol>
+    <li><strong>Is the answer between 0 and 1?</strong> An expected value need not be, but a probability must.</li>
+    <li><strong>Does an extreme case agree?</strong> Set a parameter to 0 or 1, or the group size to 1, and check the formula gives the obvious answer.</li>
+    <li><strong>Does a simulation agree?</strong> Most widgets in these notes can sample; a few hundred runs catch most mistakes.</li>
+    <li><strong>Would you bet on it?</strong> If the number surprises you, find the step where your intuition and the calculation part ways — that step is the lesson.</li>
+  </ol>
+</section>

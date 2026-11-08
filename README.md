@@ -5,6 +5,9 @@ with a section rail, review progress, quizzes, step-by-step derivations, interac
 searchable home page. Static HTML/CSS/JS, no framework, no runtime dependencies; the build tool needs
 only Python 3.9+.
 
+**Live demo:** the [Probability Notebook](https://zayndamji.github.io/study-site-template/) — original notes on introductory
+probability that use every package. Its source is in [`demo/`](demo/).
+
 ## Quick start
 
 ```bash
@@ -13,7 +16,7 @@ python3 tools/study.py build ../my-notebook
 python3 tools/study.py serve ../my-notebook          # http://localhost:8000/
 ```
 
-See every component and package working:
+See every component and package on placeholder pages (handy for testing):
 
 ```bash
 python3 tools/study.py new /tmp/demo --demo && python3 tools/study.py serve /tmp/demo

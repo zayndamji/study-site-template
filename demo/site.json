@@ -1,0 +1,74 @@
+{
+  "$schema": "../schema/site.schema.json",
+  "template": "..",
+  "site": {
+    "title": "Probability Notebook",
+    "brand": { "open": "{", "close": "}" },
+    "description": "A demo study notebook for introductory probability, built with study-site-template.",
+    "storagePrefix": "probability-notebook:",
+    "footer": "Probability Notebook · a study-site-template demo"
+  },
+  "theme": {
+    "tokens": {
+      "light": { "--term": "#0f6b5c", "--term-soft": "#e2f3ef" },
+      "dark": { "--term": "#6fd6c2", "--term-soft": "#12302b" }
+    }
+  },
+  "home": {
+    "intro": {
+      "eyebrow": "Introductory probability",
+      "tagline": "From counting outcomes to the law of large numbers."
+    },
+    "searchPlaceholder": "Find a lecture, guide or topic…"
+  },
+  "kinds": {
+    "unit": {
+      "noun": "Lecture", "short": "L",
+      "file": "lecture-{id}.html", "source": "lectures/{id}.html"
+    }
+  },
+  "groups": [
+    { "id": "foundations", "title": "Foundations", "note": "events, counting, conditioning" },
+    { "id": "random-variables", "title": "Random variables", "note": "averages and repeated trials" },
+    { "id": "help", "title": "Guides" }
+  ],
+  "pages": [
+    { "id": "01", "title": "Outcomes, events and counting", "label": "Outcomes & counting",
+      "description": "Sample spaces, events, equally likely outcomes, the multiplication rule, permutations and combinations",
+      "group": "foundations", "keywords": "sample space dice cards choose" },
+    { "id": "02", "title": "Conditional probability and Bayes’ rule", "label": "Conditional probability & Bayes",
+      "description": "Conditioning, the multiplication rule for events, independence, total probability, Bayes’ rule and base rates",
+      "group": "foundations", "keywords": "independence diagnostic test" },
+    { "id": "03", "title": "Random variables and expectation", "label": "Random variables & expectation",
+      "description": "Random variables, distributions, joint distributions, expected value, linearity, variance",
+      "group": "random-variables", "keywords": "mean variance pmf" },
+    { "id": "04", "title": "Repeated trials and the law of large numbers", "label": "Binomial & the law of large numbers",
+      "description": "Bernoulli trials, the binomial distribution, running averages and the law of large numbers",
+      "group": "random-variables", "keywords": "coin flips binomial convergence" },
+    { "id": "05", "title": "Continuous random variables", "status": "planned", "group": "random-variables" },
+    { "id": "06", "title": "The central limit theorem", "status": "planned", "group": "random-variables" },
+    { "id": "reading", "kind": "guide", "title": "How to read these notes", "group": "help",
+      "description": "What every marker, chip, fold and button on these pages means" },
+    { "id": "checklist", "kind": "guide", "title": "Problem-solving checklist", "group": "help",
+      "description": "Questions to ask before, during and after a probability problem" }
+  ],
+  "packages": {
+    "one-minute": {},
+    "focus-layout": {},
+    "summaries": { "require": true, "kinds": ["unit"], "extraLinks": [{ "label": "Self-test", "anchor": "selftest" }] },
+    "fidelity": { "legend": true, "beyondLabel": "Beyond the slides" },
+    "source-viewer": {},
+    "cite-pills": { "href": "reader.pdf#page={pdfPage}" },
+    "worked-examples": {},
+    "widget-presets": {},
+    "math-kit": {},
+    "plot-2d": {},
+    "view-3d": {},
+    "home-progress": {},
+    "resume-link": {},
+    "topic-details": {},
+    "coming-later": {},
+    "resources": {},
+    "privacy": { "forbid": ["DRAFT-ONLY"], "noindex": false }
+  }
+}
