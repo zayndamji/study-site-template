@@ -46,6 +46,7 @@ def new_site(dest: Path, title='Study Notebook', noun='Unit', demo=False, templa
         tpath = rel if rel.count('..') <= 2 else str(TEMPLATE_DIR)
     lower = noun.lower()
     cfg = {
+        '$schema': str(Path(tpath) / 'schema' / 'site.schema.json'),
         'template': tpath,
         'site': {'title': title, 'brand': {'open': '[', 'close': ']'}, 'description': '',
                  'storagePrefix': _slug(title) + ':'},
