@@ -23,7 +23,7 @@
   },
   "kinds": {
     "unit": {
-      "noun": "Lecture", "short": "L",
+      "noun": "Lecture",
       "file": "lecture-{id}.html", "source": "lectures/{id}.html"
     }
   },

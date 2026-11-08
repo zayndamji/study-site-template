@@ -1,0 +1,26 @@
+{"pages": [
+ {"heading": "1.1 Sample spaces and events",
+  "paragraphs": [
+   "Probability starts with a model of an experiment: anything whose result we cannot predict in advance, such as rolling dice, dealing cards or drawing a name from a hat. Each possible result is an outcome, and the set of all outcomes is the sample space, written Ω.",
+   "Choosing Ω well is half the work. For two dice it pays to imagine one red die and one blue die, so that an outcome is an ordered pair (i, j): red shows i, blue shows j. There are 6 · 6 = 36 such pairs. If we recorded only the unordered result, such as “a one and a six”, there would be 21 results, but they would not be equally likely, because a one and a six can happen in two ways and a double in only one.",
+   "An event is a subset of Ω: a collection of outcomes, described by a property such as “the sum is 7”. The event happens when the outcome of the experiment belongs to it.",
+   "Events combine like sets. The complement E′ contains the outcomes not in E. The union E ∪ F contains the outcomes in at least one of E and F, and the intersection E ∩ F the outcomes in both. Two events are disjoint when their intersection is empty, so they can never happen together."]},
+ {"heading": "1.2 Equally likely outcomes and the axioms",
+  "paragraphs": [
+   "When Ω is finite and there is no reason to prefer one outcome to another, as with fair dice or a well-shuffled deck, we give every outcome the same probability 1/|Ω|. The probability of an event is then the fraction of outcomes it contains: P(E) = |E| / |Ω|. For two dice, six of the 36 pairs have sum 7, so P(sum is 7) = 6/36 = 1/6.",
+   "Not every experiment has equally likely outcomes, so probability in general is defined by three axioms. Probabilities are never negative; the whole sample space has probability 1; and the probability of a union of disjoint events is the sum of their probabilities. The counting formula satisfies all three.",
+   "Everything else follows from the axioms. Since E and E′ are disjoint and together make up Ω, P(E) + P(E′) = 1, which is the complement rule. Taking E = Ω gives P(∅) = 0.",
+   "For events that overlap, adding P(E) and P(F) counts the outcomes in E ∩ F twice, so we subtract them once: P(E ∪ F) = P(E) + P(F) − P(E ∩ F). This is inclusion–exclusion for two events. With two dice, “at least one six” has 11 outcomes, “doubles” has 6, and they share only (6, 6), so the union has 11 + 6 − 1 = 16 outcomes."]},
+ {"heading": "1.3 The multiplication rule and permutations",
+  "paragraphs": [
+   "Equally likely outcomes turn probability into counting, and most counting rests on one principle. If a task is done in steps, and the number of ways to do each step does not depend on how the earlier steps were done, then the number of ways to do the whole task is the product of the numbers for the steps.",
+   "A four-digit lock code has 10 choices for each digit, so 10⁴ = 10,000 codes. Four rolls of a die give 6⁴ = 1296 sequences. Only the number of choices must stay fixed; which choices are available may change from step to step.",
+   "Putting n different objects in a row is a task in n steps, with n choices for the first place, n − 1 for the second and so on, so there are n! orderings. Choosing an ordered list of k objects from n, with no repeats, stops after k steps: n · (n − 1) · … · (n − k + 1) = n! / (n − k)!. We write this nPk. Gold, silver and bronze among eight runners can go in 8 · 7 · 6 = 336 ways.",
+   "The rule also counts complements. The four rolls with no six number 5⁴ = 625, so the probability of at least one six is 1 − 625/1296 = 671/1296, a little over one half."]},
+ {"heading": "1.4 Combinations, and a look ahead",
+  "paragraphs": [
+   "Often order does not matter: a committee, a hand of cards, a set of lottery numbers. Each unordered selection of k objects can be listed in k! orders, so the ordered count is k! times the unordered one. Dividing, the number of ways to choose k of n objects is nCk = n! / (k! (n − k)!), also written C(n, k) and read “n choose k”.",
+   "A committee of three from ten people can be chosen in C(10, 3) = 120 ways, and a five-card hand from a 52-card deck in C(52, 5) = 2,598,960 ways. Choosing who is in a selection is the same as choosing who is left out, so C(n, k) = C(n, n − k).",
+   "Counting answers surprising questions. In a group of n people, ignoring leap days and assuming all 365 birthdays equally likely, the chance that all birthdays differ is 365 · 364 · … · (365 − n + 1) / 365ⁿ, by the multiplication rule on top and bottom. The complement, at least one shared birthday, passes one half at n = 23.",
+   "The answer feels too large because we picture someone matching our own birthday. With 23 people there are C(23, 2) = 253 pairs, and any pair can match."]}
+]}

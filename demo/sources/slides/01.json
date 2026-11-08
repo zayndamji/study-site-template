@@ -1,0 +1,125 @@
+{
+ "title": "Lecture 01 slides",
+ "slides": [
+  {
+   "title": "Lecture 01 · Outcomes, events and counting",
+   "bullets": [
+    "Experiments, outcomes and sample spaces",
+    "Events, and how to combine them",
+    "Equally likely outcomes and the axioms of probability",
+    "Counting: the multiplication rule, permutations, combinations"
+   ]
+  },
+  {
+   "title": "Experiments and sample spaces",
+   "bullets": [
+    "An experiment is any process whose result is uncertain.",
+    "An outcome is one possible result of the experiment.",
+    "The sample space Ω is the set of all possible outcomes.",
+    "Two dice: Ω = {(i, j) : i, j ∈ {1, …, 6}}, so |Ω| = 36.",
+    "The dice are told apart: (1, 6) and (6, 1) are different outcomes."
+   ]
+  },
+  {
+   "title": "Events",
+   "bullets": [
+    "An event is a subset of the sample space.",
+    "The event E occurs when the outcome of the experiment lies in E.",
+    "Sum is 7: E = {(1, 6), (2, 5), (3, 4), (4, 3), (5, 2), (6, 1)}.",
+    "Ω itself is the certain event; the empty set ∅ is the impossible event."
+   ]
+  },
+  {
+   "title": "Combining events",
+   "bullets": [
+    "Complement E′: the outcomes not in E (E does not happen).",
+    "Union E ∪ F: the outcomes in E or F or both (at least one happens).",
+    "Intersection E ∩ F: the outcomes in both E and F (both happen).",
+    "E and F are disjoint when E ∩ F = ∅: they cannot happen together."
+   ]
+  },
+  {
+   "title": "Equally likely outcomes",
+   "bullets": [
+    "If Ω is finite and every outcome is equally likely, then P(E) = |E| / |Ω|.",
+    "Probability becomes counting: count the event, count the sample space.",
+    "Two dice: P(sum is 7) = 6/36 = 1/6.",
+    "Two dice: P(doubles) = 6/36 = 1/6."
+   ]
+  },
+  {
+   "title": "The axioms of probability",
+   "bullets": [
+    "Axiom 1: P(E) ≥ 0 for every event E.",
+    "Axiom 2: P(Ω) = 1.",
+    "Axiom 3: if E and F are disjoint, then P(E ∪ F) = P(E) + P(F).",
+    "Axiom 3 extends to any sequence of pairwise disjoint events."
+   ]
+  },
+  {
+   "title": "Consequences of the axioms",
+   "bullets": [
+    "Complement rule: P(E′) = 1 − P(E).",
+    "The impossible event: P(∅) = 0.",
+    "Every probability is at most 1: P(E) ≤ 1.",
+    "Monotonicity: if E ⊆ F, then P(E) ≤ P(F).",
+    "Inclusion–exclusion: P(E ∪ F) = P(E) + P(F) − P(E ∩ F)."
+   ]
+  },
+  {
+   "title": "The multiplication rule",
+   "bullets": [
+    "A task is done in k steps, with n₁ ways to do step 1, n₂ ways to do step 2, and so on.",
+    "If the number of ways for each step does not depend on the earlier choices,",
+    "then the whole task can be done in n₁ · n₂ · n₃ · … ways, one factor per step.",
+    "A 4-digit lock code: 10 · 10 · 10 · 10 = 10,000 possible codes.",
+    "Four rolls of a die: 6⁴ = 1296 equally likely sequences."
+   ]
+  },
+  {
+   "title": "Permutations",
+   "bullets": [
+    "n distinct objects can be put in order in n! = n · (n − 1) · … · 2 · 1 ways.",
+    "By convention 0! = 1.",
+    "Ordered selections of k from n: nPk = n · (n − 1) · … · (n − k + 1) = n! / (n − k)!.",
+    "Gold, silver and bronze among 8 runners: 8 · 7 · 6 = 336 ways."
+   ]
+  },
+  {
+   "title": "Combinations",
+   "bullets": [
+    "Unordered selections of k from n: nCk = n! / (k! (n − k)!).",
+    "Each unordered selection appears k! times among the ordered ones: nPk = k! · nCk.",
+    "A committee of 3 from 10 people: C(10, 3) = 120.",
+    "Symmetry: C(n, k) = C(n, n − k), since choosing who is in also chooses who is out."
+   ]
+  },
+  {
+   "title": "Counting with cards",
+   "bullets": [
+    "A standard deck has 52 cards: 4 suits of 13 ranks.",
+    "Five-card hands: C(52, 5) = 2,598,960, all equally likely after a fair shuffle.",
+    "Hands of a single suit: 4 · C(13, 5) = 5,148, probability ≈ 0.00198.",
+    "Hands holding all four aces: C(4, 4) · C(48, 1) = 48."
+   ]
+  },
+  {
+   "title": "At least one: count the complement",
+   "bullets": [
+    "P(at least one six in four rolls) = 1 − P(no six in four rolls).",
+    "No six: 5 choices for each roll, so 5⁴ = 625 of the 1296 sequences.",
+    "P(at least one six) = 1 − 625/1296 = 671/1296 ≈ 0.518.",
+    "Not 4 · 1/6: the events “six on roll i” overlap, so their probabilities do not add."
+   ]
+  },
+  {
+   "title": "Summary",
+   "bullets": [
+    "Model the experiment: a sample space Ω, and events as subsets of Ω.",
+    "Equally likely outcomes: P(E) = |E| / |Ω|.",
+    "Multiply the counts of the steps; divide out orderings you do not care about.",
+    "For “at least one”, count the complement."
+   ]
+  }
+ ]
+}

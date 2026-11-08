@@ -1,0 +1,498 @@
+<!--page {"lede": "Probability starts by listing what can happen. Once the outcomes are equally likely, every question becomes a counting question, and a handful of counting rules answer most of them.", "overview": ["An experiment’s <b>sample space</b> Ω is the set of all its outcomes; an <b>event</b> is a subset of Ω.", "Events combine like sets: the complement E′, the union E ∪ F and the intersection E ∩ F.", "With finitely many equally likely outcomes, <span class=\"m\">P(<i>E</i>) = |<i>E</i>| / |Ω|</span>: probability is counting.", "Three axioms imply the complement rule <span class=\"m\">P(<i>E</i>′) = 1 − P(<i>E</i>)</span> and inclusion–exclusion for two events.", "The multiplication rule counts step-by-step choices; <span class=\"m\"><i>n</i>!</span>, nPk and nCk count orderings and selections.", "For “at least one” questions, count the complement: P(at least one six in four rolls) = 671/1296."]} -->
+<style>
+.l01-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: var(--step--1); color: var(--muted); margin: 4px 0 8px; }
+.l01-sw { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: -2px; margin-right: 5px; border: 1px solid var(--rule); background: var(--surface); }
+.l01-sw.e { background: var(--term-soft); border-color: var(--term); }
+.l01-sw.f { outline: 2px dashed var(--warn-edge); outline-offset: -4px; }
+.l01-grid { display: grid; grid-template-columns: 1.6em repeat(6, minmax(0, 1fr)); gap: 4px; max-width: 400px; margin: 6px 0 10px; }
+.l01-grid .l01-h { font-size: var(--step--1); color: var(--muted); text-align: center; align-self: center; font-family: var(--f-math); }
+.l01-grid button { aspect-ratio: 1; min-width: 0; padding: 0; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--muted); font: inherit; font-size: var(--step--1); font-family: var(--f-math); cursor: pointer; }
+.l01-grid button.inE { background: var(--term-soft); border-color: var(--term); color: var(--ink); font-weight: 600; }
+.l01-grid button.inF { outline: 2px dashed var(--warn-edge); outline-offset: -5px; color: var(--ink); }
+.l01-grid button:focus-visible { box-shadow: 0 0 0 2px var(--term); }
+.l01-rows > div { margin: 2px 0; }
+.l01-big { overflow-wrap: anywhere; }
+.l01-dig { color: var(--muted); font-size: var(--step--1); }
+#l01-bplot { width: 100%; height: auto; display: block; margin: 6px 0; }
+.l01-key { font-size: var(--step--1); color: var(--muted); margin: 0 0 6px; }
+.l01-key .c1 { color: var(--term); font-weight: 600; }
+.l01-key .c2 { color: var(--bad); font-weight: 600; }
+</style>
+
+<section class="note" id="events">
+  <h2><span class="n">01</span> Outcomes, sample spaces and events</h2>
+  <p class="src">Slides s2–4 · <span class="cite" data-page="1">Reader §1.1</span></p>
+
+  <div class="key"><span class="lbl">The idea</span><p>Write down every possible outcome first. An event is then just a set of outcomes, and “E happens” means “the outcome landed in E”.</p></div>
+
+  <div class="box def"><span class="lbl">Definition · Sample space and event</span>
+    <p>An <span class="term">experiment</span> is a process with an uncertain result; each possible result is an <span class="term">outcome</span>. The <span class="term">sample space</span> Ω is the set of all outcomes.</p>
+    <blockquote class="quote"><p>An event is a subset of the sample space.</p><cite>s3</cite></blockquote>
+    <p>Events combine like sets: the <span class="term">complement</span> <span class="m"><i>E</i>′</span> (not <i>E</i>; many books write <i>E</i><sup>c</sup>), the <span class="term">union</span> <span class="m"><i>E</i> ∪ <i>F</i></span> (at least one happens), the <span class="term">intersection</span> <span class="m"><i>E</i> ∩ <i>F</i></span> (both happen). <i>E</i> and <i>F</i> are <span class="term">disjoint</span> when <span class="m"><i>E</i> ∩ <i>F</i> = ∅</span>.</p>
+  </div>
+
+  <p>For two dice, tell them apart (say the first is red and the second blue). An outcome is an ordered pair <span class="m">(<i>i</i>, <i>j</i>)</span>, and there are <span class="m">6 · 6 = 36</span> of them, one per cell of the grid below.</p>
+
+  <div class="widget" id="l01-dice">
+    <div class="lbl">Try it · Two dice event explorer</div>
+    <p class="how">Pick a preset, or click cells to add or remove outcomes. “Edit F” switches the clicks to a second event, so you can see unions and intersections.</p>
+    <div id="l01-dice-presets"></div>
+    <p class="preset-note" id="l01-dice-note" aria-live="polite" hidden></p>
+    <div class="controls">
+      <button class="btn" id="l01-modeE" aria-pressed="true">Edit E</button>
+      <button class="btn" id="l01-modeF" aria-pressed="false">Edit F</button>
+      <button class="btn" id="l01-flip">E → E′</button>
+      <button class="btn" id="l01-clearF">Clear F</button>
+      <button class="btn" id="l01-clear">Clear all</button>
+    </div>
+    <div class="l01-legend"><span><span class="l01-sw e"></span>in E</span><span><span class="l01-sw f"></span>in F</span><span>rows: first die · columns: second die</span></div>
+    <div class="l01-grid" id="l01-grid" role="group" aria-label="The 36 outcomes of two dice"></div>
+    <div class="out l01-rows" id="l01-dice-out" aria-live="polite"></div>
+  </div>
+  <script>
+  (function () {
+    const { F, str, fmt, $ } = Study.math;
+    const grid = $('l01-grid'), out = $('l01-dice-out');
+    const E = new Set(), FF = new Set(), cells = [];
+    let mode = 'E', nameE = '', nameF = '';
+    const key = (i, j) => i * 10 + j;
+    // header row: blank corner, then the second die's values
+    const head = (t) => { const s = document.createElement('span'); s.className = 'l01-h'; s.textContent = t; grid.appendChild(s); };
+    head('');
+    for (let j = 1; j <= 6; j++) head(String(j));
+    for (let i = 1; i <= 6; i++) {
+      head(String(i));
+      for (let j = 1; j <= 6; j++) {
+        const b = document.createElement('button');
+        b.type = 'button'; b.textContent = i + ',' + j; b.dataset.k = key(i, j);
+        b.addEventListener('click', () => {
+          const S = mode === 'E' ? E : FF, k = key(i, j);
+          if (S.has(k)) S.delete(k); else S.add(k);
+          if (mode === 'E') nameE = 'your own event'; else nameF = 'your own event';
+          row.clear('Your own events: click cells to add or remove outcomes.');
+          render();
+        });
+        grid.appendChild(b); cells.push(b);
+      }
+    }
+    const fill = (S, pred) => { S.clear(); if (!pred) return; for (let i = 1; i <= 6; i++) for (let j = 1; j <= 6; j++) if (pred(i, j)) S.add(key(i, j)); };
+    const pr = (k) => { const f = F(k, 36); return k + '/36' + (f.d !== 36 ? ' = ' + str(f) : '') + ' ≈ ' + fmt(k / 36, 3); };
+    const line = (label, k) => '<div><span class="k">' + label + '</span>' + k + ' outcome' + (k === 1 ? '' : 's') + ' · P = ' + pr(k) + '</div>';
+    function render() {
+      cells.forEach((b) => {
+        const k = Number(b.dataset.k), inE = E.has(k), inF = FF.has(k);
+        b.classList.toggle('inE', inE); b.classList.toggle('inF', inF);
+        b.setAttribute('aria-pressed', String(mode === 'E' ? inE : inF));
+        b.setAttribute('aria-label', '(' + Math.floor(k / 10) + ', ' + (k % 10) + ')' + (inE ? ', in E' : '') + (inF ? ', in F' : ''));
+      });
+      const e = E.size;
+      let html = '<div><span class="k">E</span>' + (nameE || '(empty)') + '</div>' + line('|E|', e) + line('|E′|', 36 - e) +
+        '<div><span class="k">check</span>P(E) + P(E′) = ' + e + '/36 + ' + (36 - e) + '/36 = 1</div>';
+      if (FF.size) {
+        const f = FF.size;
+        let both = 0; E.forEach((k) => { if (FF.has(k)) both++; });
+        const uni = e + f - both;
+        html += '<div><span class="k">F</span>' + (nameF || 'your own event') + '</div>' + line('|F|', f) + line('|E ∩ F|', both) + line('|E ∪ F|', uni) +
+          '<div><span class="k">incl.–excl.</span>P(E) + P(F) − P(E ∩ F) = ' + e + '/36 + ' + f + '/36 − ' + both + '/36 = ' + pr(uni) + '</div>' +
+          (both === 0 ? '<div><span class="k">note</span>E and F are disjoint, so P(E ∪ F) = P(E) + P(F).</div>' : '');
+      }
+      out.innerHTML = html;
+    }
+    function setMode(m) { mode = m; $('l01-modeE').setAttribute('aria-pressed', String(m === 'E')); $('l01-modeF').setAttribute('aria-pressed', String(m === 'F')); render(); }
+    $('l01-modeE').addEventListener('click', () => setMode('E'));
+    $('l01-modeF').addEventListener('click', () => setMode('F'));
+    $('l01-flip').addEventListener('click', () => {
+      const old = new Set(E); E.clear();
+      for (let i = 1; i <= 6; i++) for (let j = 1; j <= 6; j++) if (!old.has(key(i, j))) E.add(key(i, j));
+      nameE = nameE && nameE !== '(empty)' ? 'not (' + nameE + ')' : 'everything';
+      row.clear('E replaced by its complement: the two counts swap.'); render();
+    });
+    $('l01-clearF').addEventListener('click', () => { FF.clear(); nameF = ''; setMode('E'); });
+    $('l01-clear').addEventListener('click', () => { E.clear(); FF.clear(); nameE = nameF = ''; row.clear('Everything cleared: E = ∅ has probability 0.'); setMode('E'); });
+    const presets = [
+      { name: 'sum is 7', e: 'the sum is 7', E: (i, j) => i + j === 7,
+        note: 'Every value of the first die has exactly one partner that makes 7, so 6 of 36 outcomes: the anti-diagonal.' },
+      { name: 'doubles', e: 'doubles', E: (i, j) => i === j,
+        note: 'The diagonal: also 6 outcomes, so doubles are exactly as likely as a sum of 7.' },
+      { name: 'at least one six', e: 'at least one six', E: (i, j) => i === 6 || j === 6,
+        note: 'A row and a column of six cells each, sharing (6, 6): 6 + 6 − 1 = 11. The complement, no six, is the 5 × 5 block: 25.' },
+      { name: 'sum ≥ 10', e: 'the sum is at least 10', E: (i, j) => i + j >= 10,
+        note: 'Sums 10, 11, 12 take 3 + 2 + 1 = 6 outcomes, a small corner triangle.' },
+      { name: 'first die even', e: 'the first die is even', E: (i, j) => i % 2 === 0,
+        note: 'Three whole rows: 18 of 36, probability exactly 1/2. The second die does not matter.' },
+      { name: 'sum 7 vs doubles', e: 'the sum is 7', E: (i, j) => i + j === 7, f: 'doubles', F: (i, j) => i === j,
+        note: 'A sum of 7 needs different faces, so these events are disjoint: P(E ∪ F) = 6/36 + 6/36 = 1/3.' },
+      { name: 'a six vs doubles', e: 'at least one six', E: (i, j) => i === 6 || j === 6, f: 'doubles', F: (i, j) => i === j,
+        note: 'They overlap in (6, 6) only, so inclusion–exclusion gives 11 + 6 − 1 = 16 outcomes: P = 4/9.' },
+      { name: 'first even vs second even', e: 'the first die is even', E: (i, j) => i % 2 === 0, f: 'the second die is even', F: (i, j) => j % 2 === 0,
+        note: 'Each has 18 outcomes and they share 9, so the union has 27 = 36 − 9: only “both odd” is left out. P = 3/4.' },
+    ];
+    const row = Study.presets.mount($('l01-dice-presets'), presets, (p) => {
+      fill(E, p.E); fill(FF, p.F || null); nameE = p.e; nameF = p.f || ''; setMode('E');
+    }, { note: $('l01-dice-note') });
+    $('l01-dice').addEventListener('load', (ev) => { if (ev.detail && ev.detail.preset) row.select(ev.detail.preset); });
+  })();
+  </script>
+
+  <div class="pitfall"><span class="lbl">Pitfall</span><p>Do not treat “a one and a six” and “double three” as two equally likely results. With the dice told apart, “a one and a six” is two outcomes, (1, 6) and (6, 1), while “double three” is one. Listing only unordered results gives 21 possibilities that are <em>not</em> equally likely. <span class="beyond"></span></p></div>
+
+  <details class="reveal more"><summary>The certain and the impossible event</summary><div class="body">
+    <p>Ω itself is an event (a subset of itself): it always happens, so it is the <span class="term">certain event</span>. The empty set ∅ never happens: the <span class="term">impossible event</span>. In the explorer, “Clear all” gives E = ∅, and pressing E → E′ then gives E = Ω.</p>
+    <p>Set rules carry over word for word. For example “not (E or F)” is “not E and not F”: <span class="m">(<i>E</i> ∪ <i>F</i>)′ = <i>E</i>′ ∩ <i>F</i>′</span> (De Morgan’s law). In the last preset, the outcomes outside <i>E</i> ∪ <i>F</i> are exactly those with both dice odd. <span class="beyond"></span></p>
+  </div></details>
+
+  <details class="reveal check"><summary>Quick check</summary><div class="body">
+    <p>How many outcomes are in the event “the two dice show different numbers”?</p>
+    <p><b>Answer:</b> its complement is doubles, 6 outcomes, so <span class="m">36 − 6 = 30</span>.</p>
+  </div></details>
+</section>
+
+<section class="note" id="axioms">
+  <h2><span class="n">02</span> Equally likely outcomes and the axioms</h2>
+  <p class="src">Slides s5–7 · <span class="cite" data-page="2">Reader §1.2</span></p>
+
+  <div class="key"><span class="lbl">The idea</span><p>When every outcome is equally likely, the probability of an event is the fraction of outcomes it contains. Everything else about probability follows from three short axioms.</p></div>
+
+  <div class="box def"><span class="lbl">Definition · Equally likely outcomes</span>
+    <blockquote class="quote"><p>If Ω is finite and every outcome is equally likely, then P(E) = |E| / |Ω|.</p><cite>s5</cite></blockquote>
+    <p>Two dice: six of the 36 pairs have sum 7, so <span class="m">P(sum is 7) = 6/36 = 1/6</span>.</p>
+  </div>
+
+  <div class="box thm"><span class="lbl">Axioms and consequences</span>
+    <p><b>Axioms.</b> (1) <span class="m">P(<i>E</i>) ≥ 0</span> for every event; (2) <span class="m">P(Ω) = 1</span>; (3) if <i>E</i> and <i>F</i> are disjoint, <span class="m">P(<i>E</i> ∪ <i>F</i>) = P(<i>E</i>) + P(<i>F</i>)</span>, and likewise for any sequence of pairwise disjoint events.</p>
+    <p><b>Consequences.</b> <span class="m">P(<i>E</i>′) = 1 − P(<i>E</i>)</span>; <span class="m">P(∅) = 0</span>; <span class="m">P(<i>E</i>) ≤ 1</span>; if <span class="m"><i>E</i> ⊆ <i>F</i></span> then <span class="m">P(<i>E</i>) ≤ P(<i>F</i>)</span>; and</p>
+    <blockquote class="quote"><p>Inclusion–exclusion: P(E ∪ F) = P(E) + P(F) − P(E ∩ F).</p><cite>s7</cite></blockquote>
+  </div>
+
+  <p>The explorer above prints both sides of the complement rule and of inclusion–exclusion for whatever events you pick. The two examples below load straight into it.</p>
+
+  <div class="exm-list">
+    <div class="exm" id="l01-ex-ie">
+      <div class="exm-head"><span class="exm-n"></span><span class="exm-t">A six or doubles</span><span class="exm-tag">overlapping</span></div>
+      <div class="exm-task">Roll two dice. What is the probability of at least one six <em>or</em> a double?</div>
+      <details class="exm-sol"><summary>Show solution</summary>
+        <div class="widget stepper"><div class="lbl">Step by step · Inclusion–exclusion</div><ol class="steps">
+          <li><div><i>E</i> = at least one six. The first die is 6 in 6 outcomes and the second in 6, but (6, 6) is in both lists, so <span class="m">|<i>E</i>| = 6 + 6 − 1 = 11</span>.</div></li>
+          <li><div><i>F</i> = doubles: <span class="m">|<i>F</i>| = 6</span>.</div></li>
+          <li><div><span class="m"><i>E</i> ∩ <i>F</i> = {(6, 6)}</span>, so <span class="m">|<i>E</i> ∩ <i>F</i>| = 1</span>.</div></li>
+          <li><div><span class="m">P(<i>E</i> ∪ <i>F</i>) = 11/36 + 6/36 − 1/36 = 16/36 = 4/9 ≈ 0.444</span>.</div></li>
+          <li><div>Check with the complement: no six leaves the 25 outcomes with both dice in 1–5, of which 5 are doubles, so 20 outcomes are outside <i>E</i> ∪ <i>F</i> and <span class="m">36 − 20 = 16</span>.</div></li>
+        </ol></div>
+      </details>
+      <div class="exm-actions"><button class="btn" data-load='{"preset": "a six vs doubles"}' data-target="l01-dice">Load in explorer</button></div>
+    </div>
+    <div class="exm" id="l01-ex-dis">
+      <div class="exm-head"><span class="exm-n"></span><span class="exm-t">A sum of 7 or doubles</span><span class="exm-tag">disjoint</span></div>
+      <div class="exm-task">What is the probability that two dice show a sum of 7 or a double?</div>
+      <details class="exm-sol"><summary>Show solution</summary>
+        <p>A double has an even sum, so it can never total 7: the events are disjoint and axiom 3 applies directly. <span class="m">P = 6/36 + 6/36 = 12/36 = 1/3</span>.</p>
+      </details>
+      <div class="exm-actions"><button class="btn" data-load='{"preset": "sum 7 vs doubles"}' data-target="l01-dice">Load in explorer</button></div>
+    </div>
+  </div>
+
+  <details class="reveal more"><summary>Why the consequences follow from the axioms</summary><div class="body">
+    <p><b>Complement rule.</b> <i>E</i> and <i>E</i>′ are disjoint and <span class="m"><i>E</i> ∪ <i>E</i>′ = Ω</span>, so by axioms 3 and 2, <span class="m">P(<i>E</i>) + P(<i>E</i>′) = 1</span>. With <span class="m"><i>E</i> = Ω</span> this gives <span class="m">P(∅) = 0</span>, and since <span class="m">P(<i>E</i>′) ≥ 0</span> it also gives <span class="m">P(<i>E</i>) ≤ 1</span>.</p>
+    <p><b>Monotonicity.</b> If <span class="m"><i>E</i> ⊆ <i>F</i></span>, split <i>F</i> into the disjoint pieces <i>E</i> and <span class="m"><i>F</i> ∩ <i>E</i>′</span>; then <span class="m">P(<i>F</i>) = P(<i>E</i>) + P(<i>F</i> ∩ <i>E</i>′) ≥ P(<i>E</i>)</span>.</p>
+    <p><b>Inclusion–exclusion.</b> <span class="m"><i>E</i> ∪ <i>F</i></span> is the disjoint union of <i>E</i> and <span class="m"><i>F</i> ∩ <i>E</i>′</span>, and <i>F</i> is the disjoint union of <span class="m"><i>E</i> ∩ <i>F</i></span> and <span class="m"><i>F</i> ∩ <i>E</i>′</span>. Subtracting the two applications of axiom 3 gives <span class="m">P(<i>E</i> ∪ <i>F</i>) = P(<i>E</i>) + P(<i>F</i>) − P(<i>E</i> ∩ <i>F</i>)</span>.</p>
+    <p>The counting rule <span class="m">|<i>E</i>| / |Ω|</span> satisfies all three axioms, because sizes of disjoint sets add. <span class="beyond"></span></p>
+  </div></details>
+
+  <details class="reveal check"><summary>Quick check</summary><div class="body">
+    <p>With two dice, what is P(sum ≥ 10 or doubles)?</p>
+    <p><b>Answer:</b> 6 outcomes have sum ≥ 10, 6 are doubles, and two, (5, 5) and (6, 6), are both: <span class="m">(6 + 6 − 2)/36 = 10/36 = 5/18</span>.</p>
+  </div></details>
+</section>
+
+<section class="note" id="multiply">
+  <h2><span class="n">03</span> The multiplication rule and “at least one”</h2>
+  <p class="src">Slides s8 · s12 · <span class="cite" data-page="3">Reader §1.3</span></p>
+
+  <div class="key"><span class="lbl">The idea</span><p>Count a sequence of choices by multiplying the number of options at each step. To count “at least one”, count the opposite, “none”, and subtract.</p></div>
+
+  <div class="box thm"><span class="lbl">The multiplication rule</span>
+    <blockquote class="quote">
+      <p>A task is done in k steps, with n₁ ways to do step 1, n₂ ways to do step 2, and so on.</p>
+      <p>If the number of ways for each step does not depend on the earlier choices,</p>
+      <p>then the whole task can be done in n₁ · n₂ · n₃ · … ways, one factor per step.</p>
+      <cite>s8</cite>
+    </blockquote>
+    <p>A 4-digit lock code: <span class="m">10 · 10 · 10 · 10 = 10,000</span> codes. Four rolls of a die: <span class="m">6⁴ = 1296</span> equally likely sequences.</p>
+  </div>
+
+  <div class="widget stepper">
+    <div class="lbl">Step by step · At least one six in four rolls</div>
+    <ol class="steps">
+      <li><div><b>Sample space.</b> An outcome is a sequence of four rolls. Six choices per roll, so by the multiplication rule <span class="m">|Ω| = 6 · 6 · 6 · 6 = 6⁴ = 1296</span>, all equally likely.</div></li>
+      <li><div><b>The event.</b> <i>A</i> = at least one six. Counting it directly means separate cases: exactly one, two, three or four sixes.</div></li>
+      <li><div><b>The complement.</b> <i>A</i>′ = no six at all. Now each roll has 5 choices, so <span class="m">|<i>A</i>′| = 5⁴ = 625</span>.</div></li>
+      <li><div><b>Its probability.</b> <span class="m">P(<i>A</i>′) = 625/1296</span>.</div></li>
+      <li><div><b>Complement rule.</b> <span class="m">P(<i>A</i>) = 1 − 625/1296 = 671/1296 ≈ 0.518</span>: slightly better than an even bet.</div></li>
+    </ol>
+  </div>
+
+  <blockquote class="quote"><p>P(at least one six in four rolls) = 1 − P(no six in four rolls).</p><cite>s12</cite></blockquote>
+
+  <div class="pitfall"><span class="lbl">Pitfall</span><p>The answer is not <span class="m">4 · 1/6 = 2/3</span>. The events “six on roll 1”, …, “six on roll 4” overlap (two rolls can both be sixes), so their probabilities do not add. Adding them would give more than 1 for seven or more rolls, which no probability can be.</p></div>
+
+  <details class="reveal more"><summary>Check by counting the cases directly</summary><div class="body">
+    <p>Choose which rolls are sixes, then fill the others from five faces: exactly one six in <span class="m">4 · 5³ = 500</span> ways, two in <span class="m">6 · 5² = 150</span>, three in <span class="m">4 · 5 = 20</span> and four in 1. The total <span class="m">500 + 150 + 20 + 1 = 671</span> matches. (The 4, 6, 4 are the numbers of ways to choose the positions, <span class="m">C(4, <i>k</i>)</span>, from section 04.)</p>
+  </div></details>
+
+  <details class="reveal more"><summary>A gambler’s puzzle</summary><div class="body">
+    <div class="beyond-block">
+      <p>This bet is tied to a well-known 17th-century story: the Chevalier de Méré is said to have won steadily betting on at least one six in four rolls, and lost on what seemed the same bet, at least one double six in 24 rolls of two dice. The second probability is <span class="m">1 − (35/36)²⁴ ≈ 0.491</span>, just under one half. Questions like this, passed on to Pascal and Fermat, helped start the mathematical study of probability.</p>
+    </div>
+  </div></details>
+
+  <details class="reveal check"><summary>Quick check</summary><div class="body">
+    <p>How many three-letter codes can be made from 26 letters if letters may repeat? If they may not?</p>
+    <p><b>Answer:</b> <span class="m">26³ = 17,576</span>; without repeats <span class="m">26 · 25 · 24 = 15,600</span>. The second count is allowed by the multiplication rule because the <em>number</em> of letters left (25, then 24) does not depend on which letters were used.</p>
+  </div></details>
+</section>
+
+<section class="note" id="choose">
+  <h2><span class="n">04</span> Permutations and combinations</h2>
+  <p class="src">Slides s9–11 · <span class="cite" data-page="3">Reader §1.3</span> · <span class="cite" data-page="4">Reader §1.4</span></p>
+
+  <div class="key"><span class="lbl">The idea</span><p>Count ordered lists with the multiplication rule; to count unordered selections, divide by the <span class="m"><i>k</i>!</span> orders in which each one can be listed.</p></div>
+
+  <div class="box def"><span class="lbl">Definition · Factorials, permutations, combinations</span>
+    <p><span class="m"><i>n</i>! = <i>n</i> · (<i>n</i> − 1) · … · 2 · 1</span> orders of <i>n</i> distinct objects, with <span class="m">0! = 1</span>. Ordered selections of <i>k</i> from <i>n</i>: <span class="m"><sub><i>n</i></sub>P<sub><i>k</i></sub> = <i>n</i>! / (<i>n</i> − <i>k</i>)!</span>.</p>
+    <blockquote class="quote"><p>Unordered selections of k from n: nCk = n! / (k! (n − k)!).</p><cite>s10</cite></blockquote>
+    <p>Also written <span class="m">C(<i>n</i>, <i>k</i>)</span>, “<i>n</i> choose <i>k</i>”. The link between them: <span class="m"><sub><i>n</i></sub>P<sub><i>k</i></sub> = <i>k</i>! · C(<i>n</i>, <i>k</i>)</span>.</p>
+  </div>
+
+  <div class="widget" id="l01-count">
+    <div class="lbl">Try it · Counting calculator</div>
+    <p class="how">Enter <i>n</i> (0–120) and <i>k</i>. Results are exact (whole-number arithmetic with no rounding); very long ones are also shown in scientific form.</p>
+    <div id="l01-count-presets"></div>
+    <p class="preset-note" id="l01-count-note" aria-live="polite" hidden></p>
+    <div class="controls">
+      <label class="field"><i>n</i> <input id="l01-n" type="number" min="0" max="120" step="1" inputmode="numeric"></label>
+      <label class="field"><i>k</i> <input id="l01-k" type="number" min="0" max="120" step="1" inputmode="numeric"></label>
+    </div>
+    <div class="out l01-rows" id="l01-count-out" aria-live="polite"></div>
+  </div>
+  <script>
+  (function () {
+    const { $ } = Study.math;
+    const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+    const sup = (n) => String(n).split('').map((c) => SUP[c]).join('');
+    const commas = (s) => s.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    function show(b) {
+      const s = b.toString();
+      if (s.length <= 21) return commas(s);
+      const [m, e] = Number(b).toExponential(4).split('e+');
+      return '≈ ' + m + ' × 10' + sup(e) + ' <span class="l01-dig">(' + s.length + ' digits: ' + s + ')</span>';
+    }
+    const fact = (n) => { let r = 1n; for (let i = 2n; i <= BigInt(n); i++) r *= i; return r; };
+    const perm = (n, k) => { let r = 1n; for (let i = 0; i < k; i++) r *= BigInt(n - i); return r; };
+    const row = (k, v) => '<div class="l01-big"><span class="k">' + k + '</span>' + v + '</div>';
+    function render() {
+      const n = Number($('l01-n').value), k = Number($('l01-k').value);
+      const out = $('l01-count-out');
+      if (!Number.isInteger(n) || !Number.isInteger(k) || n < 0 || k < 0 || $('l01-n').value === '' || $('l01-k').value === '') { out.textContent = 'n and k must be whole numbers, 0 or more.'; return; }
+      if (n > 120 || k > 120) { out.textContent = 'This calculator stops at 120 (120! already has 199 digits).'; return; }
+      let html = row('n! = ' + n + '!', show(fact(n))) +
+        row('nᵏ', show(BigInt(n) ** BigInt(k)) + ' <span class="l01-dig">ordered, repeats allowed</span>');
+      if (k > n) {
+        html += row('nPk, nCk', '0 <span class="l01-dig">(k &gt; n: there are not k distinct objects to choose)</span>');
+      } else {
+        const P = perm(n, k), kf = fact(k), C = P / kf;
+        html += row('nPk = ' + n + '!/' + (n - k) + '!', show(P) + ' <span class="l01-dig">ordered, no repeats</span>') +
+          row('nCk = C(' + n + ', ' + k + ')', show(C) + ' <span class="l01-dig">unordered</span>');
+        if (P < 10n ** 21n) html += row('check', 'nPk = k! · nCk: ' + commas(P.toString()) + ' = ' + commas(kf.toString()) + ' · ' + commas(C.toString()));
+      }
+      out.innerHTML = html;
+    }
+    const presets = [
+      { name: 'poker hand', value: [52, 5], note: 'C(52, 5) = 2,598,960 five-card hands. Dealt in order there are 5! = 120 times as many: 311,875,200.' },
+      { name: 'committee', value: [10, 3], note: '120 committees of 3 from 10, but 720 ways to fill three different roles: each committee can be given its roles in 3! = 6 ways.' },
+      { name: 'podium', value: [8, 3], note: 'Order matters on a podium: 8 · 7 · 6 = 336 results, while the set of three medallists is only C(8, 3) = 56.' },
+      { name: 'lock code', value: [10, 4], note: 'Digits may repeat on a lock, so the count is n<sup>k</sup> = 10,000. 10P4 = 5,040 counts only the codes with four different digits.' },
+      { name: 'lottery', value: [49, 6], note: 'Six numbers from 49: C(49, 6) = 13,983,816, so one ticket wins with probability about 1 in 14 million. <span class="beyond"></span>' },
+      { name: 'shuffle a deck', value: [52, 52], note: '52! ≈ 8.07 × 10⁶⁷ orders of a deck, but C(52, 52) = 1: there is only one way to take every card.' },
+      { name: 'choose none', value: [5, 0], note: 'k = 0: there is one way to choose nothing, and 0! = 1 makes every formula agree.' },
+      { name: 'symmetry', value: [10, 7], note: 'C(10, 7) = C(10, 3) = 120: choosing the 7 who are in is the same as choosing the 3 who are out.' },
+    ];
+    const rowP = Study.presets.mount($('l01-count-presets'), presets, (p) => { $('l01-n').value = p.value[0]; $('l01-k').value = p.value[1]; render(); }, { note: $('l01-count-note') });
+    ['l01-n', 'l01-k'].forEach((id) => $(id).addEventListener('input', () => { rowP.clear('Your own n and k.'); render(); }));
+  })();
+  </script>
+
+  <details class="reveal more"><summary>Card hands, worked out</summary><div class="body">
+    <p>A deck has 4 suits of 13 ranks. After a fair shuffle all <span class="m">C(52, 5) = 2,598,960</span> five-card hands are equally likely, so probabilities are counts divided by that number.</p>
+    <ul>
+      <li><b>All five cards of one suit</b> (including straight flushes): choose the suit, then 5 of its 13 cards: <span class="m">4 · C(13, 5) = 4 · 1287 = 5,148</span> hands, probability <span class="m">5148/2598960 ≈ 0.00198</span>.</li>
+      <li><b>All four aces</b>: take all four, <span class="m">C(4, 4) = 1</span>, and any one of the other 48 cards: 48 hands, probability <span class="m">48/2598960 = 1/54145 ≈ 0.0000185</span>.</li>
+    </ul>
+    <p>The pattern “choose from each group separately, then multiply” is the multiplication rule applied to combinations.</p>
+  </div></details>
+
+  <details class="reveal more"><summary>Why divide by k!</summary><div class="body">
+    <p>Build an ordered list of <i>k</i> from <i>n</i> in two steps: first choose which <i>k</i> objects (C(<i>n</i>, <i>k</i>) ways), then put them in order (<i>k</i>! ways). The multiplication rule gives <span class="m"><sub><i>n</i></sub>P<sub><i>k</i></sub> = C(<i>n</i>, <i>k</i>) · <i>k</i>!</span>, and dividing gives the formula for C(<i>n</i>, <i>k</i>). The committee preset shows it: 720 ordered = 120 committees · 6 orders.</p>
+  </div></details>
+
+  <details class="reveal check"><summary>Quick check</summary><div class="body">
+    <p>How many five-card hands are all hearts, and what is the probability of being dealt one?</p>
+    <p><b>Answer:</b> <span class="m">C(13, 5) = 1287</span>, so the probability is <span class="m">1287/2598960 = 33/66640 ≈ 0.000495</span>, a quarter of the one-suit probability above.</p>
+  </div></details>
+</section>
+
+<section class="note" id="birthday">
+  <h2><span class="n">05</span> The birthday problem</h2>
+  <p class="src">Uses s8 · s12 · <span class="cite" data-page="4">Reader §1.4</span></p>
+
+  <div class="beyond-block">
+    <div class="key"><span class="lbl">The idea</span><p>In a group of only 23 people, a shared birthday is more likely than not. The count of pairs, not of people, is what grows quickly.</p></div>
+
+    <div class="box thm"><span class="lbl">Shared birthdays</span>
+      <p>Assume 365 equally likely birthdays (no leap days) and <i>n</i> people with independent birthdays. Then</p>
+      <div class="mblock"><span class="row">P(all different) = 365 · 364 · … · (365 − <i>n</i> + 1) / 365<sup><i>n</i></sup></span><span class="row">P(at least one shared birthday) = 1 − P(all different)</span></div>
+      <p>The top counts ordered lists of <i>n</i> different days (<span class="m"><sub>365</sub>P<sub><i>n</i></sub></span>), the bottom all lists of <i>n</i> days: both by the multiplication rule. For <span class="m"><i>n</i> &gt; 365</span> a shared birthday is certain.</p>
+    </div>
+
+    <div class="widget" id="l01-bday">
+      <div class="lbl">Try it · Birthday problem</div>
+      <p class="how">Move the slider or type a group size. The curve shows P(shared birthday) for 1–80 people; the dot is your group. The simulation draws random groups from a seeded generator.</p>
+      <div id="l01-bday-presets"></div>
+      <p class="preset-note" id="l01-bday-note" aria-live="polite" hidden></p>
+      <div class="controls">
+        <label class="field">people <input id="l01-bn-range" type="range" min="1" max="80" step="1"></label>
+        <label class="field"><i>n</i> <input id="l01-bn" type="number" min="1" max="400" step="1" inputmode="numeric"></label>
+        <button class="btn" id="l01-bseed">New sample</button>
+      </div>
+      <p class="l01-key"><span class="c1">━</span> P(some two people share a birthday) · <span class="c2">╍</span> P(someone shares the first person’s birthday) · dashed line at ½</p>
+      <svg id="l01-bplot"><title>Probability of a shared birthday against group size, 1 to 80 people</title></svg>
+      <div class="out l01-rows" id="l01-bday-out" aria-live="polite"></div>
+    </div>
+  </div>
+  <script>
+  (function () {
+    const { $, fmt } = Study.math;
+    const { Plane } = Study.plot;
+    const svg = $('l01-bplot');
+    const P = Plane(svg, { xmin: 0, xmax: 80, ymin: 0, ymax: 1, w: 440, h: 250, stepx: 10, stepy: 0.1, labelEvery: 2, labelEveryY: 5, labelDp: 1 });
+    const allDiff = (n) => { if (n > 365) return 0; let p = 1; for (let i = 0; i < n; i++) p *= (365 - i) / 365; return p; };
+    const shared = (n) => 1 - allDiff(n);
+    const mine = (n) => 1 - Math.pow(364 / 365, n - 1);
+    function pct(x) {
+      if (x === 0) return '0%';
+      if (x === 1) return '100%';
+      const gap = Math.min(x, 1 - x);
+      if (gap === 0) return '&gt; 99.9999%';
+      const d = Math.min(6, Math.max(1, Math.ceil(-Math.log10(100 * gap)) + 1));
+      return (100 * x).toFixed(d) + '%';
+    }
+    function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+    let seed = 1;
+    const TRIALS = 2000;
+    function simulate(n) {
+      const rnd = mulberry32(seed * 7919 + n), stamp = new Uint32Array(365);
+      let hits = 0;
+      for (let t = 1; t <= TRIALS; t++) {
+        for (let i = 0; i < n; i++) { const d = Math.floor(rnd() * 365); if (stamp[d] === t) { hits++; break; } stamp[d] = t; }
+      }
+      return hits;
+    }
+    const curve = [], curve2 = [];
+    for (let n = 1; n <= 80; n++) { curve.push([n, shared(n)]); curve2.push([n, mine(n)]); }
+    function render() {
+      let n = Math.round(Number($('l01-bn').value));
+      if (!Number.isFinite(n) || n < 1) { $('l01-bday-out').textContent = 'The group needs at least one person.'; return; }
+      n = Math.min(n, 400);
+      if (n <= 80) $('l01-bn-range').value = n;
+      const p = shared(n), pairs = n * (n - 1) / 2, hits = simulate(n);
+      P.clear();
+      P.line([0, 0.5], [80, 0.5], 'muted thin dash');
+      P.pline(curve2, 'c2 dash');
+      P.pline(curve, 'c1');
+      if (n <= 80) { P.line([n, 0], [n, p], 'c1 thin dash'); P.dot([n, p], 5, 'c1'); P.text([n, p], fmt(p, 3), 'c1 halo', n > 60 ? -44 : 8, p > 0.85 ? 16 : -8); }
+      else P.text([80, 1], 'n = ' + n + ' is off the chart', 'muted halo', -150, 14);
+      $('l01-bday-out').innerHTML =
+        '<div><span class="k">people</span>' + n + ' · ' + pairs.toLocaleString('en') + ' pair' + (pairs === 1 ? '' : 's') + '</div>' +
+        '<div><span class="k">all different</span>' + (n > 365 ? '0 (more people than days)' : pct(allDiff(n))) + '</div>' +
+        '<div><span class="k">shared birthday</span>' + (n > 365 ? '1 (certain)' : fmt(p, 4) + ' = ' + pct(p)) + '</div>' +
+        '<div><span class="k">matches person 1</span>' + pct(mine(n)) + '</div>' +
+        '<div><span class="k">simulation</span>' + hits.toLocaleString('en') + ' of ' + TRIALS.toLocaleString('en') + ' random groups had a shared birthday (' + (100 * hits / TRIALS).toFixed(1) + '%) · sample ' + seed + '</div>';
+    }
+    const presets = [
+      { name: '2 people', value: 2, note: 'One pair: the second person matches the first with probability 1/365 ≈ 0.27%.' },
+      { name: '10', value: 10, note: 'Ten people already make 45 pairs: about 11.7%.' },
+      { name: '23', value: 23, note: 'The smallest group where a match is more likely than not: 50.7%, from 253 pairs. A match with person 1 is only 5.9%.' },
+      { name: '30', value: 30, note: 'A typical classroom: about 70.6%.' },
+      { name: '41', value: 41, note: 'Past 90% (90.3%) with 41 people.' },
+      { name: '57', value: 57, note: 'About 99.0%: almost certain, although 57 is far fewer than 365 days.' },
+      { name: '70', value: 70, note: 'About 99.9%. Yet the chance that someone shares person 1’s birthday is still only about 17%.' },
+      { name: '366', value: 366, note: 'Pigeonhole principle: 366 people cannot all have different days among 365, so a match is certain.' },
+    ];
+    const row = Study.presets.mount($('l01-bday-presets'), presets, (pr) => { $('l01-bn').value = pr.value; render(); }, { note: $('l01-bday-note') });
+    $('l01-bn').addEventListener('input', () => { row.clear('Your own group size.'); render(); });
+    $('l01-bn-range').addEventListener('input', () => { $('l01-bn').value = $('l01-bn-range').value; row.clear('Your own group size.'); render(); });
+    $('l01-bseed').addEventListener('click', () => { seed++; render(); });
+  })();
+  </script>
+
+  <details class="reveal more"><summary>Why the number is so small</summary><div class="body">
+    <div class="beyond-block">
+      <p>Our intuition answers a different question: will someone match <em>me</em>? That chance is <span class="m">1 − (364/365)<sup><i>n</i> − 1</sup></span>, only about 5.9% for 23 people (the dashed curve). But a match between <em>any</em> two people counts, and 23 people form <span class="m">C(23, 2) = 253</span> pairs. Each pair matches with probability 1/365, so on average <span class="m">253/365 ≈ 0.69</span> pairs match. With that many expected matches, it is no surprise that at least one match happens about half the time.</p>
+    </div>
+  </div></details>
+
+  <details class="reveal check"><summary>Quick check</summary><div class="body">
+    <p>How many pairs of people are there in a group of 30?</p>
+    <p><b>Answer:</b> <span class="m">C(30, 2) = 30 · 29 / 2 = 435</span>.</p>
+  </div></details>
+</section>
+
+<!-- summary -->
+
+<section class="note" id="selftest">
+  <h2><span class="n">?</span> Self-test</h2>
+  <div class="widget quiz" data-id="01-selftest">
+    <div class="quiz-head"><div class="lbl">Self-test · Outcomes, events and counting</div></div>
+
+    <div class="q" data-answer="c">
+      <div class="q-prompt">Three dice of different colours are rolled. How many outcomes are in the sample space?</div>
+      <div class="q-opts"><button data-v="a">18</button><button data-v="b">56</button><button data-v="c">216</button><button data-v="d">729</button></div>
+      <div class="q-feedback" hidden></div>
+      <template class="q-explain">Six choices for each die, so 6 · 6 · 6 = 216 by the multiplication rule (s8). 56 counts unordered results, which are not equally likely.</template>
+    </div>
+
+    <div class="q" data-answer="b">
+      <div class="q-prompt">Two fair dice are rolled. What is P(the sum is 8)?</div>
+      <div class="q-opts"><button data-v="a">1/6</button><button data-v="b">5/36</button><button data-v="c">1/9</button><button data-v="d">8/36</button></div>
+      <div class="q-feedback" hidden></div>
+      <template class="q-explain">The outcomes are (2, 6), (3, 5), (4, 4), (5, 3), (6, 2): five of 36, so 5/36 (s5).</template>
+    </div>
+
+    <div class="q" data-answer="b">
+      <div class="q-prompt">P(A) = 0.5, P(B) = 0.4 and P(A ∩ B) = 0.2. What is P(A ∪ B)?</div>
+      <div class="q-opts"><button data-v="a">0.9</button><button data-v="b">0.7</button><button data-v="c">0.6</button><button data-v="d">0.2</button></div>
+      <div class="q-feedback" hidden></div>
+      <template class="q-explain">Inclusion–exclusion (s7): 0.5 + 0.4 − 0.2 = 0.7. Simply adding gives 0.9, which counts the overlap twice.</template>
+    </div>
+
+    <div class="q" data-answer="c">
+      <div class="q-prompt">In how many ways can a team of 4 be chosen from 9 people?</div>
+      <div class="q-opts"><button data-v="a">3024</button><button data-v="b">6561</button><button data-v="c">126</button><button data-v="d">36</button></div>
+      <div class="q-feedback" hidden></div>
+      <template class="q-explain">A team is unordered: C(9, 4) = 9!/(4! 5!) = 126 (s10). 3024 = 9 · 8 · 7 · 6 counts ordered lists, which is 4! = 24 times as many.</template>
+    </div>
+
+    <div class="q" data-answer="b">
+      <div class="q-prompt">Which event is the complement of “at least one six” when two dice are rolled?</div>
+      <div class="q-opts"><button data-v="a">Exactly one six</button><button data-v="b">No six on either die</button><button data-v="c">Two sixes</button><button data-v="d">At most one six</button></div>
+      <div class="q-feedback" hidden></div>
+      <template class="q-explain">The complement holds every outcome not in the event: “at least one six” fails exactly when neither die is a six. It has 25 outcomes, so P(at least one six) = 1 − 25/36 = 11/36.</template>
+    </div>
+
+    <div class="q" data-answer="c">
+      <div class="q-prompt">A fair coin is tossed 3 times. What is P(at least one head)?</div>
+      <div class="q-opts"><button data-v="a">1/2</button><button data-v="b">3/4</button><button data-v="c">7/8</button><button data-v="d">3/8</button></div>
+      <div class="q-feedback" hidden></div>
+      <template class="q-explain">Count the complement (s12): only one of the 2³ = 8 sequences has no head, so 1 − 1/8 = 7/8.</template>
+    </div>
+  </div>
+</section>
