@@ -21,8 +21,10 @@ def _sheet(ctx, opts, page):
     return p.read_text(encoding='utf-8').strip()
 
 
-def _anchor(page):
-    return f's-{page["kind"]}-{page["id"]}'
+def _anchor(ctx, opts, page):
+    first = next(iter(ctx.kinds))
+    tmpl = opts['anchor'] if page['kind'] == first else opts['otherAnchor']
+    return ctx.fmt(tmpl, id=page['id'], kind=page['kind'])
 
 
 def configure(ctx, opts):
@@ -38,7 +40,7 @@ def content(ctx, opts, page, html):
     ctx._summaries[(page['kind'], page['id'])] = sheet
     back = ''
     if opts['page'] and opts['backLink']:
-        back = f'<p class="sheet-back"><a href="{ctx.esc(opts["file"])}#{_anchor(page)}">{ctx.esc(opts["backLink"])}</a></p>'
+        back = f'<p class="sheet-back"><a href="{ctx.esc(opts["file"])}#{_anchor(ctx, opts, page)}">{ctx.esc(opts["backLink"])}</a></p>'
     review = '' if opts['reviewable'] else ' data-no-review'
     section = (f'<section class="note sheet-section" id="{ctx.esc(opts["sectionId"])}"{review}>\n'
                f'<h2><span class="n">{ctx.esc(opts["sectionNumber"])}</span> {ctx.esc(opts["sectionTitle"])}</h2>\n'
@@ -77,7 +79,7 @@ def extra_pages(ctx, opts):
                 links.append(f'<a href="{ctx.esc(p["href"])}#{ctx.esc(extra.get("anchor", ""))}">{ctx.esc(extra.get("label", ""))}</a>')
             num = ctx.esc(p['id']) if k.get('numbered', True) else '·'
             blocks.append(
-                f'<section class="note sheet-page-entry" id="{_anchor(p)}" data-toc-group="{ctx.esc(g.get("title", g["id"]))}" '
+                f'<section class="note sheet-page-entry" id="{_anchor(ctx, opts, p)}" data-toc-group="{ctx.esc(g.get("title", g["id"]))}" '
                 f'data-sheet-group="{ctx.esc(g["id"])}" data-no-review>\n'
                 f'<h2><span class="n">{num}</span> {ctx.esc(p["title"])}</h2>\n'
                 f'<p class="src sheet-links">{ctx.esc(k["noun"])} {ctx.esc(p["id"])} · {" · ".join(links)}</p>\n'

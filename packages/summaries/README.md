@@ -27,6 +27,7 @@ Write each sheet once; both places always match.
 | `marker` | `"<!-- summary -->"` | Where to insert the sheet |
 | `page` | `true` | Build the all-sheets page |
 | `file`, `title`, `eyebrow`, `intro`, `railTitle` | … | All-sheets page file name and text |
+| `anchor` / `otherAnchor` | `"s-{kind}-{id}"` | Each sheet's anchor on the all-sheets page |
 | `backLink` | `"All summary sheets →"` | Link under each inserted sheet; `""` to omit |
 | `notesLink`, `extraLinks` | `"Full notes"`, `[]` | Links from each sheet on the all-sheets page back to its page, e.g. `[{"label":"Self-test","anchor":"selftest"}]` |
 | `filters`, `allLabel` | `true`, `"All"` | Group filter buttons |
@@ -51,6 +52,5 @@ None. The all-sheets page remembers its filter in `Study.store` key `summaries:f
 
 ## Notes for migrating existing notes
 - Move an inline summary section's inner HTML into `content/summaries/<id>.html` and replace the section with the marker.
-- If the old site had its own anchor (e.g. `#l03` on a combined page), keep incoming links working by
-  setting `sectionId` or adding a redirect anchor in the sheet.
+- If the old combined page used its own anchors (e.g. `#x03`), set `anchor` (e.g. `"x{id}"`) so old links still land.
 - `study.py check` reports sheet files that match no page.

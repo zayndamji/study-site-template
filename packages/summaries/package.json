@@ -5,33 +5,117 @@
   "category": "content",
   "version": "1.0.0",
   "requires": [],
-  "css": ["summaries.css"],
-  "js": ["summaries.js"],
+  "css": [
+    "summaries.css"
+  ],
+  "js": [
+    "summaries.js"
+  ],
   "build": "build.py",
   "options": {
-    "dir": { "default": "summaries", "description": "Folder under content/ that holds the sheets." },
-    "source": { "default": "{id}.html", "description": "Sheet file name for a page of the first (main) kind. Template fields: {id} {kind}." },
-    "otherSource": { "default": "{kind}-{id}.html", "description": "Sheet file name for pages of any other kind." },
-    "kinds": { "default": null, "description": "Page kinds that get sheets (list of kind names); null = every kind." },
-    "require": { "default": false, "description": "Warn when a ready page has no sheet." },
-    "sectionTitle": { "default": "Summary sheet", "description": "Heading of the sheet section inserted into each page." },
-    "sectionNumber": { "default": "∗", "description": "What appears in the heading's number slot and the rail." },
-    "sectionId": { "default": "summary", "description": "id of the inserted section (anchor target)." },
-    "reviewable": { "default": true, "description": "Whether the inserted section gets a 'Mark as reviewed' button." },
-    "marker": { "default": "<!-- summary -->", "description": "Put this comment in a page where the sheet should go; without it the sheet is appended at the end." },
-    "page": { "default": true, "description": "Also build the all-sheets page." },
-    "file": { "default": "summaries.html", "description": "File name of the all-sheets page." },
-    "title": { "default": "All summary sheets", "description": "Title of the all-sheets page." },
-    "eyebrow": { "default": "Summary sheets", "description": "Eyebrow above that title." },
-    "intro": { "default": "Every page's summary sheet in one place, for review. Each sheet links back to its full notes.", "description": "Lede of the all-sheets page (HTML allowed); empty to omit." },
-    "backLink": { "default": "All summary sheets →", "description": "Link text under each inserted sheet that jumps to it on the all-sheets page; empty to omit." },
-    "notesLink": { "default": "Full notes", "description": "Link text on the all-sheets page back to each page." },
-    "extraLinks": { "default": [], "description": "More links per sheet on the all-sheets page, e.g. [{\"label\": \"Self-test\", \"anchor\": \"selftest\"}]." },
-    "filters": { "default": true, "description": "Group filter buttons on the all-sheets page." },
-    "allLabel": { "default": "All", "description": "Label of the show-everything filter." },
-    "printLabel": { "default": "Print", "description": "Print button label on the all-sheets page; empty to omit." },
-    "homeLink": { "default": "Summary sheets ↗", "description": "Link on the home page intro line; empty to omit." },
-    "topbarLink": { "default": "", "description": "Link label in every top bar; empty to omit." },
-    "railTitle": { "default": "Sheets", "description": "Rail heading on the all-sheets page." }
+    "dir": {
+      "default": "summaries",
+      "description": "Folder under content/ that holds the sheets."
+    },
+    "source": {
+      "default": "{id}.html",
+      "description": "Sheet file name for a page of the first (main) kind. Template fields: {id} {kind}."
+    },
+    "otherSource": {
+      "default": "{kind}-{id}.html",
+      "description": "Sheet file name for pages of any other kind."
+    },
+    "kinds": {
+      "default": null,
+      "description": "Page kinds that get sheets (list of kind names); null = every kind."
+    },
+    "require": {
+      "default": false,
+      "description": "Warn when a ready page has no sheet."
+    },
+    "sectionTitle": {
+      "default": "Summary sheet",
+      "description": "Heading of the sheet section inserted into each page."
+    },
+    "sectionNumber": {
+      "default": "∗",
+      "description": "What appears in the heading's number slot and the rail."
+    },
+    "sectionId": {
+      "default": "summary",
+      "description": "id of the inserted section (anchor target)."
+    },
+    "reviewable": {
+      "default": true,
+      "description": "Whether the inserted section gets a 'Mark as reviewed' button."
+    },
+    "marker": {
+      "default": "<!-- summary -->",
+      "description": "Put this comment in a page where the sheet should go; without it the sheet is appended at the end."
+    },
+    "page": {
+      "default": true,
+      "description": "Also build the all-sheets page."
+    },
+    "file": {
+      "default": "summaries.html",
+      "description": "File name of the all-sheets page."
+    },
+    "title": {
+      "default": "All summary sheets",
+      "description": "Title of the all-sheets page."
+    },
+    "anchor": {
+      "default": "s-{kind}-{id}",
+      "description": "Anchor of a main-kind sheet on the all-sheets page. Fields: {id} {kind}. Set to an old site's format to keep links working."
+    },
+    "otherAnchor": {
+      "default": "s-{kind}-{id}",
+      "description": "Anchor of other kinds' sheets on the all-sheets page."
+    },
+    "eyebrow": {
+      "default": "Summary sheets",
+      "description": "Eyebrow above that title."
+    },
+    "intro": {
+      "default": "Every page's summary sheet in one place, for review. Each sheet links back to its full notes.",
+      "description": "Lede of the all-sheets page (HTML allowed); empty to omit."
+    },
+    "backLink": {
+      "default": "All summary sheets →",
+      "description": "Link text under each inserted sheet that jumps to it on the all-sheets page; empty to omit."
+    },
+    "notesLink": {
+      "default": "Full notes",
+      "description": "Link text on the all-sheets page back to each page."
+    },
+    "extraLinks": {
+      "default": [],
+      "description": "More links per sheet on the all-sheets page, e.g. [{\"label\": \"Self-test\", \"anchor\": \"selftest\"}]."
+    },
+    "filters": {
+      "default": true,
+      "description": "Group filter buttons on the all-sheets page."
+    },
+    "allLabel": {
+      "default": "All",
+      "description": "Label of the show-everything filter."
+    },
+    "printLabel": {
+      "default": "Print",
+      "description": "Print button label on the all-sheets page; empty to omit."
+    },
+    "homeLink": {
+      "default": "Summary sheets ↗",
+      "description": "Link on the home page intro line; empty to omit."
+    },
+    "topbarLink": {
+      "default": "",
+      "description": "Link label in every top bar; empty to omit."
+    },
+    "railTitle": {
+      "default": "Sheets",
+      "description": "Rail heading on the all-sheets page."
+    }
   }
 }
