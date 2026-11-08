@@ -1,0 +1,53 @@
+{"title": "Lecture 04 slides", "slides": [
+  {"title": "Repeated trials and the law of large numbers", "bullets": [
+    "Lecture 04",
+    "Bernoulli trials and the binomial distribution",
+    "Waiting for a success: the geometric distribution",
+    "Running averages and the law of large numbers"]},
+  {"title": "Bernoulli trials", "bullets": [
+    "A Bernoulli trial has two outcomes: success with probability p, failure with 1 − p.",
+    "In repeated trials, the trials are independent and every trial has the same p.",
+    "Indicator: I = 1 on success and I = 0 on failure, so E[I] = p.",
+    "Var(I) = p(1 − p), which is largest when p = 1/2."]},
+  {"title": "Counting successes", "bullets": [
+    "X = the number of successes in n independent trials, each with success probability p.",
+    "Any one sequence with k successes has probability p^k (1 − p)^(n − k).",
+    "There are C(n, k) such sequences: choose which k trials succeed.",
+    "So X takes the values 0, 1, …, n."]},
+  {"title": "The binomial distribution", "bullets": [
+    "X ~ Bin(n, p) means P(X = k) = C(n, k) p^k (1 − p)^(n − k) for k = 0, 1, …, n.",
+    "The probabilities add up to 1 by the binomial theorem.",
+    "Bin(1, p) is a single Bernoulli trial.",
+    "The shape: symmetric when p = 1/2, skewed when p is near 0 or 1."]},
+  {"title": "Mean and variance", "bullets": [
+    "Write X = I_1 + I_2 + ⋯ + I_n, one indicator per trial.",
+    "Linearity of expectation: E[X] = p + p + ⋯ + p = np.",
+    "Independence: the variances add, so Var(X) = np(1 − p).",
+    "The standard deviation √(np(1 − p)) grows like √n, not like n."]},
+  {"title": "Three examples", "bullets": [
+    "Fair coin, 10 flips: P(exactly 5 heads) = 252/1024 ≈ 0.246.",
+    "Shooter with p = 0.8, 5 shots: P(all 5 go in) = 0.8⁵ ≈ 0.328.",
+    "20 parts, each defective with probability 0.05: P(none defective) = 0.95²⁰ ≈ 0.358.",
+    "In each case: identify n and p, check independence, then use the formula."]},
+  {"title": "Waiting for the first success", "bullets": [
+    "T = the number of trials up to and including the first success.",
+    "P(T = k) = (1 − p)^(k − 1) p for k = 1, 2, 3, …",
+    "E[T] = 1/p: a fair die needs 6 rolls on average to show a six.",
+    "Memoryless: past failures do not change the wait that is still ahead."]},
+  {"title": "Running averages", "bullets": [
+    "After n trials the running proportion of successes is X/n = (I_1 + ⋯ + I_n)/n.",
+    "E[X/n] = p and Var(X/n) = p(1 − p)/n.",
+    "The spread of the proportion shrinks like 1/√n."]},
+  {"title": "The law of large numbers", "bullets": [
+    "For every ε > 0: P(|X/n − p| ≥ ε) → 0 as n → ∞.",
+    "In words: the running proportion settles near p.",
+    "The count X does not settle near np: |X − np| typically grows like √n."]},
+  {"title": "Due for a win?", "bullets": [
+    "Independent trials have no memory: a streak does not change the next trial.",
+    "Early streaks are not corrected; they are diluted by later trials.",
+    "The law is about proportions, not about counts evening out."]},
+  {"title": "Summary", "bullets": [
+    "Bin(n, p): P(X = k) = C(n, k) p^k (1 − p)^(n − k), mean np, variance np(1 − p).",
+    "Geometric waiting time: P(T = k) = (1 − p)^(k − 1) p, mean 1/p.",
+    "Running proportions settle near p; streaks are diluted, never corrected."]}
+]}

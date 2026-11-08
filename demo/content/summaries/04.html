@@ -1,0 +1,19 @@
+<ul>
+  <li><b>Bernoulli trial:</b> success with probability <span class="m"><i>p</i></span>, failure with <span class="m">1 − <i>p</i></span>; indicator <span class="m"><i>I</i></span> has <span class="m">E[<i>I</i>] = <i>p</i></span>, <span class="m">Var(<i>I</i>) = <i>p</i>(1 − <i>p</i>)</span>.</li>
+  <li><b>Repeated trials:</b> independent, same <span class="m"><i>p</i></span> every time.</li>
+  <li><b>Binomial</b> <span class="m"><i>X</i> ~ Bin(<i>n</i>, <i>p</i>)</span>: <span class="m">P(<i>X</i> = <i>k</i>) = C(<i>n</i>, <i>k</i>) <i>p</i><sup><i>k</i></sup>(1 − <i>p</i>)<sup><i>n</i>−<i>k</i></sup></span>, <span class="m"><i>k</i> = 0, …, <i>n</i></span>.</li>
+  <li><b>Indicators:</b> <span class="m"><i>X</i> = <i>I</i><sub>1</sub> + ⋯ + <i>I</i><sub><i>n</i></sub></span>, so <span class="m">E[<i>X</i>] = <i>np</i></span> (linearity) and <span class="m">Var(<i>X</i>) = <i>np</i>(1 − <i>p</i>)</span> (independence).</li>
+  <li><b>Geometric wait</b> <span class="m"><i>T</i></span>: <span class="m">P(<i>T</i> = <i>k</i>) = (1 − <i>p</i>)<sup><i>k</i>−1</sup><i>p</i></span>, <span class="m">E[<i>T</i>] = 1/<i>p</i></span>, <span class="m">P(<i>T</i> &gt; <i>m</i>) = (1 − <i>p</i>)<sup><i>m</i></sup></span>; memoryless.</li>
+  <li><b>Running proportion</b> <span class="m"><i>X</i>/<i>n</i></span>: mean <span class="m"><i>p</i></span>, variance <span class="m"><i>p</i>(1 − <i>p</i>)/<i>n</i></span>.</li>
+  <li><b>Law of large numbers:</b> <span class="m">P(|<i>X</i>/<i>n</i> − <i>p</i>| ≥ ε) → 0</span> for every <span class="m">ε &gt; 0</span>; the count gap <span class="m"><i>X</i> − <i>np</i></span> grows like <span class="m">√<i>n</i></span>.</li>
+  <li><b>Streaks</b> are diluted, never corrected: a fair coin is never “due”.</li>
+</ul>
+<div class="tablewrap"><table class="t">
+  <thead><tr><th>Example</th><th>Model</th><th>Answer</th></tr></thead>
+  <tbody>
+    <tr><td>5 heads in 10 fair flips</td><td>Bin(10, 1/2)</td><td>63/256 ≈ 0.246</td></tr>
+    <tr><td>all 5 shots by an 80% shooter</td><td>Bin(5, 0.8)</td><td>0.8⁵ ≈ 0.328</td></tr>
+    <tr><td>no defect among 20 parts at 5%</td><td>Bin(20, 0.05)</td><td>0.95²⁰ ≈ 0.358</td></tr>
+    <tr><td>rolls until a six</td><td>geometric, p = 1/6</td><td>mean 6</td></tr>
+  </tbody>
+</table></div>
