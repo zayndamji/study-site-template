@@ -14,4 +14,6 @@ def configure(ctx, opts):
 def content(ctx, opts, page, html):
     if page['kind'] in getattr(ctx, '_resource_kinds', ()) and 'docTitle' not in page.get('meta', {}):
         page['meta']['docTitle'] = ctx.fmt(opts['titleFormat'], **ctx.page_vals(page))
+    if page['kind'] in getattr(ctx, '_resource_kinds', ()) and 'footer' not in page.get('meta', {}):
+        page['meta']['footer'] = opts['footer']
     return html

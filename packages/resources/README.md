@@ -22,6 +22,7 @@ Content goes in `content/guides/style.html`; the page is built as `guide-style.h
 | `kinds` | one kind, `guide` | Kind definitions to add (see `docs/configuration.md` → kinds). Define several for several resource types |
 | `homeFilter` | `true` | With `home.filters: "auto"`, filter by kind |
 | `titleFormat` | `"{title} — {site}"` | Browser title for these pages |
+| `footer` | `"{site} · {plural}"` | Footer of these pages |
 
 To rename, e.g. to "Handout": `"resources": {"kinds": {"handout": {"noun": "Handout", "plural": "Handouts", "file": "handout-{id}.html", "source": "handouts/{id}.html", "review": false, "prevNext": false, "numbered": false}}}`.
 

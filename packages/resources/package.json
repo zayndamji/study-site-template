@@ -5,21 +5,39 @@
   "category": "navigation",
   "version": "1.0.0",
   "requires": [],
-  "css": ["resources.css"],
+  "css": [
+    "resources.css"
+  ],
   "build": "build.py",
   "options": {
     "kinds": {
       "default": {
         "guide": {
-          "noun": "Guide", "plural": "Guides & resources", "short": "Guide",
-          "file": "guide-{id}.html", "source": "guides/{id}.html",
-          "eyebrow": "{noun}", "review": false, "prevNext": false, "numbered": false,
+          "noun": "Guide",
+          "plural": "Guides & resources",
+          "short": "Guide",
+          "file": "guide-{id}.html",
+          "source": "guides/{id}.html",
+          "eyebrow": "{noun}",
+          "review": false,
+          "prevNext": false,
+          "numbered": false,
           "rail": "On this page"
         }
       },
       "description": "Page kinds to add. Each is a kind definition (same keys as site.json \"kinds\"). A kind already defined in site.json wins."
     },
-    "homeFilter": { "default": true, "description": "When home.filters is \"auto\", filter the home page by kind (main pages vs resources) instead of by group." },
-    "titleFormat": { "default": "{title} — {site}", "description": "Browser title for resource pages (the site default uses the page number)." }
+    "homeFilter": {
+      "default": true,
+      "description": "When home.filters is \"auto\", filter the home page by kind (main pages vs resources) instead of by group."
+    },
+    "titleFormat": {
+      "default": "{title} — {site}",
+      "description": "Browser title for resource pages (the site default uses the page number)."
+    },
+    "footer": {
+      "default": "{site} · {plural}",
+      "description": "Footer of resource pages. Fields as in site.pageFooter ({site} {title} {noun} {plural} {position} {count})."
+    }
   }
 }
