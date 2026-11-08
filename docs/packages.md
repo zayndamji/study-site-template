@@ -141,4 +141,5 @@ front matter) once it has been read.
    (if any), *Notes for migrating existing notes* (if any).
 3. `example.html` that exercises every option-free feature, using only generic
    placeholder content.
-4. `python3 tools/study.py new /tmp/x --demo && python3 tools/study.py check /tmp/x` passes.
+4. `python3 tools/study.py packages --check` prints OK.
+5. `python3 tools/study.py new /tmp/x --demo && python3 tools/study.py check /tmp/x` passes.

@@ -4,7 +4,7 @@
   python3 tools/study.py new <dir> [--title T] [--noun Chapter] [--demo]   scaffold a new site
   python3 tools/study.py build [site_dir] [--force]                       build site_dir/dist
   python3 tools/study.py check [site_dir] [--no-build]                     build, then run every check
-  python3 tools/study.py packages [--json]                                 list available packages
+  python3 tools/study.py packages [--json|--check]                         list (or validate) packages
   python3 tools/study.py info <package>                                    show one package's options
   python3 tools/study.py serve [site_dir] [--port 8000]                    serve the built site locally
 
@@ -40,7 +40,38 @@ def cmd_new(a):
     return 0
 
 
+def validate_package(path):
+    """Return a list of contract problems for one package folder (see docs/packages.md)."""
+    probs = []
+    try:
+        m = read_package_meta(path)
+    except Exception as e:  # malformed JSON etc.
+        return [f'{path.name}: package.json unreadable ({e})']
+    if m['name'] != path.name:
+        probs.append(f'{path.name}: package.json name "{m["name"]}" differs from folder name')
+    for f in ('README.md', 'example.html'):
+        if not (path / f).exists():
+            probs.append(f'{path.name}: missing {f}')
+    for f in m['css'] + m['js']:
+        if not (path / f).exists():
+            probs.append(f'{path.name}: listed asset {f} does not exist')
+    for k, v in m['options'].items():
+        if not isinstance(v, dict) or 'default' not in v or not v.get('description'):
+            probs.append(f'{path.name}: option "{k}" needs a "default" and a "description"')
+    for key in ('title', 'description', 'category'):
+        if not m.get(key):
+            probs.append(f'{path.name}: package.json has no "{key}"')
+    return probs
+
+
 def cmd_packages(a):
+    if a.check:
+        probs = []
+        for p in sorted(PACKAGES_DIR.iterdir()):
+            if p.is_dir():
+                probs += validate_package(p)
+        print('\n'.join(probs) if probs else 'OK: every package follows the contract.')
+        return 1 if probs else 0
     rows = []
     for p in sorted(PACKAGES_DIR.iterdir()):
         if (p / 'package.json').exists():
@@ -108,6 +139,7 @@ def main(argv=None):
     n.set_defaults(fn=cmd_new)
     p = sub.add_parser('packages', help='list available packages')
     p.add_argument('--json', action='store_true')
+    p.add_argument('--check', action='store_true', help='validate every package against docs/packages.md')
     p.set_defaults(fn=cmd_packages)
     i = sub.add_parser('info', help="show a package's options")
     i.add_argument('package')
