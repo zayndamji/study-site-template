@@ -32,6 +32,9 @@ packages/<name>/
   README.md       required: what it does, how to enable, options, markup, JS API
   example.html    required: a content fragment that demonstrates the package
                   (used by `study.py new --demo` and by the checker)
+  demo/           optional: extra files the demo needs. demo/content/** is copied
+                  into the demo site's content/, demo/static/** into its static/.
+                  "{id}" in a file or folder name becomes the demo page's id.
   <name>.css      optional browser styles   (listed in package.json "css")
   <name>.js       optional browser script   (listed in package.json "js")
   build.py        optional build hooks      (see below)
