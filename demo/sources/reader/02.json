@@ -1,0 +1,26 @@
+{"pages": [
+ {"heading": "2.1 Conditional probability",
+  "paragraphs": [
+   "Often we learn something before the whole outcome is known: the die landed on an even number, the first card was an ace, the test came back positive. Conditional probability says how the probabilities should change.",
+   "Definition. If P(B) > 0, the conditional probability of A given B is P(A | B) = P(A and B) / P(B). Knowing that B happened, we keep only the outcomes inside B and rescale their probabilities so that they add up to one again. For a fair die, P(six | even) = (1/6) / (1/2) = 1/3: the six is one of three equally likely even faces.",
+   "For a fixed B, P(A | B) as a function of A is itself a probability. It is never negative, gives B probability one and adds over disjoint events. Every rule from Lecture 01 therefore holds conditionally, for example P(A′ | B) = 1 − P(A | B), where A′ is the complement of A.",
+   "Multiplying the definition out gives the multiplication rule P(A and B) = P(B) · P(A | B), and repeating it gives the chain rule P(A and B and C) = P(A) · P(B | A) · P(C | A and B). The chain rule suits draws made one after another: the chance that two cards drawn without replacement are both aces is (4/52) · (3/51) = 1/221."]},
+ {"heading": "2.2 Independence",
+  "paragraphs": [
+   "Two events are independent when P(A and B) = P(A) · P(B). When P(B) > 0 this is the same as P(A | B) = P(A): being told that B happened does not change the probability of A. The definition is symmetric in A and B and also makes sense when one of the probabilities is zero.",
+   "Independence is a numerical property, so it has to be checked, not guessed from the story. With two fair dice, the event that the first die shows 6 has probability 6/36, the event that the sum is 7 has probability 6/36, and both happen only for the outcome (6, 1), with probability 1/36 = (1/6) · (1/6). The two events are independent, even though the first die clearly takes part in the sum. Replace the sum 7 by the sum 8 and the product rule fails: 1/36 is not 1/6 · 5/36.",
+   "A common mistake is to confuse independent with disjoint. If A and B cannot both happen and each has positive probability, then P(A and B) = 0 while P(A) · P(B) > 0, so they are not independent. In fact they are as dependent as events can be: learning that B happened tells us for certain that A did not.",
+   "If A and B are independent, so are A and B′, A′ and B, and A′ and B′."]},
+ {"heading": "2.3 Total probability and Bayes’ rule",
+  "paragraphs": [
+   "A partition of the sample space is a collection of disjoint events B1, B2, … whose union is the whole space: exactly one of them happens. The law of total probability says P(A) = P(A | B1) P(B1) + P(A | B2) P(B2) + …, with one term for each piece. It follows from the multiplication rule, because the events “A and Bk” are disjoint and together make up A.",
+   "The simplest partition is B together with its complement B′, which gives P(A) = P(A | B) P(B) + P(A | B′) P(B′). It splits one hard question into two easier ones: what if B occurs, and what if not?",
+   "Bayes’ rule reverses a conditional probability. Writing P(A and B) in two ways, as P(B | A) P(A) and as P(A | B) P(B), and dividing by P(A) > 0 gives P(B | A) = P(A | B) P(B) / P(A); the denominator usually comes from total probability. P(B) is called the prior, P(A | B) the likelihood and P(B | A) the posterior.",
+   "A tree diagram organises the same calculation. Its first level of branches is the partition, labelled with the prior probabilities; the second level is the observation, labelled with conditional probabilities. Multiplying along a path gives its probability; Bayes’ rule divides one path by the sum of all paths ending in the same observation."]},
+ {"heading": "2.4 Base rates",
+  "paragraphs": [
+   "A diagnostic test is described by three numbers: the prevalence P(D) of the condition, the sensitivity P(+ | D), and the false-positive rate P(+ | D′). A person who tests positive wants the positive predictive value P(D | +), which depends on all three.",
+   "Take a prevalence of 1%, a sensitivity of 99% and a false-positive rate of 5%. Bayes’ rule gives P(D | +) = (0.99 · 0.01) / (0.99 · 0.01 + 0.05 · 0.99) = 0.0099 / 0.0594 = 1/6, about 16.7%. In natural frequencies: of 10,000 people, 100 have the condition and 99 of them test positive; of the 9,900 who do not, 495 test positive anyway. Only 99 of the 594 positives are sick.",
+   "Treating the sensitivity as if it were P(D | +), and so ignoring the base rate, is called the base-rate fallacy. When the condition is rare, the healthy group is so much larger that even a small false-positive rate produces more positives than the sick group does.",
+   "Evidence can be used again. After one positive result the posterior 1/6 becomes the prior for a second, independent test, and a second positive raises the probability to 99/124, about 79.8%."]}
+]}

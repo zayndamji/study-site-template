@@ -1,0 +1,18 @@
+<ul>
+  <li><b>Conditional probability</b>: <span class="m">P(<i>A</i> | <i>B</i>) = P(<i>A</i> ∩ <i>B</i>) / P(<i>B</i>)</span>, only when <span class="m">P(<i>B</i>) &gt; 0</span>. Keep the outcomes in <i>B</i>, rescale. It is a probability in <i>A</i>.</li>
+  <li><b>Not symmetric</b>: <span class="m">P(<i>A</i> | <i>B</i>)</span> and <span class="m">P(<i>B</i> | <i>A</i>)</span> are usually different numbers.</li>
+  <li><b>Multiplication / chain rule</b>: <span class="m">P(<i>A</i> ∩ <i>B</i>) = P(<i>B</i>)P(<i>A</i> | <i>B</i>)</span>; <span class="m">P(<i>A</i> ∩ <i>B</i> ∩ <i>C</i>) = P(<i>A</i>)P(<i>B</i> | <i>A</i>)P(<i>C</i> | <i>A</i> ∩ <i>B</i>)</span>. Two aces: <span class="m">4/52 · 3/51 = 1/221</span>.</li>
+  <li><b>Independence</b>: <span class="m">P(<i>A</i> ∩ <i>B</i>) = P(<i>A</i>)P(<i>B</i>)</span>, i.e. <span class="m">P(<i>A</i> | <i>B</i>) = P(<i>A</i>)</span>. Check it with numbers. Disjoint events with positive probabilities are <em>never</em> independent.</li>
+  <li><b>Total probability</b>: for a partition <span class="m"><i>B</i>₁, <i>B</i>₂, …</span>, <span class="m">P(<i>A</i>) = ∑ P(<i>A</i> | <i>B</i><sub><i>k</i></sub>)P(<i>B</i><sub><i>k</i></sub>)</span>.</li>
+  <li><b>Bayes’ rule</b>: <span class="m">P(<i>B</i> | <i>A</i>) = P(<i>A</i> | <i>B</i>)P(<i>B</i>) / P(<i>A</i>)</span> (slide s8 swaps P(A) and P(B): erratum). Prior, likelihood, posterior.</li>
+  <li><b>Tree</b>: multiply along paths, add paths with the same result, divide one path by that sum.</li>
+  <li><b>Base rates</b>: always ask for <span class="m">P(<i>D</i>)</span>. Treating <span class="m">P(+ | <i>D</i>)</span> as <span class="m">P(<i>D</i> | +)</span> is the base-rate fallacy.</li>
+</ul>
+<div class="tablewrap"><table class="t">
+  <thead><tr><th>Test (out of 10,000)</th><th>prevalence</th><th>sens. / FP</th><th>P(D | +)</th></tr></thead>
+  <tbody>
+    <tr><td>rare condition</td><td>1%</td><td>99% / 5%</td><td>99/594 = 1/6 ≈ 16.7%</td></tr>
+    <tr><td>after a second positive</td><td>1/6</td><td>99% / 5%</td><td>99/124 ≈ 79.8%</td></tr>
+    <tr><td>high-risk group</td><td>20%</td><td>99% / 5%</td><td>99/119 ≈ 83.2%</td></tr>
+  </tbody>
+</table></div>

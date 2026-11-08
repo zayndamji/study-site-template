@@ -1,0 +1,64 @@
+{"title": "Lecture 02 slides", "slides": [
+ {"title": "Conditional probability and Bayes’ rule", "bullets": [
+  "Lecture 02 · Probability Notebook",
+  "How probabilities change when we learn that something happened"]},
+ {"title": "Conditioning on an event", "bullets": [
+  "Learning that B happened rules out every outcome outside B",
+  "P(A | B) = P(A ∩ B) / P(B), defined only when P(B) > 0",
+  "Read P(A | B) as “the probability of A given B”",
+  "One fair die: P(six | even) = (1/6) / (1/2) = 1/3"]},
+ {"title": "A conditional probability is a probability", "bullets": [
+  "For a fixed B with P(B) > 0, P(· | B) satisfies every axiom",
+  "So the usual rules carry over: P(A′ | B) = 1 − P(A | B)",
+  "With equally likely outcomes: P(A | B) = |A ∩ B| / |B|",
+  "P(A | B) and P(B | A) answer different questions and usually differ"]},
+ {"title": "The multiplication rule", "bullets": [
+  "Rearranging the definition: P(A ∩ B) = P(B) · P(A | B)",
+  "Either order works: P(A ∩ B) = P(A) · P(B | A)",
+  "Chain rule: P(A ∩ B ∩ C) = P(A) · P(B | A) · P(C | A ∩ B)",
+  "Two cards without replacement, both aces: (4/52) · (3/51) = 1/221"]},
+ {"title": "Independence", "bullets": [
+  "A and B are independent when P(A ∩ B) = P(A) · P(B)",
+  "If P(B) > 0 this says P(A | B) = P(A): learning B changes nothing about A",
+  "Two fair dice: “first die shows 6” and “sum is 7” are independent",
+  "Independence is a fact about probabilities, not about physical causes"]},
+ {"title": "Disjoint is not independent", "bullets": [
+  "Disjoint events with P(A) > 0 and P(B) > 0 are never independent",
+  "Disjoint means P(A ∩ B) = 0, but then P(A) · P(B) > 0",
+  "Learning that B happened tells you A did not: that is strong dependence"]},
+ {"title": "The law of total probability", "bullets": [
+  "A partition: disjoint events B₁, B₂, … that together make up Ω",
+  "P(A) = P(A | B₁)P(B₁) + P(A | B₂)P(B₂) + …, one term for each piece",
+  "Simplest partition: B and B′, so P(A) = P(A | B)P(B) + P(A | B′)P(B′)",
+  "Strategy: split a hard question into easy cases, then add them up"]},
+ {"title": "Bayes’ rule", "bullets": [
+  "Reverses a conditional: from P(A | B) to P(B | A)",
+  "P(B | A) = P(A | B) · P(A) / P(B)",
+  "Denominator by total probability: P(A) = P(A | B)P(B) + P(A | B′)P(B′)",
+  "Vocabulary: prior P(B), likelihood P(A | B), posterior P(B | A)"]},
+ {"title": "Diagnostic tests and base rates", "bullets": [
+  "Prevalence P(D), sensitivity P(+ | D), false-positive rate P(+ | D′)",
+  "The patient wants P(D | +), and that needs all three numbers",
+  "1% prevalence, 99% sensitivity, 5% false positives: P(D | +) = 1/6 ≈ 16.7%",
+  "Base-rate fallacy: ignoring P(D) and reading P(+ | D) as if it were P(D | +)"]},
+ {"title": "Natural frequencies", "bullets": [
+  "Out of 10,000 people, 100 have the condition and 99 of them test positive",
+  "Of the 9,900 without it, 5% = 495 also test positive",
+  "So 99 of the 594 positives are sick: 99/594 = 1/6",
+  "A rare condition means most positives come from the large healthy group"]},
+ {"title": "Tree diagrams", "bullets": [
+  "First level: the partition (sick or healthy), labelled with prior probabilities",
+  "Second level: the test result, labelled with conditional probabilities",
+  "Multiply along a path to get the probability of that path",
+  "Add the paths that end in the same result; Bayes divides one path by that total"]},
+ {"title": "Updating twice", "bullets": [
+  "Yesterday’s posterior is today’s prior",
+  "A second positive, independent of the first given the true status:",
+  "P(D | + +) = (1/6 · 0.99) / (1/6 · 0.99 + 5/6 · 0.05) = 99/124 ≈ 79.8%"]},
+ {"title": "Summary", "bullets": [
+  "P(A | B) = P(A ∩ B) / P(B): keep only B, then rescale",
+  "The multiplication and chain rules build joint probabilities step by step",
+  "Independent: P(A ∩ B) = P(A)P(B); disjoint events are not independent",
+  "Total probability splits into cases; Bayes’ rule reverses the conditional",
+  "Always ask for the base rate"]}
+]}

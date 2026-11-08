@@ -1,0 +1,664 @@
+<!--page {"lede": "What learning one fact does to every other probability: conditioning, independence, total probability and Bayes’ rule, with a diagnostic test as the running example.", "overview": [
+  "<span class=\"m\">P(<i>A</i> | <i>B</i>) = P(<i>A</i> ∩ <i>B</i>) / P(<i>B</i>)</span>: keep only the outcomes in <i>B</i>, then rescale.",
+  "The multiplication rule <span class=\"m\">P(<i>A</i> ∩ <i>B</i>) = P(<i>B</i>) · P(<i>A</i> | <i>B</i>)</span> builds joint probabilities one step at a time.",
+  "Independent means <span class=\"m\">P(<i>A</i> ∩ <i>B</i>) = P(<i>A</i>) · P(<i>B</i>)</span>; disjoint events with positive probabilities are never independent.",
+  "Total probability splits <span class=\"m\">P(<i>A</i>)</span> over a partition; Bayes’ rule turns <span class=\"m\">P(<i>A</i> | <i>B</i>)</span> into <span class=\"m\">P(<i>B</i> | <i>A</i>)</span>.",
+  "When a condition is rare, most positive tests are false positives: always ask for the base rate."
+]} -->
+<style>
+svg.l02-svg { width: 100%; height: auto; max-width: 560px; display: block; margin: 10px auto; }
+svg.l02-svg text { font-family: var(--f-math); font-size: 13px; fill: var(--ink); }
+svg.l02-svg text.sm { font-size: 12px; fill: var(--muted); }
+svg.l02-svg.narrow { max-width: 360px; }
+svg.l02-svg text.b { font-weight: 700; }
+svg.l02-svg .cell { fill: var(--surface); stroke: var(--rule); }
+svg.l02-svg .inB { fill: var(--term-soft); stroke: var(--term); }
+svg.l02-svg .dotA { fill: none; stroke: var(--muted); stroke-width: 1.6; }
+svg.l02-svg .dotAB { fill: var(--term); stroke: var(--term); }
+svg.l02-svg .edge { stroke: var(--rule); stroke-width: 1.6; fill: none; }
+svg.l02-svg .edge.hot { stroke: var(--term); stroke-width: 2.6; }
+svg.l02-svg .fillT { fill: var(--term); }
+svg.l02-svg .fillB { fill: var(--bad); }
+svg.l02-svg .fillS { fill: var(--term-soft); }
+svg.l02-svg text.tT { fill: var(--term); font-weight: 700; }
+svg.l02-svg text.tB { fill: var(--bad); font-weight: 700; }
+svg.l02-svg .frame { fill: none; stroke: var(--rule); }
+svg.l02-svg .guide { stroke: var(--ink); stroke-width: 1.4; stroke-dasharray: 5 4; fill: none; }
+.l02-ind input { width: 4.2em; font: 1rem var(--f-math); padding: 6px 8px; border: 1px solid var(--rule); border-radius: 8px; background: var(--paper); color: var(--ink); }
+.l02-ind th, .l02-ind td { text-align: center; padding-left: 4px; padding-right: 4px; }
+.l02-lines > div + div { margin-top: 4px; }
+</style>
+
+<section class="note" id="conditioning">
+  <h2><span class="n">01</span> Conditioning on an event</h2>
+  <p class="src">Slides s2–4 · <span class="cite" data-page="5">Reader §2.1</span></p>
+
+  <div class="key"><span class="lbl">The idea</span>
+    <p>Learning that <i>B</i> happened throws away every outcome outside <i>B</i>. What is left is rescaled so that it adds up to one again.</p>
+  </div>
+
+  <div class="box def"><span class="lbl">Definition · Conditional probability</span>
+    <blockquote class="quote"><p>P(A | B) = P(A ∩ B) / P(B), defined only when P(B) > 0</p><cite>s2</cite></blockquote>
+    <p>Read <span class="m">P(<i>A</i> | <i>B</i>)</span> as <q class="quote">the probability of A given B</q>. With equally likely outcomes it is a ratio of counts, <span class="m">|<i>A</i> ∩ <i>B</i>| / |<i>B</i>|</span>. <span class="ref">s3</span></p>
+  </div>
+
+  <p>One fair die, <i>A</i> = “six”, <i>B</i> = “even”: <span class="m">P(<i>A</i> | <i>B</i>) = (1/6) / (1/2) = 1/3</span>. Of the three even faces left, one is a six. <span class="ref">s2</span></p>
+
+  <p>For a fixed <i>B</i>, conditional probability is a probability in its own right, so every rule from Lecture 01 holds with “<span class="m">| <i>B</i></span>” attached, for example <span class="m">P(<i>A</i>′ | <i>B</i>) = 1 − P(<i>A</i> | <i>B</i>)</span>, where <span class="m"><i>A</i>′</span> is the complement of <i>A</i>. But the bar is not symmetric:</p>
+  <blockquote class="quote"><p>P(A | B) and P(B | A) answer different questions and usually differ</p><cite>s3</cite></blockquote>
+
+  <div class="widget" id="l02-dice">
+    <div class="lbl">Try it · Conditioning two dice</div>
+    <p class="how">Pick an event <i>A</i> and the information <i>B</i>. Columns are the first die, rows the second. Shaded squares are the outcomes still possible once you know <i>B</i>; dots mark <i>A</i>. <span class="m">P(<i>A</i> | <i>B</i>)</span> is the share of shaded squares with a filled dot.</p>
+    <div id="l02-dice-presets"></div>
+    <div class="controls">
+      <label class="field">event A<select id="l02-dA"></select></label>
+      <label class="field">given B<select id="l02-dB"></select></label>
+    </div>
+    <svg class="l02-svg narrow" id="l02-dice-svg" viewBox="0 0 280 280" role="img" aria-label="The 36 outcomes of two dice, with B shaded and A dotted"><title>Outcomes of two dice: B shaded, A dotted</title></svg>
+    <div class="out l02-lines" id="l02-dice-out" aria-live="polite"></div>
+  </div>
+  <script>
+  (function () {
+    const M = Study.math, $ = M.$, F = M.F;
+    const EV = [
+      ['first6', 'first die shows 6', (a, b) => a === 6],
+      ['sum7', 'sum is 7', (a, b) => a + b === 7],
+      ['sum8', 'sum is 8', (a, b) => a + b === 8],
+      ['sum10', 'sum is at least 10', (a, b) => a + b >= 10],
+      ['doubles', 'doubles', (a, b) => a === b],
+      ['firstEven', 'first die is even', (a, b) => a % 2 === 0],
+      ['six', 'at least one 6', (a, b) => a === 6 || b === 6],
+      ['second1', 'second die shows 1', (a, b) => b === 1],
+      ['bothOdd', 'both dice odd', (a, b) => a % 2 === 1 && b % 2 === 1],
+      ['sumEven', 'sum is even', (a, b) => (a + b) % 2 === 0],
+    ];
+    const selA = $('l02-dA'), selB = $('l02-dB'), svg = $('l02-dice-svg'), out = $('l02-dice-out');
+    EV.forEach(([id, name]) => { selA.add(new Option(name, id)); selB.add(new Option(name, id)); });
+    const ev = (id) => EV.find((e) => e[0] === id);
+    const ratio = (n, d) => { const r = M.str(F(n, d)); return r === n + '/' + d ? r : n + '/' + d + ' = ' + r; };
+    function render() {
+      const A = ev(selA.value)[2], B = ev(selB.value)[2];
+      [...svg.querySelectorAll(':scope > :not(title)')].forEach((n) => n.remove());
+      let nA = 0, nB = 0, nAB = 0;
+      for (let k = 1; k <= 6; k++) {
+        M.svgEl('text', { x: 30 + (k - 1) * 40 + 20, y: 20, 'text-anchor': 'middle', class: 'sm' }, svg).textContent = k;
+        M.svgEl('text', { x: 14, y: 30 + (k - 1) * 40 + 25, 'text-anchor': 'middle', class: 'sm' }, svg).textContent = k;
+      }
+      for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++) {
+        const inA = A(a, b), inB = B(a, b), x = 30 + (a - 1) * 40, y = 30 + (b - 1) * 40;
+        nA += inA; nB += inB; nAB += inA && inB;
+        M.svgEl('rect', { x: x + 1, y: y + 1, width: 38, height: 38, rx: 5, class: inB ? 'inB' : 'cell' }, svg);
+        if (inA) M.svgEl('circle', { cx: x + 20, cy: y + 20, r: 8, class: inB ? 'dotAB' : 'dotA' }, svg);
+      }
+      const pA = F(nA, 36), pAgB = F(nAB, nB), cmp = M.cmp(pAgB, pA);
+      const verdict = cmp > 0 ? 'knowing B <b>raises</b> the chance of A'
+        : cmp < 0 ? 'knowing B <b>lowers</b> the chance of A'
+        : 'knowing B <b>changes nothing</b>: A and B are independent';
+      out.innerHTML =
+        '<div><span class="k">P(B)</span>' + ratio(nB, 36) +
+        '&emsp;<span class="k">P(A ∩ B)</span>' + ratio(nAB, 36) + '</div>' +
+        '<div><span class="k">P(A | B)</span><b>' + ratio(nAB, nB) + '</b>' +
+        '&emsp;<span class="k">P(A)</span>' + M.str(pA) + ' — ' + verdict + '</div>' +
+        '<div><span class="k">P(B | A)</span>' + ratio(nAB, nA) + '</div>';
+    }
+    const presets = [
+      { name: 'big sum | first is 6', value: ['sum10', 'first6'], note: 'Knowing the first die is 6 triples the chance of a big sum: 3 of the 6 remaining outcomes, so 1/2 instead of 1/6.' },
+      { name: 'first is 6 | sum 7', value: ['first6', 'sum7'], note: 'P(A | B) = 1/6 = P(A): the information does not move the probability, so these two events are independent. <span class="ref">s5</span>' },
+      { name: 'doubles | sum 8', value: ['doubles', 'sum8'], note: 'Five outcomes have sum 8 and one of them, (4, 4), is a double: 1/5, a little more than the unconditional 1/6.' },
+      { name: 'big sum | a 6', value: ['sum10', 'six'], note: 'P(sum ≥ 10 | at least one 6) = 5/11, but P(at least one 6 | sum ≥ 10) = 5/6 (see the last line): swapping the events changes the answer.' },
+      { name: 'sum even | both odd', value: ['sumEven', 'bothOdd'], note: 'Two odd numbers always add up to an even number, so the conditional probability is 1: B forces A.' },
+      { name: 'second is 1 | big sum', value: ['second1', 'sum10'], note: 'A sum of at least 10 needs both dice to show 4 or more, so a 1 is impossible: B rules A out completely.' },
+      { name: 'first even | sum even', value: ['firstEven', 'sumEven'], note: 'Given an even sum, the dice are both even or both odd, equally often: 9 of 18, the same 1/2 as without the information.' },
+    ];
+    const row = Study.presets.mount($('l02-dice-presets'), presets, (p) => { selA.value = p.value[0]; selB.value = p.value[1]; render(); });
+    [selA, selB].forEach((s) => s.addEventListener('change', () => { row.clear('Your own pair of events.'); render(); }));
+    render();
+  })();
+  </script>
+
+  <h3>The multiplication rule</h3>
+  <p>Multiplying the definition out gives a way to build the probability of “both” from a probability and a conditional probability. <span class="ref">s4</span></p>
+  <div class="box thm"><span class="lbl">Multiplication rule and chain rule</span>
+    <blockquote class="quote"><p>Rearranging the definition: P(A ∩ B) = P(B) · P(A | B)</p><cite>s4</cite></blockquote>
+    <blockquote class="quote"><p>Chain rule: P(A ∩ B ∩ C) = P(A) · P(B | A) · P(C | A ∩ B)</p><cite>s4</cite></blockquote>
+  </div>
+  <p>Draws made one after another fit the chain rule exactly: two cards without replacement are both aces with probability <span class="m">(4/52) · (3/51) = 1/221</span>. The second factor is a conditional probability: after one ace is gone, 3 of the 51 remaining cards are aces. <span class="ref">s4</span></p>
+
+  <details class="reveal more"><summary>Why divide by P(B)?</summary><div class="body">
+    <p>Once we know <i>B</i> happened, outcomes outside <i>B</i> get probability 0. Inside <i>B</i> nothing tells one outcome apart from another more than before, so their probabilities should keep the same <em>ratios</em>. The only way to keep the ratios and make the total 1 is to divide every probability inside <i>B</i> by <span class="m">P(<i>B</i>)</span>; then the part of <i>A</i> that survives has probability <span class="m">P(<i>A</i> ∩ <i>B</i>) / P(<i>B</i>)</span>. <span class="beyond"></span></p>
+  </div></details>
+
+  <details class="reveal more"><summary>Three cards in a row</summary><div class="body">
+    <p>The chance that three cards dealt without replacement are all hearts is, by the chain rule, <span class="m">(13/52) · (12/51) · (11/50) = 11/850 ≈ 0.0129</span>. Each factor is conditional on the hearts already dealt. <span class="beyond"></span></p>
+  </div></details>
+
+  <details class="reveal check"><summary>Quick check</summary><div class="body">
+    <p>Two fair dice are rolled and you learn that the sum is 4. What is the probability that the first die shows 1?</p>
+    <p><b>1/3.</b> The sum 4 leaves <span class="m">(1, 3), (2, 2), (3, 1)</span>, three equally likely outcomes, and one of them starts with 1.</p>
+  </div></details>
+</section>
+
+<section class="note" id="independence">
+  <h2><span class="n">02</span> Independence</h2>
+  <p class="src">Slides s5–6 · <span class="cite" data-page="6">Reader §2.2</span></p>
+
+  <div class="key"><span class="lbl">The idea</span>
+    <p>Independent events do not inform each other: knowing that <i>B</i> happened leaves the probability of <i>A</i> where it was.</p>
+  </div>
+
+  <div class="box def"><span class="lbl">Definition · Independent events</span>
+    <blockquote class="quote"><p>A and B are independent when P(A ∩ B) = P(A) · P(B)</p><cite>s5</cite></blockquote>
+    <blockquote class="quote"><p>If P(B) > 0 this says P(A | B) = P(A): learning B changes nothing about A</p><cite>s5</cite></blockquote>
+  </div>
+
+  <p>Independence is a property of the numbers and has to be checked. With two fair dice, “first die shows 6” and “sum is 7” each have probability <span class="m">6/36</span>, and both happen only for <span class="m">(6, 1)</span>: <span class="m">1/36 = (1/6) · (1/6)</span>. They are independent even though the first die is part of the sum. Change the sum to 8 and the product rule fails, <span class="m">1/36 ≠ (1/6) · (5/36)</span>. <span class="ref">s5</span></p>
+
+  <div class="pitfall"><span class="lbl">Pitfall · Disjoint is not independent</span>
+    <blockquote class="quote"><p>Disjoint events with P(A) > 0 and P(B) > 0 are never independent</p><cite>s6</cite></blockquote>
+    <p>Disjoint means <span class="m">P(<i>A</i> ∩ <i>B</i>) = 0</span>, while <span class="m">P(<i>A</i>) · P(<i>B</i>) &gt; 0</span>. Far from being unrelated, disjoint events are strongly dependent: <q class="quote">Learning that B happened tells you A did not: that is strong dependence</q>. <span class="ref">s6</span></p>
+  </div>
+
+  <div class="widget" id="l02-ind">
+    <div class="lbl">Try it · Independence checker</div>
+    <p class="how">Type counts for the four combinations (whole numbers, not all zero). The checker compares <span class="m">P(<i>A</i> ∩ <i>B</i>)</span> with <span class="m">P(<i>A</i>) · P(<i>B</i>)</span> exactly. In the picture each column is split by <i>A</i>; the events are independent exactly when both splits meet the dashed line.</p>
+    <div id="l02-ind-presets"></div>
+    <div class="tablewrap"><table class="t l02-ind">
+      <thead><tr><th></th><th>B</th><th>B′</th><th>total</th></tr></thead>
+      <tbody>
+        <tr><th>A</th><td><input id="l02-i11" type="number" min="0" step="1" aria-label="count of A and B"></td><td><input id="l02-i10" type="number" min="0" step="1" aria-label="count of A and not B"></td><td id="l02-iA"></td></tr>
+        <tr><th>A′</th><td><input id="l02-i01" type="number" min="0" step="1" aria-label="count of not A and B"></td><td><input id="l02-i00" type="number" min="0" step="1" aria-label="count of not A and not B"></td><td id="l02-iAc"></td></tr>
+        <tr><th>total</th><td id="l02-iB"></td><td id="l02-iBc"></td><td id="l02-iN"></td></tr>
+      </tbody>
+    </table></div>
+    <p class="aside" id="l02-ind-names"></p>
+    <div class="out l02-lines" id="l02-ind-out" aria-live="polite"></div>
+    <svg class="l02-svg narrow" id="l02-ind-svg" viewBox="0 0 320 240" role="img" aria-label="Mosaic picture: columns B and not B, each split by A"><title>Columns B and B′, each split by A; the dashed line is P(A)</title></svg>
+  </div>
+  <script>
+  (function () {
+    const M = Study.math, $ = M.$, F = M.F;
+    const ids = ['l02-i11', 'l02-i10', 'l02-i01', 'l02-i00'];
+    const svg = $('l02-ind-svg'), out = $('l02-ind-out');
+    const pct = (p) => M.fmt(M.value(p) * 100, 2) + '%';
+    function render() {
+      const v = ids.map((id) => Number($(id).value));
+      if (v.some((x) => !Number.isInteger(x) || x < 0) || v.every((x) => x === 0)) {
+        out.textContent = 'Enter four whole numbers ≥ 0, not all zero.';
+        ['l02-iA', 'l02-iAc', 'l02-iB', 'l02-iBc', 'l02-iN'].forEach((id) => { $(id).textContent = '—'; });
+        [...svg.querySelectorAll(':scope > :not(title)')].forEach((n) => n.remove());
+        return;
+      }
+      const [a, b, c, d] = v, N = a + b + c + d;
+      $('l02-iA').textContent = a + b; $('l02-iAc').textContent = c + d;
+      $('l02-iB').textContent = a + c; $('l02-iBc').textContent = b + d; $('l02-iN').textContent = N;
+      const pA = F(a + b, N), pB = F(a + c, N), pAB = F(a, N), prod = M.mul(pA, pB), k = M.cmp(pAB, prod);
+      let verdict;
+      if (k === 0) verdict = '<b>independent</b>: P(A ∩ B) = P(A) · P(B) exactly';
+      else if (a === 0 && a + b > 0 && a + c > 0) verdict = '<b>dependent</b>: A and B are disjoint here, so P(A ∩ B) = 0 &lt; P(A) · P(B)';
+      else verdict = '<b>dependent</b>, ' + (k > 0 ? 'positively: A is more likely when B happens' : 'negatively: A is less likely when B happens');
+      const ratio = (n, dd) => { const r = M.str(F(n, dd)); return r === n + '/' + dd ? r : n + '/' + dd + ' = ' + r; };
+      const cond = (num, den, lbl) => den ? '<span class="k">' + lbl + '</span>' + ratio(num, den) + '&emsp;' : '<span class="k">' + lbl + '</span>undefined&emsp;';
+      out.innerHTML =
+        '<div><span class="k">P(A)</span>' + M.str(pA) + '&emsp;<span class="k">P(B)</span>' + M.str(pB) + '</div>' +
+        '<div><span class="k">P(A ∩ B)</span>' + M.str(pAB) + ' (' + pct(pAB) + ')   <span class="k">P(A) · P(B)</span>' + M.str(prod) + ' (' + pct(prod) + ')</div>' +
+        '<div>' + cond(a, a + c, 'P(A | B)') + cond(b, b + d, 'P(A | B′)') + '</div>' +
+        '<div><span class="k">verdict</span>' + verdict + '</div>';
+      // mosaic
+      [...svg.querySelectorAll(':scope > :not(title)')].forEach((n) => n.remove());
+      const x0 = 34, y0 = 8, W = 276, H = 180, gap = 3;
+      const wB = M.value(pB) * (W - gap), cols = [[a, c, x0, wB, 'B'], [b, d, x0 + wB + gap, (W - gap) - wB, 'B′']];
+      cols.forEach(([inA, outA, x, w, lbl]) => {
+        if (w <= 0.01 || inA + outA === 0) return;
+        const h = H * inA / (inA + outA);
+        M.svgEl('rect', { x, y: y0, width: w, height: h, class: 'fillT' }, svg);
+        M.svgEl('rect', { x, y: y0 + h, width: w, height: H - h, class: 'fillS' }, svg);
+        M.svgEl('rect', { x, y: y0, width: w, height: H, class: 'frame' }, svg);
+        if (w > 18) M.svgEl('text', { x: x + w / 2, y: y0 + H + 18, 'text-anchor': 'middle' }, svg).textContent = lbl;
+      });
+      const yA = y0 + H * M.value(pA);
+      M.svgEl('line', { x1: x0 - 6, x2: x0 + W + 4, y1: yA, y2: yA, class: 'guide' }, svg);
+      M.svgEl('text', { x: 4, y: Math.max(y0 + 12, Math.min(yA - 4, y0 + H)), class: 'sm' }, svg).textContent = 'P(A)';
+      M.svgEl('rect', { x: x0, y: 224, width: 12, height: 12, class: 'fillT' }, svg);
+      M.svgEl('text', { x: x0 + 16, y: 234, class: 'sm' }, svg).textContent = 'A';
+      M.svgEl('rect', { x: x0 + 34, y: 224, width: 12, height: 12, class: 'fillS' }, svg);
+      M.svgEl('rect', { x: x0 + 34, y: 224, width: 12, height: 12, class: 'frame' }, svg);
+      M.svgEl('text', { x: x0 + 50, y: 234, class: 'sm' }, svg).textContent = 'A′   (column width = its probability)';
+    }
+    const presets = [
+      { name: 'die: 6 first / sum 7', value: { t: [1, 5, 5, 25], A: 'first die shows 6', B: 'sum is 7' }, note: 'The 36 outcomes of two dice. 1/36 = 1/6 · 1/6, so the events are independent although the first die is part of the sum. <span class="ref">s5</span>' },
+      { name: 'die: 6 first / sum 8', value: { t: [1, 5, 4, 26], A: 'first die shows 6', B: 'sum is 8' }, note: 'Almost the same story, but 1/36 = 6/216 is not 5/216: close to independent is still dependent.' },
+      { name: 'card: ace / heart', value: { t: [1, 3, 12, 36], A: 'the card is an ace', B: 'the card is a heart' }, note: 'One card from 52: 1/52 = 4/52 · 13/52. Rank and suit are independent in a full deck.' },
+      { name: 'disjoint', value: { t: [0, 6, 6, 24], A: 'first die shows 1', B: 'first die shows 6' }, note: 'Disjoint events with positive probabilities: P(A ∩ B) = 0 but P(A) · P(B) = 1/36. The two columns split completely differently. <span class="ref">s6</span>' },
+      { name: 'positive link', value: { t: [30, 10, 20, 40], A: 'carried an umbrella', B: 'it rained (made-up counts)' }, note: 'P(A | B) = 3/5 but P(A | B′) = 1/5: A is three times as common when B happens.' },
+      { name: 'negative link', value: { t: [5, 35, 45, 15], A: 'event A', B: 'event B (made-up counts)' }, note: 'Same margins as the previous preset, P(A) = 2/5 and P(B) = 1/2, but now A is rare when B happens: the margins alone cannot decide independence.' },
+      { name: 'same rate in both', value: { t: [12, 18, 28, 42], A: 'event A', B: 'event B (made-up counts)' }, note: 'A has the same rate, 3/10, in both columns, so the counts are exactly independent: 12/100 = 30/100 · 40/100.' },
+      { name: 'B certain', value: { t: [3, 0, 7, 0], A: 'event A', B: 'something that always happens' }, note: 'An edge case: when P(B) = 1, P(A ∩ B) = P(A) = P(A) · 1, so every event is independent of a certain event.' },
+    ];
+    const row = Study.presets.mount($('l02-ind-presets'), presets, (p) => {
+      ids.forEach((id, i) => { $(id).value = p.value.t[i]; });
+      $('l02-ind-names').innerHTML = 'A = ' + p.value.A + ', B = ' + p.value.B + '.';
+      render();
+    });
+    ids.forEach((id) => $(id).addEventListener('input', () => { row.clear('Your own table.'); $('l02-ind-names').textContent = ''; render(); }));
+  })();
+  </script>
+
+  <details class="reveal more"><summary>Complements of independent events</summary><div class="body">
+    <p>If <i>A</i> and <i>B</i> are independent, so are <i>A</i> and <span class="m"><i>B</i>′</span>: <span class="beyond"></span></p>
+    <div class="mblock"><span class="row">P(<i>A</i> ∩ <i>B</i>′) = P(<i>A</i>) − P(<i>A</i> ∩ <i>B</i>) = P(<i>A</i>) − P(<i>A</i>)P(<i>B</i>) = P(<i>A</i>)(1 − P(<i>B</i>)) = P(<i>A</i>)P(<i>B</i>′).</span></div>
+    <p>Applying this twice gives the other pairs, <i>A</i>′ with <i>B</i> and <i>A</i>′ with <i>B</i>′. <span class="cite" data-page="6">Reader §2.2</span></p>
+  </div></details>
+
+  <details class="reveal more"><summary>Three events: pairwise is not enough</summary><div class="body">
+    <div class="beyond-block">
+      <p>Flip two fair coins. Let <i>A</i> = “first is heads”, <i>B</i> = “second is heads”, <i>C</i> = “the two flips match”. Each has probability 1/2 and each pair meets in one outcome of four, so every pair is independent: <span class="m">1/4 = 1/2 · 1/2</span>. But all three happen only for HH, so <span class="m">P(<i>A</i> ∩ <i>B</i> ∩ <i>C</i>) = 1/4 ≠ 1/8</span>. Any two of the events determine the third. For three or more events, “independent” means the product rule holds for <em>every</em> subcollection.</p>
+    </div>
+  </div></details>
+
+  <details class="reveal check"><summary>Quick check</summary><div class="body">
+    <p>A fair coin is flipped twice. Are “first flip is heads” and “the two flips match” independent?</p>
+    <p><b>Yes.</b> Each has probability 1/2, and both happen only for HH, with probability <span class="m">1/4 = 1/2 · 1/2</span>.</p>
+  </div></details>
+</section>
+
+<section class="note" id="bayes">
+  <h2><span class="n">03</span> Total probability and Bayes’ rule</h2>
+  <p class="src">Slides s7–8 · s11 · <span class="cite" data-page="7">Reader §2.3</span></p>
+
+  <div class="key"><span class="lbl">The idea</span>
+    <p>To get <span class="m">P(<i>B</i> | <i>A</i>)</span>, first work forwards: how likely is each case, and how likely is <i>A</i> in each case? Then divide the part of <i>A</i> that comes from <i>B</i> by all of <i>A</i>.</p>
+  </div>
+
+  <div class="box thm"><span class="lbl">Law of total probability</span>
+    <blockquote class="quote"><p>A partition: disjoint events B₁, B₂, … that together make up Ω</p><cite>s7</cite></blockquote>
+    <blockquote class="quote"><p>P(A) = P(A | B₁)P(B₁) + P(A | B₂)P(B₂) + …, one term for each piece</p><cite>s7</cite></blockquote>
+    <blockquote class="quote"><p>Simplest partition: B and B′, so P(A) = P(A | B)P(B) + P(A | B′)P(B′)</p><cite>s7</cite></blockquote>
+  </div>
+
+  <div class="box thm"><span class="lbl">Bayes’ rule</span>
+    <p>If <span class="m">P(<i>A</i>) &gt; 0</span>,</p>
+    <div class="eq">P(<i>B</i> | <i>A</i>) = P(<i>A</i> | <i>B</i>) · P(<i>B</i>) / P(<i>A</i>) = P(<i>A</i> | <i>B</i>)P(<i>B</i>) / [P(<i>A</i> | <i>B</i>)P(<i>B</i>) + P(<i>A</i> | <i>B</i>′)P(<i>B</i>′)]</div>
+    <blockquote class="quote"><p>Vocabulary: prior P(B), likelihood P(A | B), posterior P(B | A)</p><cite>s8</cite></blockquote>
+  </div>
+
+  <div class="erratum"><span class="lbl"></span>
+    <p>Slide s8 prints Bayes’ rule as</p>
+    <blockquote class="quote"><p>P(B | A) = P(A | B) · P(A) / P(B)</p><cite>s8</cite></blockquote>
+    <p>with <span class="m">P(<i>A</i>)</span> and <span class="m">P(<i>B</i>)</span> swapped. It should read <span class="m">P(<i>B</i> | <i>A</i>) = P(<i>A</i> | <i>B</i>) · P(<i>B</i>) / P(<i>A</i>)</span>: the numerator is <span class="m">P(<i>A</i> ∩ <i>B</i>) = P(<i>B</i>) · P(<i>A</i> | <i>B</i>)</span> by the multiplication rule <span class="ref">s4</span>, and the next bullet on the same slide computes the denominator <span class="m">P(<i>A</i>)</span>. The printed version can even exceed 1: with <span class="m">P(<i>A</i> | <i>B</i>) = 1</span>, <span class="m">P(<i>A</i>) = 1/2</span> and <span class="m">P(<i>B</i>) = 1/4</span> it gives 2. The reader states the rule correctly. <span class="cite" data-page="7">Reader §2.3</span></p>
+  </div>
+
+  <div class="widget stepper">
+    <div class="lbl">Step by step · Deriving Bayes’ rule</div>
+    <ol class="steps">
+      <li><div>Start from the definition, with the roles of the events swapped: <span class="m">P(<i>B</i> | <i>A</i>) = P(<i>A</i> ∩ <i>B</i>) / P(<i>A</i>)</span>, which needs <span class="m">P(<i>A</i>) &gt; 0</span>. <span class="ref">s2</span></div></li>
+      <li><div>Rewrite the numerator with the multiplication rule: <span class="m">P(<i>A</i> ∩ <i>B</i>) = P(<i>B</i>) · P(<i>A</i> | <i>B</i>)</span>. <span class="ref">s4</span></div></li>
+      <li><div>Substitute: <span class="m">P(<i>B</i> | <i>A</i>) = P(<i>A</i> | <i>B</i>) · P(<i>B</i>) / P(<i>A</i>)</span>. This is Bayes’ rule.</div></li>
+      <li><div>Expand the denominator by total probability over the partition <i>B</i>, <i>B</i>′: <span class="m">P(<i>A</i>) = P(<i>A</i> | <i>B</i>)P(<i>B</i>) + P(<i>A</i> | <i>B</i>′)P(<i>B</i>′)</span>. <span class="ref">s7</span></div></li>
+      <li><div>Now everything is a forward probability: <span class="m">P(<i>B</i> | <i>A</i>) = P(<i>A</i> | <i>B</i>)P(<i>B</i>) / [P(<i>A</i> | <i>B</i>)P(<i>B</i>) + P(<i>A</i> | <i>B</i>′)P(<i>B</i>′)]</span>.</div></li>
+      <li><div>Check with the test of section 04 (<i>B</i> = sick, <i>A</i> = positive): <span class="m">(0.99 · 0.01) / (0.99 · 0.01 + 0.05 · 0.99) = 0.0099 / 0.0594 = 1/6</span>. <span class="ref">s9</span></div></li>
+    </ol>
+  </div>
+
+  <h3>The tree-diagram view</h3>
+  <figure>
+    <svg class="diagram" viewBox="0 0 460 222" role="img" aria-label="Tree: first branch B or B′, second branch A or A′, products at the leaves">
+      <title>Tree diagram for total probability and Bayes’ rule</title>
+      <line class="stroke" x1="28" y1="111" x2="128" y2="58"/>
+      <line class="stroke" x1="28" y1="111" x2="128" y2="164"/>
+      <line class="accent" x1="168" y1="52" x2="262" y2="24" stroke-width="2.4"/>
+      <line class="stroke" x1="168" y1="62" x2="262" y2="88"/>
+      <line class="accent" x1="168" y1="158" x2="262" y2="136" stroke-width="2.4"/>
+      <line class="stroke" x1="168" y1="168" x2="262" y2="198"/>
+      <text x="8" y="116" font-size="15">Ω</text>
+      <text x="136" y="62" font-size="15"><tspan font-style="italic">B</tspan></text>
+      <text x="136" y="168" font-size="15"><tspan font-style="italic">B</tspan>′</text>
+      <text class="muted" x="40" y="74" font-size="12">P(B)</text>
+      <text class="muted" x="40" y="160" font-size="12">P(B′)</text>
+      <text class="muted" x="176" y="28" font-size="12">P(A | B)</text>
+      <text class="muted" x="176" y="96" font-size="12">P(A′ | B)</text>
+      <text class="muted" x="176" y="138" font-size="12">P(A | B′)</text>
+      <text class="muted" x="176" y="206" font-size="12">P(A′ | B′)</text>
+      <text x="270" y="28" font-size="13"><tspan font-style="italic">A</tspan>:  P(B) · P(A | B)</text>
+      <text x="270" y="92" font-size="13"><tspan font-style="italic">A</tspan>′:  P(B) · P(A′ | B)</text>
+      <text x="270" y="140" font-size="13"><tspan font-style="italic">A</tspan>:  P(B′) · P(A | B′)</text>
+      <text x="270" y="202" font-size="13"><tspan font-style="italic">A</tspan>′:  P(B′) · P(A′ | B′)</text>
+    </svg>
+    <figcaption>The two highlighted paths end in <i>A</i>; their sum is <span class="m">P(<i>A</i>)</span>, and the upper one divided by that sum is <span class="m">P(<i>B</i> | <i>A</i>)</span>.</figcaption>
+  </figure>
+  <blockquote class="quote"><p>Add the paths that end in the same result; Bayes divides one path by that total</p><cite>s11</cite></blockquote>
+
+  <details class="reveal more"><summary>Bayes’ rule over a larger partition</summary><div class="body">
+    <p>With a partition <span class="m"><i>B</i>₁, <i>B</i>₂, …</span> the same derivation gives <span class="beyond"></span></p>
+    <div class="eq">P(<i>B</i><sub><i>k</i></sub> | <i>A</i>) = P(<i>A</i> | <i>B</i><sub><i>k</i></sub>)P(<i>B</i><sub><i>k</i></sub>) / ∑<sub><i>j</i></sub> P(<i>A</i> | <i>B</i><sub><i>j</i></sub>)P(<i>B</i><sub><i>j</i></sub>)</div>
+    <p>In tree language: one path to <i>A</i>, divided by all paths to <i>A</i>. Monty Hall (Example 4 below) is a three-piece partition in disguise.</p>
+  </div></details>
+
+  <details class="reveal more"><summary>The odds form</summary><div class="body">
+    <p>Dividing Bayes’ rule for <i>B</i> by Bayes’ rule for <i>B</i>′ cancels <span class="m">P(<i>A</i>)</span>: <span class="beyond"></span></p>
+    <div class="eq">P(<i>B</i> | <i>A</i>) / P(<i>B</i>′ | <i>A</i>) = [P(<i>B</i>) / P(<i>B</i>′)] · [P(<i>A</i> | <i>B</i>) / P(<i>A</i> | <i>B</i>′)]</div>
+    <p>Posterior odds = prior odds × likelihood ratio. For the test of section 04 the prior odds are 1 : 99 and the likelihood ratio is <span class="m">0.99 / 0.05 = 19.8</span>, so the posterior odds are <span class="m">19.8 / 99 = 1/5</span>, that is 1 : 5, and the posterior probability is <span class="m">1/6</span>.</p>
+  </div></details>
+
+  <details class="reveal check"><summary>Quick check</summary><div class="body">
+    <p>A fair coin picks an urn. Urn 1 holds 1 red and 1 blue ball; urn 2 holds 3 red and 1 blue. One ball is drawn. Find <span class="m">P(red)</span> and <span class="m">P(urn 2 | red)</span>.</p>
+    <p><span class="m">P(red) = 1/2 · 1/2 + 1/2 · 3/4 = 5/8</span>, and <span class="m">P(urn 2 | red) = (1/2 · 3/4) / (5/8) = (3/8) / (5/8) = 3/5</span>.</p>
+  </div></details>
+</section>
+
+<section class="note" id="base-rates">
+  <h2><span class="n">04</span> Diagnostic tests and base rates</h2>
+  <p class="src">Slides s9–10 · s12 · <span class="cite" data-page="8">Reader §2.4</span></p>
+
+  <div class="key"><span class="lbl">The idea</span>
+    <p>A positive result is only as convincing as the base rate allows. When a condition is rare, false positives from the large healthy group can outnumber the true positives.</p>
+  </div>
+
+  <div class="box def"><span class="lbl">Definition · The three numbers of a test</span>
+    <blockquote class="quote"><p>Prevalence P(D), sensitivity P(+ | D), false-positive rate P(+ | D′)</p><cite>s9</cite></blockquote>
+    <blockquote class="quote"><p>The patient wants P(D | +), and that needs all three numbers</p><cite>s9</cite></blockquote>
+  </div>
+
+  <p>With 1% prevalence, 99% sensitivity and 5% false positives, Bayes’ rule gives <span class="m">P(<i>D</i> | +) = 0.0099 / 0.0594 = 1/6 ≈ 16.7%</span>. Counting people makes the reason visible: out of 10,000 people, 99 sick people test positive, and 495 of the 9,900 healthy people do too. <span class="ref">s9–10</span></p>
+  <blockquote class="quote"><p>So 99 of the 594 positives are sick: 99/594 = 1/6</p><cite>s10</cite></blockquote>
+
+  <div class="widget" id="l02-bayes">
+    <div class="lbl">Try it · Bayes calculator</div>
+    <p class="how">Type each probability as a fraction (1/6), a decimal (0.05) or a percent (5%). The posterior is computed exactly, then shown again as counts in a population of the size you choose.</p>
+    <div id="l02-bayes-presets"></div>
+    <div class="controls">
+      <label class="field"><span id="l02-bl-p">prevalence</span><input id="l02-bp" inputmode="decimal" autocomplete="off"></label>
+      <label class="field"><span id="l02-bl-s">sensitivity</span><input id="l02-bs" inputmode="decimal" autocomplete="off"></label>
+      <label class="field"><span id="l02-bl-f">false-positive rate</span><input id="l02-bf" inputmode="decimal" autocomplete="off"></label>
+      <label class="field"><span id="l02-bl-n">population</span><input id="l02-bn" inputmode="numeric" autocomplete="off"></label>
+    </div>
+    <div class="out l02-lines" id="l02-bayes-out" aria-live="polite"></div>
+    <svg class="l02-svg" id="l02-bayes-svg" viewBox="0 0 420 272" role="img" aria-label="Tree of counts: condition first, then test result; a bar shows where the positives come from"><title>Natural frequencies as a tree, and the positives as a stacked bar</title></svg>
+    <p class="aside" id="l02-bayes-freq" aria-live="polite"></p>
+  </div>
+  <script>
+  (function () {
+    const M = Study.math, $ = M.$, F = M.F;
+    const DEF = { h: 'sick', hc: 'healthy', e: 'positive', ec: 'negative', unit: 'people' };
+    let names = Object.assign({}, DEF);
+    const svg = $('l02-bayes-svg'), out = $('l02-bayes-out'), freq = $('l02-bayes-freq');
+    function prob(s) {
+      s = String(s).trim();
+      let pc = false;
+      if (s.endsWith('%')) { pc = true; s = s.slice(0, -1); }
+      let p = M.parse(s);
+      if (!p) return null;
+      if (pc) p = M.div(p, 100);
+      return M.cmp(p, 0) < 0 || M.cmp(p, 1) > 0 ? null : p;
+    }
+    // "1/6 ≈ 16.67%" or "1/100 = 1%"
+    function show(p) {
+      if (M.isInt(p)) return M.str(p) + (M.isZero(p) ? '' : ' = 100%');
+      const exact = M.isInt(M.mul(p, 10000)), pc = M.value(p) * 100;
+      const txt = exact || pc >= 0.1 ? M.fmt(pc, 2) : String(Number(pc.toPrecision(2)));
+      return M.str(p) + (exact ? ' = ' : ' ≈ ') + txt + '%';
+    }
+    const shortP = (p) => (M.isInt(M.mul(p, 100)) ? M.fmt(M.value(p) * 100, 0) + '%' : M.str(p));
+    function count(x) {
+      if (M.isInt(x)) return x.n.toLocaleString('en');
+      return '≈ ' + M.value(x).toLocaleString('en', { maximumFractionDigits: 2 });
+    }
+    function labels() {
+      $('l02-bl-p').textContent = 'P(' + names.h + ') · prior';
+      $('l02-bl-s').textContent = 'P(' + names.e + ' | ' + names.h + ')';
+      $('l02-bl-f').textContent = 'P(' + names.e + ' | ' + names.hc + ')';
+      $('l02-bl-n').textContent = 'population (' + names.unit + ')';
+    }
+    function text(x, y, s, cls, anchor) {
+      const t = M.svgEl('text', { x, y, class: cls || null, 'text-anchor': anchor || null }, svg);
+      t.textContent = s;
+      return t;
+    }
+    function draw(p, s, f, N, c) {
+      [...svg.querySelectorAll(':scope > :not(title)')].forEach((n) => n.remove());
+      const edge = (x1, y1, x2, y2, hot) => M.svgEl('line', { x1, y1, x2, y2, class: hot ? 'edge hot' : 'edge' }, svg);
+      edge(66, 104, 140, 52); edge(66, 114, 140, 164);
+      edge(236, 46, 294, 24, true); edge(236, 58, 294, 82);
+      edge(236, 158, 294, 136, true); edge(236, 170, 294, 194);
+      text(6, 108, count(N), 'b'); text(6, 124, names.unit, 'sm');
+      text(84, 70, shortP(p), 'sm'); text(84, 154, shortP(M.sub(1, p)), 'sm');
+      text(146, 52, count(c.h), 'b'); text(146, 66, names.h, 'sm');
+      text(146, 164, count(c.hc), 'b'); text(146, 178, names.hc, 'sm');
+      text(250, 28, shortP(s), 'sm'); text(250, 82, shortP(M.sub(1, s)), 'sm');
+      text(250, 140, shortP(f), 'sm'); text(250, 194, shortP(M.sub(1, f)), 'sm');
+      text(300, 24, count(c.hp), 'tT'); text(300, 38, names.e, 'sm');
+      text(300, 82, count(c.hn)); text(300, 96, names.ec, 'sm');
+      text(300, 136, count(c.cp), 'tB'); text(300, 150, names.e, 'sm');
+      text(300, 194, count(c.cn)); text(300, 208, names.ec, 'sm');
+      const x0 = 6, W = 408, y = 226, pos = M.add(c.hp, c.cp);
+      if (M.isZero(pos)) {
+        M.svgEl('rect', { x: x0, y, width: W, height: 20, class: 'frame' }, svg);
+        text(x0 + W / 2, y + 14, 'no ' + names.e + ' results at all', 'sm', 'middle');
+        return;
+      }
+      const w1 = W * M.value(M.div(c.hp, pos));
+      M.svgEl('rect', { x: x0, y, width: w1, height: 20, class: 'fillT' }, svg);
+      M.svgEl('rect', { x: x0 + w1, y, width: W - w1, height: 20, class: 'fillB' }, svg);
+      M.svgEl('rect', { x: x0, y, width: W, height: 20, class: 'frame' }, svg);
+      text(x0, 262, 'all ' + names.e + ': ' + count(c.hp) + ' ' + names.h, 'tT');
+      text(x0 + W, 262, count(c.cp) + ' ' + names.hc, 'tB', 'end');
+    }
+    function render() {
+      const p = prob($('l02-bp').value), s = prob($('l02-bs').value), f = prob($('l02-bf').value);
+      const Nraw = $('l02-bn').value.replace(/[,\s]/g, ''), Nn = Number(Nraw);
+      if (!p || !s || !f) { out.textContent = 'Each probability must be a number between 0 and 1, such as 1/6, 0.05 or 5%.'; freq.textContent = ''; return; }
+      if (!Number.isInteger(Nn) || Nn < 1 || Nn > 1e8) { out.textContent = 'The population must be a whole number from 1 to 100,000,000.'; freq.textContent = ''; return; }
+      try {
+        const N = F(Nn), q = M.sub(1, p);
+        const ps = M.mul(p, s), qf = M.mul(q, f), pos = M.add(ps, qf);
+        const pn = M.mul(p, M.sub(1, s)), qn = M.mul(q, M.sub(1, f)), neg = M.add(pn, qn);
+        const H = names.h, E = names.e;
+        const lines = ['<div><span class="k">P(' + E + ')</span>' + show(pos) + '</div>'];
+        if (M.isZero(pos)) lines.push('<div><span class="k">P(' + H + ' | ' + E + ')</span>undefined: nobody gets a ' + E + ' result</div>');
+        else {
+          const post = M.div(ps, pos);
+          lines.push('<div><span class="k">P(' + H + ' | ' + E + ')</span><b>' + show(post) + '</b></div>');
+          lines.push('<div><span class="k">Bayes</span>(' + M.str(s) + ' · ' + M.str(p) + ') / (' + M.str(pos) + ') = (' + M.str(ps) + ') / (' + M.str(pos) + ') = ' + M.str(post) + '</div>');
+        }
+        lines.push('<div><span class="k">P(' + H + ' | ' + names.ec + ')</span>' + (M.isZero(neg) ? 'undefined: nobody gets a ' + names.ec + ' result' : show(M.div(pn, neg))) + '</div>');
+        out.innerHTML = lines.join('');
+        const c = { h: M.mul(N, p), hc: M.mul(N, q), hp: M.mul(N, ps), hn: M.mul(N, pn), cp: M.mul(N, qf), cn: M.mul(N, qn) };
+        const nPos = M.add(c.hp, c.cp);
+        freq.innerHTML = 'Out of ' + count(N) + ' ' + names.unit + ': ' + count(c.h) + ' ' + H + ', of whom ' + count(c.hp) + ' ' + E + ' and ' + count(c.hn) + ' ' + names.ec +
+          '; ' + count(c.hc) + ' ' + names.hc + ', of whom ' + count(c.cp) + ' ' + E + ' and ' + count(c.cn) + ' ' + names.ec + '. ' +
+          (M.isZero(nPos) ? '' : 'Of the ' + count(nPos) + ' ' + E + ' results, ' + count(c.hp) + ' are ' + H + '.') +
+          (M.isInt(c.hp) && M.isInt(c.cp) ? '' : ' (Counts marked ≈ are averages: pick a population that makes them whole.)');
+        draw(p, s, f, N, c);
+      } catch (e) {
+        out.textContent = 'These numbers need fractions too large to handle exactly; try simpler inputs.';
+        freq.textContent = '';
+      }
+    }
+    function set(v, nm) {
+      $('l02-bp').value = v.p; $('l02-bs').value = v.s; $('l02-bf').value = v.f; $('l02-bn').value = v.N || 10000;
+      names = Object.assign({}, DEF, nm || v.names || {});
+      labels(); render();
+    }
+    const presets = [
+      { name: 'rare disease', value: { p: '1%', s: '99%', f: '5%', N: 10000 }, note: 'The slide example: a 99% sensitive test, yet only 1 positive in 6 is sick, because the 9,900 healthy people produce 495 false positives. <span class="ref">s9–10</span>' },
+      { name: 'high-risk group', value: { p: '20%', s: '99%', f: '5%', N: 10000 }, note: 'The same test used where 1 person in 5 is sick: the posterior jumps to 99/119 ≈ 83.2%. The test did not change; the base rate did.' },
+      { name: 'common condition', value: { p: '30%', s: '90%', f: '10%', N: 10000 }, note: 'A weaker test (90% / 10%) on a common condition gives 27/34 ≈ 79.4%, far better than the strong test on a rare condition.' },
+      { name: 'very rare', value: { p: '0.1%', s: '99%', f: '1%', N: 100000 }, note: 'Only 1% false positives, but the condition affects 1 in 1,000: 999 healthy positives against 99 sick ones, so P(sick | positive) = 11/122 ≈ 9.0%.' },
+      { name: 'perfect test', value: { p: '1%', s: '1', f: '0', N: 10000 }, note: 'No false positives and no misses: every positive is sick and every negative is healthy, whatever the base rate.' },
+      { name: 'coin-flip test', value: { p: '1%', s: '50%', f: '50%', N: 10000 }, note: 'The result is positive half the time whatever the truth, so it carries no information: the posterior equals the prior, 1/100.' },
+      { name: 'spam filter', value: { p: '40%', s: '95%', f: '2%', N: 10000, names: { h: 'spam', hc: 'legitimate', e: 'flagged', ec: 'not flagged', unit: 'emails' } }, note: 'Spam is common (40% of mail), so a flagged email is spam with probability 95/98 ≈ 96.9%. A high base rate works in the test’s favour.' },
+    ];
+    const row = Study.presets.mount($('l02-bayes-presets'), presets, (pr) => set(pr.value));
+    ['l02-bp', 'l02-bs', 'l02-bf', 'l02-bn'].forEach((id) => $(id).addEventListener('input', () => { row.clear('Your own numbers.'); render(); }));
+    $('l02-bayes').addEventListener('load', (e) => {
+      const d = e.detail || {};
+      set(d, d.names);
+      row.clear(d.note || 'Numbers loaded from a worked example.');
+    });
+  })();
+  </script>
+
+  <div class="pitfall"><span class="lbl">Pitfall · The base-rate fallacy</span>
+    <blockquote class="quote"><p>Base-rate fallacy: ignoring P(D) and reading P(+ | D) as if it were P(D | +)</p><cite>s9</cite></blockquote>
+    <p>“The test is 99% accurate, so a positive means 99% sure” confuses the two conditionals. Try the <em>rare disease</em> and <em>high-risk group</em> presets: the same test gives 16.7% or 83.2% depending only on the base rate. <q class="quote">A rare condition means most positives come from the large healthy group</q>. <span class="ref">s10</span></p>
+  </div>
+
+  <details class="reveal more"><summary>Updating twice</summary><div class="body">
+    <blockquote class="quote"><p>Yesterday’s posterior is today’s prior</p><cite>s12</cite></blockquote>
+    <p>If a second test is independent of the first <em>given the true status</em>, a second positive is handled by running Bayes’ rule again with prior 1/6:</p>
+    <blockquote class="quote"><p>P(D | + +) = (1/6 · 0.99) / (1/6 · 0.99 + 5/6 · 0.05) = 99/124 ≈ 79.8%</p><cite>s12</cite></blockquote>
+    <p>Example 3 below loads exactly this into the calculator. The assumption matters: if whatever caused a false positive the first time (say, a cross-reacting substance) tends to cause it again, the two results are not conditionally independent and the second positive is worth less. <span class="beyond"></span></p>
+  </div></details>
+
+  <details class="reveal more"><summary>What does a negative result tell you?</summary><div class="body">
+    <p>The calculator’s last line is <span class="m">P(<i>D</i> | −)</span>. For the slide example it is <span class="m">(0.01 · 0.01) / (0.01 · 0.01 + 0.99 · 0.95) = 1/9406 ≈ 0.011%</span>: a negative result is very reassuring, because both the base rate and the sensitivity point the same way. <span class="beyond"></span></p>
+  </div></details>
+
+  <details class="reveal check"><summary>Quick check</summary><div class="body">
+    <p>Keep 1% prevalence and 99% sensitivity but improve the false-positive rate to 1%. What is <span class="m">P(<i>D</i> | +)</span>?</p>
+    <p><b>1/2.</b> Out of 10,000: 99 sick positives and <span class="m">1% · 9,900 = 99</span> healthy positives, so <span class="m">99 / 198 = 1/2</span>. Even a 99%/1% test is a coin flip at this base rate.</p>
+  </div></details>
+</section>
+
+<section class="note" id="examples">
+  <h2><span class="n">05</span> Worked examples</h2>
+  <p class="src">Slides s7–12 · <span class="cite" data-page="7">Reader §2.3–2.4</span></p>
+
+  <div class="key"><span class="lbl">The idea</span>
+    <p>Every problem below is the same three moves: say exactly what you learned, write how likely that is in each case, and divide.</p>
+  </div>
+
+  <div class="box thm"><span class="lbl">Method · A conditioning problem</span>
+    <p>1. Write the information as an event <i>E</i>, worded exactly as it was obtained. 2. Choose the cases: a partition <i>H</i>, <i>H</i>′ (or more pieces). 3. Find the prior <span class="m">P(<i>H</i>)</span> and the likelihoods <span class="m">P(<i>E</i> | <i>H</i>)</span>, <span class="m">P(<i>E</i> | <i>H</i>′)</span>. 4. Apply Bayes’ rule, or count paths in a tree. <span class="beyond"></span></p>
+  </div>
+
+  <div class="beyond-block"><span class="lbl">Beyond the slides · Classic puzzles</span>
+    <p>These puzzles are not on the slides; they apply the rules of s7–12 to situations where intuition is often wrong.</p>
+  </div>
+  <p class="how">Open a solution, or press <em>Load in calculator</em> to send the example’s three numbers to the Bayes calculator in section 04, which relabels its outputs to match.</p>
+
+  <div class="exm-list">
+    <div class="exm" id="l02-ex-girls">
+      <div class="exm-head"><span class="exm-n"></span><span class="exm-t">Two children</span><span class="exm-tag">wording matters</span></div>
+      <div class="exm-task">A family has two children; each is a girl or a boy with probability 1/2, independently. (a) You ask “Is at least one of them a girl?” and the answer is yes. What is the probability that both are girls? (b) Instead you ask “Is the older one a girl?” and the answer is yes. Now what?</div>
+      <details class="exm-sol"><summary>Show solution</summary>
+        <p>List the four equally likely families by (older, younger): BB, BG, GB, GG.</p>
+        <p>(a) “At least one girl” leaves BG, GB, GG, so <span class="m">P(GG | at least one girl) = 1/3</span>. As Bayes: prior <span class="m">P(GG) = 1/4</span>, <span class="m">P(yes | GG) = 1</span>, and among the other three families two answer yes, so <span class="m">P(yes | not GG) = 2/3</span>; then <span class="m">(1 · 1/4) / (1 · 1/4 + 2/3 · 3/4) = (1/4) / (3/4) = 1/3</span>.</p>
+        <p>(b) “The older is a girl” leaves GB, GG, so the answer is <span class="m">1/2</span>.</p>
+        <p>The answers differ because the events you condition on differ. If instead you meet one of the two children at random and she is a girl, <span class="m">P(GG | that child is a girl) = (1/4) / (1/2) = 1/2</span>, not 1/3: how the information was obtained is part of the event.</p>
+      </details>
+      <div class="exm-actions"><button class="btn" data-target="l02-bayes" data-load='{"p": "1/4", "s": "1", "f": "2/3", "N": 10000, "names": {"h": "two girls", "hc": "not two girls", "e": "yes", "ec": "no", "unit": "families"}, "note": "Example 1(a): of the families answering yes, one in three has two girls."}'>Load in calculator</button></div>
+    </div>
+
+    <div class="exm" id="l02-ex-urn">
+      <div class="exm-head"><span class="exm-n"></span><span class="exm-t">Two draws from an urn</span><span class="exm-tag">without replacement</span></div>
+      <div class="exm-task">An urn holds 3 red and 2 blue balls. Two are drawn one after the other without replacement. (a) What is the probability that the second ball is red? (b) Given that the second ball is red, what is the probability that the first was red?</div>
+      <details class="exm-sol"><summary>Show solution</summary>
+        <div class="widget stepper"><ol class="steps">
+          <li><div>Partition on the first draw: <span class="m">P(1st red) = 3/5</span>, <span class="m">P(1st blue) = 2/5</span>.</div></li>
+          <li><div>Conditional on the first draw: <span class="m">P(2nd red | 1st red) = 2/4</span> (two reds among four left) and <span class="m">P(2nd red | 1st blue) = 3/4</span>.</div></li>
+          <li><div>(a) Total probability: <span class="m">P(2nd red) = 3/5 · 2/4 + 2/5 · 3/4 = 3/10 + 3/10 = 3/5</span>, the same as for the first draw. Before you look, every position is equally likely to hold any ball.</div></li>
+          <li><div>(b) Bayes: <span class="m">P(1st red | 2nd red) = (3/10) / (3/5) = 1/2</span>. Learning about the second draw changes the probability for the first, even though the first came earlier: conditioning is about information, not time.</div></li>
+        </ol></div>
+      </details>
+      <div class="exm-actions"><button class="btn" data-target="l02-bayes" data-load='{"p": "3/5", "s": "1/2", "f": "3/4", "N": 10000, "names": {"h": "1st red", "hc": "1st blue", "e": "2nd red", "ec": "2nd blue", "unit": "repeats"}, "note": "Example 2: P(2nd red) = 3/5 and P(1st red | 2nd red) = 1/2."}'>Load in calculator</button></div>
+    </div>
+
+    <div class="exm" id="l02-ex-retest">
+      <div class="exm-head"><span class="exm-n"></span><span class="exm-t">A second test after a positive</span><span class="exm-tag">updating</span></div>
+      <div class="exm-task">A person tests positive with the test of section 04 (1% prevalence, 99% sensitivity, 5% false positives) and takes the test again. Assume the two results are independent given the person’s true status. If the second test is also positive, what is the probability that the person is sick?</div>
+      <details class="exm-sol"><summary>Show solution</summary>
+        <div class="widget stepper"><ol class="steps">
+          <li><div>After the first positive, <span class="m">P(sick | +) = 1/6</span>. This is the new prior. <span class="ref">s12</span></div></li>
+          <li><div>The likelihoods are unchanged because of the conditional-independence assumption: <span class="m">P(+ | sick) = 0.99</span>, <span class="m">P(+ | healthy) = 0.05</span>.</div></li>
+          <li><div>Bayes: <span class="m">(1/6 · 0.99) / (1/6 · 0.99 + 5/6 · 0.05) = 0.99 / (0.99 + 0.25) = 99/124 ≈ 79.8%</span>.</div></li>
+          <li><div>Check in one step: two positives in a row have likelihoods <span class="m">0.99²</span> and <span class="m">0.05²</span>, and <span class="m">(0.01 · 0.99²) / (0.01 · 0.99² + 0.99 · 0.05²) = 0.99 / (0.99 + 0.25) = 99/124</span> again.</div></li>
+          <li><div>In counts: of the 594 people who tested positive once (99 sick, 495 healthy), on average 98.01 sick and 24.75 healthy people test positive again, and <span class="m">98.01 / 122.76 = 99/124</span>.</div></li>
+        </ol></div>
+      </details>
+      <div class="exm-actions"><button class="btn" data-target="l02-bayes" data-load='{"p": "1/6", "s": "99%", "f": "5%", "N": 594, "names": {"h": "sick", "hc": "healthy", "e": "positive again", "ec": "negative", "unit": "people"}, "note": "Example 3: the population is the 594 people who tested positive once, now tested again; the posterior is 99/124."}'>Load in calculator</button></div>
+    </div>
+
+    <div class="exm" id="l02-ex-monty">
+      <div class="exm-head"><span class="exm-n"></span><span class="exm-t">Three doors</span><span class="exm-tag">Monty Hall</span></div>
+      <div class="exm-task">A car is behind one of three doors, equally likely; goats are behind the other two. You pick door 1. The host, who knows where the car is, always opens a door other than yours that hides a goat, choosing at random between two such doors when he can. He opens door 3. Should you switch to door 2?</div>
+      <details class="exm-sol"><summary>Show solution</summary>
+        <div class="widget stepper"><ol class="steps">
+          <li><div>Partition by the car’s position: <span class="m">C₁, C₂, C₃</span>, each with prior 1/3.</div></li>
+          <li><div>Likelihood of the evidence <i>E</i> = “host opens door 3”: <span class="m">P(<i>E</i> | C₁) = 1/2</span> (he may open 2 or 3), <span class="m">P(<i>E</i> | C₂) = 1</span> (door 3 is his only goat door), <span class="m">P(<i>E</i> | C₃) = 0</span> (he never shows the car).</div></li>
+          <li><div>Total probability: <span class="m">P(<i>E</i>) = 1/3 · 1/2 + 1/3 · 1 + 1/3 · 0 = 1/2</span>.</div></li>
+          <li><div>Bayes: <span class="m">P(C₁ | <i>E</i>) = (1/6) / (1/2) = 1/3</span> and <span class="m">P(C₂ | <i>E</i>) = (1/3) / (1/2) = 2/3</span>.</div></li>
+          <li><div>Switching wins with probability 2/3. With <i>H</i> = C₁ against <i>H</i>′ = “car elsewhere”, <span class="m">P(<i>E</i> | <i>H</i>′) = (1/3 · 1 + 1/3 · 0) / (2/3) = 1/2 = P(<i>E</i> | <i>H</i>)</span>: the host’s move says nothing about door 1, which is why its probability stays at 1/3.</div></li>
+        </ol></div>
+        <p>The rules of the host are essential. A host who opens a random unchosen door, and happens to reveal a goat, gives <span class="m">P(C₁ | <i>E</i>) = 1/2</span> instead.</p>
+      </details>
+      <div class="exm-actions"><button class="btn" data-target="l02-bayes" data-load='{"p": "1/3", "s": "1/2", "f": "1/2", "N": 600, "names": {"h": "car behind 1", "hc": "car elsewhere", "e": "opens 3", "ec": "opens 2", "unit": "games"}, "note": "Example 4: equal likelihoods, so the posterior for door 1 stays at the prior 1/3; switching wins 2/3."}'>Load in calculator</button></div>
+    </div>
+
+    <div class="exm" id="l02-ex-coin">
+      <div class="exm-head"><span class="exm-n"></span><span class="exm-t">Which coin?</span><span class="exm-tag">repeated evidence</span></div>
+      <div class="exm-task">A bag holds two fair coins and one coin with heads on both sides. You take a coin at random and flip it twice: heads both times. What is the probability that you hold the two-headed coin?</div>
+      <details class="exm-sol"><summary>Show solution</summary>
+        <p>Prior <span class="m">P(two-headed) = 1/3</span>. Likelihoods of HH: 1 for the two-headed coin and <span class="m">1/4</span> for a fair one. Bayes:</p>
+        <div class="mblock"><span class="row">P(two-headed | HH) = (1 · 1/3) / (1 · 1/3 + 1/4 · 2/3) = (1/3) / (1/2) = 2/3.</span></div>
+        <p>In counts: of 1,200 repeats, 400 draw the two-headed coin and all show HH; of the 800 with a fair coin, 200 show HH. So 400 of the 600 HH results are the two-headed coin.</p>
+      </details>
+      <details class="reveal check"><summary>Quick check</summary><div class="body">
+        <p>Same bag, but three heads in a row. Now what?</p>
+        <p><span class="m">(1/3) / (1/3 + 1/8 · 2/3) = (1/3) / (5/12) = 4/5</span>. Each extra head multiplies the odds by 2.</p>
+      </div></details>
+      <div class="exm-actions"><button class="btn" data-target="l02-bayes" data-load='{"p": "1/3", "s": "1", "f": "1/4", "N": 1200, "names": {"h": "two-headed", "hc": "fair", "e": "HH", "ec": "not HH", "unit": "repeats"}, "note": "Example 5: 400 of the 600 HH results come from the two-headed coin."}'>Load in calculator</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- summary -->
+
+<section class="note" id="selftest">
+  <h2><span class="n">?</span> Self-test</h2>
+  <div class="widget quiz" data-id="02-selftest">
+    <div class="quiz-head"><div class="lbl">Self-test · Lecture 02</div></div>
+
+    <div class="q" data-answer="b">
+      <div class="q-prompt">A fair die is rolled and you learn the result is greater than 3. What is the probability that it is even?</div>
+      <div class="q-opts"><button data-v="a">1/2</button><button data-v="b">2/3</button><button data-v="c">1/3</button><button data-v="d">1/6</button></div>
+      <div class="q-feedback" hidden></div>
+      <template class="q-explain">Given “greater than 3”, the faces 4, 5, 6 remain, and two of them are even: 2/3. Conditioning keeps only the outcomes in B <span class="ref">s2</span>.</template>
+    </div>
+
+    <div class="q" data-answer="b">
+      <div class="q-prompt">Events A and B are disjoint, with P(A) = 0.3 and P(B) = 0.4. Are they independent?</div>
+      <div class="q-opts"><button data-v="a">Yes: disjoint events never affect each other</button><button data-v="b">No: P(A ∩ B) = 0 but P(A)P(B) = 0.12</button><button data-v="c">There is not enough information</button></div>
+      <div class="q-feedback" hidden></div>
+      <template class="q-explain">Independence needs P(A ∩ B) = P(A)P(B) = 0.12, but disjoint events have P(A ∩ B) = 0. Disjoint events with positive probabilities are never independent <span class="ref">s6</span>.</template>
+    </div>
+
+    <div class="q" data-answer="b">
+      <div class="q-prompt">Machine 1 makes 60% of the items and 2% of its items are defective; machine 2 makes the other 40% and 5% of its items are defective. What fraction of all items is defective?</div>
+      <div class="q-opts"><button data-v="a">3.5%</button><button data-v="b">3.2%</button><button data-v="c">7%</button><button data-v="d">2.6%</button></div>
+      <div class="q-feedback" hidden></div>
+      <template class="q-explain">Total probability: 0.6 · 0.02 + 0.4 · 0.05 = 0.012 + 0.020 = 0.032 = 4/125. The plain average 3.5% ignores that the machines make different shares <span class="ref">s7</span>.</template>
+    </div>
+
+    <div class="q" data-answer="c">
+      <div class="q-prompt">In the same factory, an item is found to be defective. What is the probability that machine 2 made it?</div>
+      <div class="q-opts"><button data-v="a">40%</button><button data-v="b">5%</button><button data-v="c">5/8</button><button data-v="d">3/8</button></div>
+      <div class="q-feedback" hidden></div>
+      <template class="q-explain">Bayes: 0.020 / 0.032 = 5/8 = 62.5%. Machine 2 makes fewer items but more of the defective ones <span class="ref">s8</span>.</template>
+    </div>
+
+    <div class="q" data-answer="b">
+      <div class="q-prompt">The test from section 04 (99% sensitivity, 5% false positives) is used on a group where 10% have the condition. What is P(D | +)?</div>
+      <div class="q-opts"><button data-v="a">1/6, as before</button><button data-v="b">11/16 ≈ 68.8%</button><button data-v="c">99%</button><button data-v="d">9/10</button></div>
+      <div class="q-feedback" hidden></div>
+      <template class="q-explain">0.099 / (0.099 + 0.9 · 0.05) = 0.099 / 0.144 = 11/16. Out of 10,000: 990 sick positives and 450 healthy positives. A higher base rate makes a positive far more convincing <span class="ref">s9</span>.</template>
+    </div>
+
+    <div class="q" data-answer="c">
+      <div class="q-prompt">P(A) = 0.2, P(B) = 0.5 and P(A | B) = 0.3. What is P(B | A)?</div>
+      <div class="q-opts"><button data-v="a">0.3</button><button data-v="b">0.15</button><button data-v="c">0.75</button><button data-v="d">0.6</button></div>
+      <div class="q-feedback" hidden></div>
+      <template class="q-explain">P(A ∩ B) = P(B)P(A | B) = 0.5 · 0.3 = 0.15 <span class="ref">s4</span>, so P(B | A) = 0.15 / 0.2 = 0.75. The two conditionals are different numbers <span class="ref">s3</span>.</template>
+    </div>
+  </div>
+</section>
