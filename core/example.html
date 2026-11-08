@@ -1,0 +1,74 @@
+<!--page {"lede": "Every core component on one page, in the order a typical section uses them. Copy any block as a starting point."} -->
+<section class="note" id="core-text">
+  <h2><span class="n">01</span> Text, terms and math</h2>
+  <p class="src">Source: placeholder §1</p>
+  <div class="key"><span class="lbl">The idea</span><p>One sentence a reader should remember from this section.</p></div>
+  <p>Body text is set in a reading font. A <span class="term">term</span> is styled where it is defined, <mark>highlights</mark> are for emphasis, and <code>code</code> is monospace. Inline math is Unicode in a math font: <span class="m"><i>f</i>(<i>x</i>) = <i>x</i>² + 1</span>.</p>
+  <div class="mblock"><span class="row"><i>a</i>² + <i>b</i>² = <i>c</i>²</span><span class="row">∑<sub><i>k</i>=1</sub><sup><i>n</i></sup> <i>k</i> = <i>n</i>(<i>n</i> + 1) / 2</span></div>
+  <p class="aside">An aside is quieter text for side remarks. <span class="ref">ref 1.2</span> is a plain reference label.</p>
+</section>
+
+<section class="note" id="core-boxes">
+  <h2><span class="n">02</span> Boxes</h2>
+  <div class="box def"><span class="lbl">Definition · Placeholder</span><p>A <span class="term">widget</span> is anything on the page you can interact with.</p></div>
+  <div class="box thm"><span class="lbl">Theorem 2.1</span><p>Every statement worth proving deserves a box.</p></div>
+  <div class="box"><span class="lbl">Note</span><p>A plain box for anything else that should stand apart.</p></div>
+  <div class="pitfall"><span class="lbl">Pitfall</span><p>Common mistakes get a tinted bar so they are hard to miss.</p></div>
+  <details class="reveal"><summary>Proof</summary><div class="body"><p>Collapsible blocks hide proofs, answers and long derivations until asked for.</p></div></details>
+</section>
+
+<section class="note" id="core-tables">
+  <h2><span class="n">03</span> Tables and figures</h2>
+  <div class="tablewrap"><table class="t">
+    <thead><tr><th>Thing</th><th>Use it for</th></tr></thead>
+    <tbody><tr><td>Definition box</td><td>exact wording of a definition</td></tr><tr><td>Pitfall</td><td>a mistake to avoid</td></tr><tr><td class="m"><i>x</i> ↦ 2<i>x</i></td><td>math in a cell (no wrapping)</td></tr></tbody>
+  </table></div>
+  <figure>
+    <svg class="diagram" viewBox="0 0 320 90" role="img" aria-label="Two labelled nodes joined by an arrow">
+      <circle class="stroke" cx="50" cy="45" r="24"/><text x="50" y="51" text-anchor="middle">A</text>
+      <circle class="stroke" cx="270" cy="45" r="24"/><text x="270" y="51" text-anchor="middle">B</text>
+      <path class="accent" d="M78 45 H236" stroke-width="2"/><path d="M236 39 L246 45 L236 51 Z" fill="var(--term)"/>
+      <text class="muted" x="160" y="36" text-anchor="middle" font-size="13">maps to</text>
+    </svg>
+    <figcaption>Draw diagrams as inline SVG with the <code>diagram</code> classes so they follow the theme.</figcaption>
+  </figure>
+</section>
+
+<section class="note" id="core-widgets">
+  <h2><span class="n">04</span> Widgets, steppers and quizzes</h2>
+  <div class="widget" id="core-demo-widget">
+    <div class="lbl">Try it · Doubling</div>
+    <p class="how">Type a number; the output updates as you type.</p>
+    <div class="controls"><label class="field">x<input id="core-x" value="3" inputmode="decimal"></label></div>
+    <div class="out"><span class="k">2x</span><span id="core-y">6</span></div>
+  </div>
+  <script>
+    (function () {
+      const x = document.getElementById('core-x'), y = document.getElementById('core-y');
+      x.addEventListener('input', () => { const v = parseFloat(x.value); y.textContent = isFinite(v) ? String(2 * v).replace('-', '−') : '—'; });
+    })();
+  </script>
+  <div class="widget stepper">
+    <div class="lbl">Step by step · A short argument</div>
+    <ol class="steps">
+      <li><div>State what is assumed.</div></li>
+      <li><div>State what must be shown.</div></li>
+      <li><div>Connect the two, one justified step at a time.</div></li>
+    </ol>
+  </div>
+  <div class="widget quiz" data-id="core-demo-quiz">
+    <div class="quiz-head"><div class="lbl">Self-check</div></div>
+    <div class="q" data-answer="b">
+      <div class="q-prompt">Where should a proof usually go?</div>
+      <div class="q-opts"><button data-v="a">In the lede</button><button data-v="b">In a collapsible block</button></div>
+      <div class="q-feedback" hidden></div>
+      <template class="q-explain"> Keep the page scannable; readers open the proof when they want it.</template>
+    </div>
+    <div class="q" data-answer="yes">
+      <div class="q-prompt">Are quiz answers remembered after a reload?</div>
+      <div class="q-opts"><button data-v="yes">Yes</button><button data-v="no">No</button></div>
+      <div class="q-feedback" hidden></div>
+      <template class="q-explain"> They are saved per quiz <code>data-id</code>; <em>Reset</em> clears them.</template>
+    </div>
+  </div>
+</section>
