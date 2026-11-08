@@ -27,7 +27,8 @@ section ids so readers keep their progress. Subject-specific code becomes a site
 - Tools: `tools/study.py` (CLI) and `tools/studylib/` (common, build, check, scaffold). Standard library only.
 - After any change: `python3 tools/study.py check demo` and
   `python3 tools/study.py new /tmp/t --demo && python3 tools/study.py check /tmp/t` must print OK, and
-  `demo/` should look right in a browser in both themes.
+  `demo/` should look right in a browser in both themes. CI (`.github/workflows/pages.yml`) runs the same
+  checks on every push and pull request, and publishes `demo/` to GitHub Pages from `main`.
 - Keep the core API in the header of `core/core.js` backwards compatible; sites depend on it.
 
 ## Rules for everything in this repo
