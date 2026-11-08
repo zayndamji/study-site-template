@@ -357,22 +357,7 @@ def render_home(ctx: Ctx):
         tools.append(f'<label class="search">{SEARCH_ICON}<input type="search" id="catalog-search" '
                      f'placeholder="{esc(home.get("searchPlaceholder"))}" aria-label="Search pages" autocomplete="off">'
                      '<kbd aria-hidden="true">/</kbd></label>')
-    filters = home.get('filters', 'auto')
-    buttons = []
-    if filters == 'auto':
-        filters = 'groups' if len(ctx.groups) > 1 else 'none'
-    if filters == 'groups':
-        buttons = [(g['id'], g.get('filterLabel') or g.get('title', g['id'])) for g in ctx.groups
-                   if any(p['group'] == g['id'] for p in ctx.pages)]
-    elif filters == 'kinds':
-        buttons = [(n, k['plural']) for n, k in ctx.kinds.items() if any(p['kind'] == n for p in ctx.pages)]
-    if buttons:
-        b = [f'<button type="button" data-filter="all" aria-pressed="true">{esc(home.get("allLabel"))}</button>']
-        b += [f'<button type="button" data-filter="{esc(i)}" aria-pressed="false">{esc(t)}</button>' for i, t in buttons]
-        tools.append('<nav class="group-filters" aria-label="Filter pages">' + ''.join(b) + '</nav>')
-    tools += ctx.call('home_tools')
-
-    sections = []
+    sections, rendered, rendered_kinds = [], set(), set()
     for gi, g in enumerate(ctx.groups):
         rows = []
         members = [p for p in ctx.pages if p['group'] == g['id']]
@@ -390,6 +375,8 @@ def render_home(ctx: Ctx):
                 rows.append(row)
         if not rows:
             continue
+        rendered.add(g['id'])
+        rendered_kinds.update(p['kind'] for p in members)
         heading = []
         nums = [p['id'] for p in members if p['num'] is not None and (p['status'] == 'ready' or ctx.config['nav'].get('showPlanned'))]
         if home.get('showRange') and len(nums) > 1 and g.get('range') is not False:
@@ -402,6 +389,21 @@ def render_home(ctx: Ctx):
         sections.append(f'<section class="catalog-group" data-catalog-group="{esc(g["id"])}" aria-labelledby="group-{gi}">'
                         f'<div class="group-heading">{"".join(heading)}</div>\n<ol class="entries">\n' +
                         '\n'.join(rows) + '\n</ol></section>')
+    filters = home.get('filters', 'auto')
+    buttons = []
+    if filters == 'auto':
+        filters = 'groups' if len(ctx.groups) > 1 else 'none'
+    if filters == 'groups':
+        buttons = [(g['id'], g.get('filterLabel') or g.get('title', g['id'])) for g in ctx.groups
+                   if g['id'] in rendered]
+    elif filters == 'kinds':
+        buttons = [(n, k['plural']) for n, k in ctx.kinds.items() if n in rendered_kinds]
+    if len(buttons) > 1:
+        b = [f'<button type="button" data-filter="all" aria-pressed="true">{esc(home.get("allLabel"))}</button>']
+        b += [f'<button type="button" data-filter="{esc(i)}" aria-pressed="false">{esc(t)}</button>' for i, t in buttons]
+        tools.append('<nav class="group-filters" aria-label="Filter pages">' + ''.join(b) + '</nav>')
+
+    tools += ctx.call('home_tools')
     main = (f'<h1 class="sr-only">{esc(cfg["site"]["title"])}</h1>\n'
             f'<div class="home-intro">{"".join(intro_bits)}</div>\n'
             f'<div class="catalog-tools">{"".join(tools)}</div>\n'

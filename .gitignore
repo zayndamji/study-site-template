@@ -3,3 +3,4 @@ __pycache__/
 *.pyc
 # build output of sites scaffolded inside this repo (e.g. tests)
 dist/
+.claude/
