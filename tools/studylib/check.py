@@ -10,6 +10,7 @@ Checks (each problem is printed as `file: message`; exit status 1 if any):
   - quizzes have data-id (unique across the site) and every question's answer is an option
   - steppers contain an ol.steps with items; sections have an id and an h2
   - content files that no page uses
+  - unfilled placeholders (%%name%% or {{name}}) left in page text
   - each package's own check() hook
 """
 from __future__ import annotations
@@ -28,6 +29,15 @@ from .common import log
 BLOCK = {'div', 'section', 'article', 'details', 'summary', 'ul', 'ol', 'li', 'table', 'thead', 'tbody', 'tr',
          'td', 'th', 'nav', 'header', 'footer', 'main', 'figure', 'figcaption', 'blockquote', 'p', 'span',
          'button', 'label', 'select', 'template', 'svg', 'g', 'a', 'h1', 'h2', 'h3', 'h4', 'pre', 'code'}
+PLACEHOLDER = re.compile(r'%%\w+%%|\{\{\s*\w+\s*\}\}')
+_SCRIPTS = re.compile(r'<(script|style|template)\b.*?</\1>', re.S | re.I)
+
+
+def _text_only(html):
+    """The page without scripts, styles and templates (code may legitimately contain {{ }})."""
+    return _SCRIPTS.sub('', html)
+
+
 VOID = {'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr'}
 
 
@@ -177,6 +187,8 @@ def _run(site_dir: Path, tmp, page) -> int:
                 problems.append(f'{rel}: line {s["line"]}: section.note without an id (the rail and review need one)')
             if not s['h2']:
                 problems.append(f'{rel}: line {s["line"]}: section.note without an h2')
+        for m in PLACEHOLDER.finditer(_text_only(text)):
+            problems.append(f'{rel}: unfilled placeholder "{m.group(0)}"')
         for st in p.steppers:
             if not st['steps']:
                 problems.append(f'{rel}: line {st["line"]}: .stepper has no ol.steps > li items')

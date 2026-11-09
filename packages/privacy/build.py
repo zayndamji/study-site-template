@@ -16,10 +16,36 @@ def _terms(ctx, opts):
     return terms
 
 
-def _scan(terms, items):
-    if not terms:
+# personal details that should never ship: home-folder paths and e-mail addresses
+PERSONAL = [
+    r"""(?:/Users|/home|\b[A-Za-z]:\\Users)[/\\][^/\\\s"'<>]+""",
+    # an e-mail address, but not a retina file name such as icon@2x.png
+    r'\b[\w.+-]+@[\w-]+(?:\.[\w-]+)*\.(?!(?:png|jpe?g|gif|webp|avif|svg|ico|css|js|json|html?)\b)[A-Za-z]{2,}\b',
+]
+
+
+def _patterns(ctx, opts):
+    """One regex for everything forbidden: terms (escaped; whole words if wholeWords), forbidPatterns
+    (regular expressions as written) and, with forbidPersonal, paths and e-mail addresses."""
+    parts = []
+    for t in _terms(ctx, opts):
+        e = re.escape(t)
+        parts.append(rf'(?<!\w){e}(?!\w)' if opts.get('wholeWords') else e)
+    for i, pat in enumerate(opts.get('forbidPatterns') or []):
+        try:
+            re.compile(pat)
+        except re.error as err:
+            ctx.warn(f'privacy: forbidPatterns[{i}] is not a valid regular expression ({err}); ignored')
+            continue
+        parts.append(f'(?:{pat})')
+    if opts.get('forbidPersonal'):
+        parts += PERSONAL
+    return re.compile('|'.join(parts), re.I) if parts else None
+
+
+def _scan(rx, items):
+    if rx is None:
         return []
-    rx = re.compile('|'.join(re.escape(t) for t in terms), re.I)
     hits = []
     for name, text in items:
         for m in rx.finditer(text):
@@ -59,16 +85,15 @@ def head(ctx, opts, page):
 def finalize(ctx, opts, outputs):
     if not opts['failBuild']:
         return
-    terms = _terms(ctx, opts)
+    rx = _patterns(ctx, opts)
     items = list(outputs.items()) + [(k, v.decode('utf-8', 'replace')) for k, v in ctx.extra_assets.items()]
-    hits = _scan(terms, items + _sources(ctx, opts))
+    hits = _scan(rx, items + _sources(ctx, opts))
     if hits:
         raise StudyError('forbidden terms found (privacy package):\n  ' + '\n  '.join(hits[:40]) +
                          (f'\n  … and {len(hits) - 40} more' if len(hits) > 40 else ''))
 
 
 def check(ctx, opts, outputs):
-    terms = _terms(ctx, opts)
+    rx = _patterns(ctx, opts)
     items = list(outputs.items()) + [(k, v.decode('utf-8', 'replace')) for k, v in ctx.extra_assets.items()]
-    problems = _scan(terms, items + _sources(ctx, opts))
-    return problems
+    return _scan(rx, items + _sources(ctx, opts))

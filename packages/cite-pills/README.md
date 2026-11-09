@@ -27,6 +27,7 @@ Put the PDF in `static/` (or use any URL you are allowed to link to).
 | `newTab` | `true` | Open those links in a new tab |
 | `sourcePill` | `true` | Style `p.src` as a pill with the same icon |
 | `sources` | `{}` | Per-source overrides for elements with `data-source` (below) |
+| `requirePage` | `false` | `study.py check` reports every `.cite` without `data-page` (or a `.pg` child) |
 
 Several sources (a textbook and a reader with different page offsets):
 ```json

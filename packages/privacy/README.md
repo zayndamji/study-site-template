@@ -19,7 +19,10 @@ Keep `private/` out of version control if the terms themselves are sensitive.
 | Option | Default | Meaning |
 |---|---|---|
 | `forbid` | `[]` | Terms, case-insensitive |
-| `forbidFile` | `""` | Text file, one term per line, `#` comments |
+| `forbidFile` | `""` | Text file, one term per line, `#` comments. Keep it outside `content/`, `custom/` and `packages/`, or it is scanned too |
+| `wholeWords` | `false` | Match terms only as whole words, so a short code does not hit longer words |
+| `forbidPatterns` | `[]` | Regular expressions (Python syntax, case-insensitive) for terms a list cannot express, e.g. `"\\bab ?12\\b"` |
+| `forbidPersonal` | `true` | Also forbid home-folder paths (`/Users/…`, `/home/…`, `C:\Users\…`) and e-mail addresses |
 | `scanSources` | `true` | Also scan `content/`, `custom/`, site `packages/` |
 | `failBuild` | `true` | Fail the build on a hit |
 | `noindex`, `noReferrer` | `true` | Meta tags |

@@ -7,12 +7,48 @@
   "requires": [],
   "build": "build.py",
   "options": {
-    "forbid": { "default": [], "private": true, "description": "Words or phrases that must not appear anywhere in the built site (case-insensitive), e.g. a course code or a school name." },
-    "forbidFile": { "default": "", "private": true, "description": "Optional path (relative to the site) of a text file with one forbidden term per line; keep it out of version control if the terms themselves are sensitive." },
-    "scanSources": { "default": true, "description": "Also scan content/, custom/ and site packages/ sources, not just the output." },
-    "failBuild": { "default": true, "description": "Stop the build when a forbidden term is found (otherwise only `check` reports it)." },
-    "noindex": { "default": true, "description": "Add <meta name=\"robots\" content=\"noindex, nofollow\">." },
-    "noReferrer": { "default": true, "description": "Add <meta name=\"referrer\" content=\"no-referrer\">." },
-    "localFonts": { "default": false, "description": "Drop third-party font stylesheets so the site makes no external requests (falls back to system fonts unless the site ships its own)." }
+    "forbid": {
+      "default": [],
+      "private": true,
+      "description": "Words or phrases that must not appear anywhere in the built site (case-insensitive), e.g. a course code or a school name."
+    },
+    "forbidFile": {
+      "default": "",
+      "private": true,
+      "description": "Optional path (relative to the site) of a text file with one forbidden term per line; keep it out of version control if the terms themselves are sensitive."
+    },
+    "wholeWords": {
+      "default": false,
+      "description": "Match forbid terms only as whole words (so a short code does not match inside a longer word)."
+    },
+    "forbidPatterns": {
+      "default": [],
+      "private": true,
+      "description": "Regular expressions (Python syntax, case-insensitive) that must not match anywhere, for terms a plain list cannot express, e.g. \"\\\\bab ?12\\\\b\"."
+    },
+    "forbidPersonal": {
+      "default": true,
+      "description": "Also forbid home-folder paths (/Users/…, /home/…, C:\\\\Users\\\\…) and e-mail addresses."
+    },
+    "scanSources": {
+      "default": true,
+      "description": "Also scan content/, custom/ and site packages/ sources, not just the output."
+    },
+    "failBuild": {
+      "default": true,
+      "description": "Stop the build when a forbidden term is found (otherwise only `check` reports it)."
+    },
+    "noindex": {
+      "default": true,
+      "description": "Add <meta name=\"robots\" content=\"noindex, nofollow\">."
+    },
+    "noReferrer": {
+      "default": true,
+      "description": "Add <meta name=\"referrer\" content=\"no-referrer\">."
+    },
+    "localFonts": {
+      "default": false,
+      "description": "Drop third-party font stylesheets so the site makes no external requests (falls back to system fonts unless the site ships its own)."
+    }
   }
 }
