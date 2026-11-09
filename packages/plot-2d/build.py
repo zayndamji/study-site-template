@@ -36,12 +36,14 @@ def _color_names(ctx, raw):
         if not _NAME.match(str(name)):
             ctx.warn(f'package "plot-2d": colorNames key {name!r} is not a CSS class name; ignored')
             continue
+        # (stroke colour, text colour or None for "same as the stroke")
         if isinstance(v, int) and 1 <= v <= 4:
-            out[name] = f'var(--plot-c{v})'
+            out[name] = (f'var(--plot-c{v})', 'var(--plot-c4-ink)' if v == 4 else None)
         elif isinstance(v, str) and v in tokens:
-            out[name] = f'var(--{v})'
+            ink = v[:-5] + '-ink' if v.endswith('-edge') and v[:-5] + '-ink' in tokens else None
+            out[name] = (f'var(--{v})', f'var(--{ink})' if ink else None)
         elif isinstance(v, str) and _SAFE.match(v):
-            out[name] = v.strip()
+            out[name] = (v.strip(), None)
         else:
             ctx.warn(f'package "plot-2d": colorNames[{name!r}] must be 1–4, a token name or a CSS colour; ignored')
     return out
@@ -90,14 +92,19 @@ def configure(ctx, opts):
 
 
 def _decls(vals):
-    return '; '.join(f'--plot-c{i + 1}: {v}' for i, v in enumerate(vals) if v)
+    # a site's own c4 is also its c4 text colour (the default amber has a darker --warn-ink)
+    out = [f'--plot-c{i + 1}: {v}' for i, v in enumerate(vals) if v]
+    if len(vals) > 3 and vals[3]:
+        out.append(f'--plot-c4-ink: {vals[3]}')
+    return '; '.join(out)
 
 
 def head(ctx, opts, page):
     light, dark = _decls(opts.get('colors') or []), _decls(opts.get('darkColors') or [])
     # shapes first, colours after them, each in the order given (so a modifier listed later wins)
     css = [f'svg.plane .{n} {{ {d} }}' for n, d in (opts.get('markNames') or {}).items()]
-    css += [f'svg.plane .{n} {{ --pc: {v}; }}' for n, v in (opts.get('colorNames') or {}).items()]
+    css += [f'svg.plane .{n} {{ --pc: {v}; --pt: {t or "initial"}; }}'
+            for n, (v, t) in (opts.get('colorNames') or {}).items()]
     if light:
         css.append(f':root {{ {light}; }}')
     if dark:

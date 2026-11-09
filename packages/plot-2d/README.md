@@ -27,7 +27,10 @@ Requires `math-kit` (added automatically).
 | `colorNames` | `{}` | Extra colour class names mapped to a slot `1`–`4`, a core token (`"ink"`, `"muted"`) or a CSS colour, e.g. `{"blue": 1, "grey": "muted"}`. |
 
 Without `colors`, `c1`…`c4` are `--term`, `--bad`, `--ok`, `--warn-edge`. The palette is also
-available as CSS variables `--plot-c1`…`--plot-c4`.
+available as CSS variables `--plot-c1`…`--plot-c4`. Labels in `c4` (and in a `colorNames` class
+mapped to `4` or `"warn-edge"`) use the darker text colour `--plot-c4-ink` (default `--warn-ink`), because
+the amber stroke is too light for text on a light background. A site that sets its own fourth
+colour in `colors` gets that colour for `c4` text too.
 
 ## Markup
 

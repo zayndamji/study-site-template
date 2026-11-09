@@ -1,12 +1,15 @@
 /* plot-2d: SVG coordinate planes (also used by view-3d).
    Every mark reads its colour from --pc, which the colour classes set, so one
    class colours a line, an arrow head, a dot or a label alike.
-   Palette: --plot-c1 … --plot-c4 (override with the "colors" option or in CSS). */
+   Palette: --plot-c1 … --plot-c4 (override with the "colors" option or in CSS).
+   Text reads --pt first, so a colour too light for text (c4's amber) can
+   give its labels a darker ink: --plot-c4-ink. */
 :root {
   --plot-c1: var(--term);
   --plot-c2: var(--bad);
   --plot-c3: var(--ok);
   --plot-c4: var(--warn-edge);
+  --plot-c4-ink: var(--warn-ink);
 }
 svg.plane {
   --pc: var(--ink);
@@ -20,7 +23,7 @@ svg.plane.plot-dragging, svg.plane.plot-dragging .handle { cursor: grabbing; }
 
 svg.plane line, svg.plane polyline, svg.plane path { stroke: var(--pc); fill: none; stroke-width: 2; stroke-linecap: round; }
 svg.plane polygon, svg.plane circle { stroke: var(--pc); fill: var(--pc); stroke-width: 1; }
-svg.plane text { fill: var(--pc); stroke: none; font-family: var(--f-math); font-size: 13px; }
+svg.plane text { fill: var(--pt, var(--pc)); stroke: none; font-family: var(--f-math); font-size: 13px; }
 svg.plane text.small { font-size: 11px; fill: var(--muted); }
 svg.plane text.halo { stroke: var(--surface); stroke-width: 3px; paint-order: stroke; stroke-linejoin: round; }
 
@@ -28,12 +31,12 @@ svg.plane .grid { stroke: var(--rule); stroke-width: 1; }
 svg.plane .axis { stroke: var(--muted); stroke-width: 1.3; }
 
 /* colours */
-svg.plane .c1 { --pc: var(--plot-c1); }
-svg.plane .c2 { --pc: var(--plot-c2); }
-svg.plane .c3 { --pc: var(--plot-c3); }
-svg.plane .c4 { --pc: var(--plot-c4); }
-svg.plane .ink { --pc: var(--ink); }
-svg.plane .muted { --pc: var(--muted); }
+svg.plane .c1 { --pc: var(--plot-c1); --pt: initial; }
+svg.plane .c2 { --pc: var(--plot-c2); --pt: initial; }
+svg.plane .c3 { --pc: var(--plot-c3); --pt: initial; }
+svg.plane .c4 { --pc: var(--plot-c4); --pt: var(--plot-c4-ink); }
+svg.plane .ink { --pc: var(--ink); --pt: initial; }
+svg.plane .muted { --pc: var(--muted); --pt: initial; }
 
 /* modifiers */
 svg.plane .thin, svg.plane .thin line { stroke-width: 1.3; }

@@ -59,13 +59,13 @@ table.t.iter tr.cur td { background: var(--term-soft); }
 .legend .c1, .vl.c1, .wk-c1 { color: var(--plot-c1, var(--term)); }
 .legend .c2, .vl.c2, .wk-c2 { color: var(--plot-c2, var(--bad)); }
 .legend .c3, .vl.c3, .wk-c3 { color: var(--plot-c3, var(--ok)); }
-.legend .c4, .vl.c4, .wk-c4 { color: var(--plot-c4, var(--warn-edge)); }
+.legend .c4, .vl.c4, .wk-c4 { color: var(--plot-c4-ink, var(--warn-ink)); }
 
 /* small status tags */
 .tag { display: inline-block; font: 600 0.75rem var(--f-mono); padding: 2px 8px; border-radius: 999px; background: var(--paper); color: var(--muted); border: 1px solid var(--rule); }
 .tag.ok { background: var(--ok-soft); color: var(--ok); border-color: transparent; }
 .tag.no { background: var(--bad-soft); color: var(--bad); border-color: transparent; }
-.tag.warn { background: var(--warn-soft); color: var(--warn-edge); border-color: transparent; }
+.tag.warn { background: var(--warn-soft); color: var(--warn-ink); border-color: transparent; }
 
 /* a short note inside or under a widget */
 .callout { margin: 4px 0 8px; padding: 8px 12px; border-left: 3px solid var(--term); background: var(--term-soft); border-radius: 0 8px 8px 0; font-size: 0.97rem; }
