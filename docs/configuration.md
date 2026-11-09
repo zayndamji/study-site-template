@@ -87,6 +87,8 @@ page fields.
       "keywords": "extra search words",
       "group": "part-1",
       "status": "ready",                  // ready | planned | anything else (only ready is built)
+      "statusLabel": "Draft",             // badge text: coming-later (planned pages), preview-pages (ready ones)
+      "statusNote": "…",                  // preview-pages: this page's banner text
       "file": "…", "source": "…", "storageKey": "…"   // per-page overrides of the kind templates
     }
   ],

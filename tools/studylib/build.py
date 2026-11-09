@@ -475,7 +475,9 @@ def render_home(ctx: Ctx):
     return doc
 
 
-def default_row(ctx: Ctx, p, extra_class='', state=''):
+def default_row(ctx: Ctx, p, extra_class='', state='', flag=''):
+    """A home catalog row. `state` fills the line under the title (home-progress replaces it once the
+    page has been opened); `flag` is HTML placed right after the title and is never replaced."""
     k = ctx.kinds[p['kind']]
     search = ' '.join(str(x) for x in (p['id'], p['badge'] if p['badge'] != p['id'] else '', p['title'], p['label'], p['description'], p['keywords'],
                                         ctx.group_title(p['group']), p.get('noun') or k['noun']) if x)
@@ -486,7 +488,7 @@ def default_row(ctx: Ctx, p, extra_class='', state=''):
     return (f'<li data-search-row data-kind="{esc(p["kind"])}" data-group="{esc(p["group"])}" '
             f'data-num="{"" if p["num"] is None else p["num"]}" data-unit="{esc(p["storageKey"])}" data-search="{esc(search)}">'
             f'<{tag} class="entry {extra_class}"{href}{title_attr}><span class="num">{num}</span>'
-            f'<span class="ttl">{esc(p["label"])}</span><span class="arrow" aria-hidden="true">↗</span>'
+            f'<span class="ttl">{esc(p["label"])}{flag}</span><span class="arrow" aria-hidden="true">↗</span>'
             f'<span class="state">{state}</span><span class="sub">{esc(p["description"])}</span></{tag}></li>')
 
 

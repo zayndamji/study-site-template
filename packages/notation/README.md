@@ -16,7 +16,8 @@
     "tags": {
       "noun": { "light": "#1f45c4", "dark": "#93acff" },
       "verb": { "light": "#c0322a", "dark": "#f2897e" },
-      "adj":  "warn-ink"
+      "adj":  "warn-ink",
+      "kw":   { "light": "#7b2f9e", "dark": "#d39cf2", "weight": 700, "font": "mono" }
     }
   }
 }
@@ -25,7 +26,7 @@
 ## Options
 | Option | Default | Meaning |
 |---|---|---|
-| `tags` | `{}` | `{"class": {"light": …, "dark": …, "var": …, "weight": …}}` or `{"class": colour}`; a colour is a CSS colour or a core token (`term`, `bad`, `ok`, `warn-ink`, `muted`, …) |
+| `tags` | `{}` | `{"class": {"light": …, "dark": …, "var": …, "weight": …, "font": …, "style": …}}` or `{"class": colour}`; a colour is a CSS colour or a core token (`term`, `bad`, `ok`, `warn-ink`, `muted`, …); `font` is `body`, `display`, `math` or `mono`; `style` is `normal` or `italic` |
 
 Each tag's colour is also a CSS variable (`--nt-<class>`, or the name given in `"var"`), so a
 diagram or a package can reuse it: `fill: var(--nt-noun)`. Use `"var"` to choose the variable

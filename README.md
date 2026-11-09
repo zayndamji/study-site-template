@@ -68,6 +68,7 @@ all come from the page list.
 | `resume-link` | "Continue: …" link to the last page read |
 | `topic-details` | Show page descriptions on the home page |
 | `coming-later` | Planned pages shown greyed out |
+| `preview-pages` | Provisional pages flagged on the home page, with a banner under the title |
 | `resources` | A second page kind for guides and handouts |
 | `privacy` | Forbidden-term scanning, noindex, no third-party requests |
 | `content-rules` | A site's own writing rules (forbidden tags and phrases, minimum sections), reported by `check` |

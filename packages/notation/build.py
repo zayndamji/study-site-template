@@ -3,6 +3,7 @@ import re
 
 _NAME = re.compile(r'^[A-Za-z_][\w-]*$')
 _SAFE = re.compile(r'^[\w\s.%#(),+\-/]*$')
+_FONTS = ('body', 'display', 'math', 'mono')
 
 
 def _core_tokens():
@@ -45,7 +46,15 @@ def configure(ctx, opts):
         if not _NAME.match(str(var)):
             ctx.warn(f'notation: tags[{name!r}].var {var!r} is not a CSS variable name; using nt-{name}')
             var = f'nt-{name}'
-        out[name] = {'light': light, 'dark': dark, 'var': var, 'weight': spec.get('weight')}
+        font = spec.get('font')
+        if font is not None and font not in _FONTS:
+            ctx.warn(f'notation: tags[{name!r}].font must be one of {", ".join(_FONTS)}; ignored')
+            font = None
+        style = spec.get('style')
+        if style is not None and style not in ('normal', 'italic'):
+            ctx.warn(f'notation: tags[{name!r}].style must be "normal" or "italic"; ignored')
+            style = None
+        out[name] = {'light': light, 'dark': dark, 'var': var, 'weight': spec.get('weight'), 'font': font, 'style': style}
     opts['tags'] = out
 
 
@@ -61,6 +70,10 @@ def head(ctx, opts, page):
            '@media print { :root, :root[data-theme="dark"] { ' + ' '.join(f'--{t["var"]}: {t["light"]} !important;' for t in tags.values()) + ' } }']
     for name, t in tags.items():
         w = f' font-weight: {t["weight"]};' if isinstance(t.get('weight'), (int, str)) and str(t['weight']).isdigit() else ''
+        if t.get('font'):
+            w += f' font-family: var(--f-{t["font"]});'
+        if t.get('style'):
+            w += f' font-style: {t["style"]};'
         # the table variants match the specificity of table header rules (and come later, so they win)
         css.append(f'.{name}, table.t th.{name}, table.t td.{name} {{ color: var(--{t["var"]});{w} }}')
     return f'<style data-package="notation">{" ".join(css)}</style>'

@@ -1,0 +1,7 @@
+/* preview-pages */
+.entry .flag { display: inline-flex; align-items: baseline; gap: 6px; margin-left: 4px; white-space: nowrap;
+  font: 600 0.85rem/1.4 var(--f-display); color: var(--warn-ink); }
+.entry .flag::before { content: ""; flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--warn-edge); transform: translateY(-1px); }
+.preview-banner { margin: 14px 0; padding: 10px 14px; background: var(--warn-soft); border-radius: var(--radius); font-size: 0.95rem; }
+.preview-banner strong { color: var(--warn-ink); }
+@media print { .entry .flag::before { background: currentColor; } .preview-banner { background: none; border: 1px solid var(--warn-edge); } }

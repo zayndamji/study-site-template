@@ -90,7 +90,7 @@
         "properties": {
           "id": { "type": ["string", "integer"] }, "badge": { "type": "string" }, "noun": { "type": "string" }, "short": { "type": "string" }, "kind": { "type": "string" }, "title": { "type": "string" },
           "label": { "type": "string" }, "description": { "type": "string" }, "keywords": { "type": "string" },
-          "group": { "type": ["string", "null"] }, "status": { "type": "string" }, "statusLabel": { "type": "string" },
+          "group": { "type": ["string", "null"] }, "status": { "type": "string" }, "statusLabel": { "type": "string" }, "statusNote": { "type": "string" },
           "file": { "type": "string" }, "source": { "type": "string" }, "storageKey": { "type": "string" }
         }
       }

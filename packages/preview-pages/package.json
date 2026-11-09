@@ -1,0 +1,21 @@
+{
+  "name": "preview-pages",
+  "title": "Preview pages",
+  "description": "Ready pages that are still provisional (a draft, or written from early sources): a status flag beside the title on the home page and a banner under the page title. A page opts in with \"statusLabel\" in site.json; its status stays \"ready\".",
+  "category": "home",
+  "version": "1.0.0",
+  "requires": [],
+  "css": ["preview-pages.css"],
+  "build": "build.py",
+  "options": {
+    "banner": {
+      "default": "<strong>{label}.</strong> This page is provisional and will be revised.",
+      "description": "Banner under the page title (HTML). Fields: {label} (the page's statusLabel) and the page fields {id} {badge} {title} {noun} …. A page can set \"statusNote\" to replace it; \"\" turns the banner off."
+    },
+    "flag": {
+      "default": true,
+      "description": "Show the statusLabel beside the title in the home catalog (search finds it too)."
+    }
+  },
+  "demoOptions": {}
+}
