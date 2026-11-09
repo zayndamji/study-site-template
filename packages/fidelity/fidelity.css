@@ -5,26 +5,30 @@
 blockquote.quote { margin: 14px 0 16px; padding: 2px 0 2px 16px; border-left: 3px solid var(--rule); }
 blockquote.quote p, blockquote.quote ul, blockquote.quote ol { margin-bottom: 8px; }
 blockquote.quote > :last-child { margin-bottom: 0; }
-blockquote.quote > cite { display: block; margin-top: 4px; font: normal 0.72rem var(--f-mono); color: var(--muted); }
+blockquote.quote > cite { display: block; margin-top: 4px; font: normal 0.75rem var(--f-mono); color: var(--muted); }
 q.quote { quotes: "\201C" "\201D" "\2018" "\2019"; }
 
 /* material that is not in the source */
 .beyond {
-  display: inline-block; font: 600 0.65rem/1 var(--f-mono); letter-spacing: 0.06em; text-transform: uppercase;
-  color: var(--muted); border: 1px solid var(--rule); border-radius: 999px; padding: 3px 7px;
+  display: inline-block; font: 600 0.75rem/1 var(--f-display);
+  color: var(--muted); border: 1px solid var(--rule); border-radius: var(--radius-sm); padding: 3px 6px;
   vertical-align: 2px; margin-left: 4px; white-space: nowrap;
 }
 .beyond:empty { display: none; }
 .beyond-block { margin: 22px 0; padding: 12px 16px; border: 1px dashed var(--rule); border-radius: var(--radius); }
-.beyond-block > .lbl { display: block; font: 700 0.7rem var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+/* run-in leads, as on core's .box (see core.css) */
+:is(.beyond-block, .erratum) > .lbl { display: inline; margin-right: 0.45em; font: 650 1em var(--f-display); color: var(--muted); }
+:is(.beyond-block, .erratum) > .lbl + p { display: inline; }
+:is(.beyond-block, .erratum) > .lbl + p + * { margin-top: 14px; }
+:is(.beyond-block, .erratum) > .lbl + :not(p) { margin-top: 6px; }
 .beyond-block > :last-child { margin-bottom: 0; }
 
 /* a mistake in the source: quote its wording, then give the correction */
-.erratum { margin: 22px 0; padding: 12px 16px; background: var(--bad-soft); border-left: 3px solid var(--bad); border-radius: 0 var(--radius) var(--radius) 0; }
-.erratum > .lbl { display: block; font: 700 0.7rem var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--bad); margin-bottom: 4px; }
+.erratum { margin: 22px 0; padding: 12px 16px; background: var(--bad-soft); border-radius: var(--radius); }
+.erratum > .lbl { color: var(--bad); }
 .erratum > :last-child, .erratum blockquote.quote > :last-child { margin-bottom: 0; }
 .erratum blockquote.quote { margin: 6px 0 10px; border-left-color: var(--bad); }
-.fid-erratum-tag { display: inline-block; font: 600 0.65rem/1 var(--f-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--bad); background: var(--bad-soft); border-left: 2px solid var(--bad); padding: 3px 7px; vertical-align: 1px; white-space: nowrap; }
+.fid-erratum-tag { display: inline-block; font: 600 0.75rem/1 var(--f-display); color: var(--bad); background: var(--bad-soft); border-radius: var(--radius-sm); padding: 3px 6px; vertical-align: 1px; white-space: nowrap; }
 
 /* legend line (option "legend") */
 .fid-legend { margin: 0 0 8px; padding: 8px 12px; font: 0.8rem/1.6 var(--f-display); color: var(--muted); background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); }

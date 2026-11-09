@@ -4,13 +4,13 @@
 :root { --sv-chip-icon: "\25A3"; --sv-frame-bg: #fff; --sv-frame-ink: #586274; }
 
 .sv-chip, .sv-ref {
-  display: inline-block; font: 600 0.72rem/1.35 var(--f-mono); color: var(--term); background: var(--term-soft);
-  border: 1px solid transparent; border-radius: 5px; padding: 0 5px; margin: 0 1px; cursor: pointer;
+  display: inline-block; font: 600 0.75rem/1.35 var(--f-mono); color: var(--term); background: var(--term-soft);
+  border: 1px solid transparent; border-radius: var(--radius-sm); padding: 0 5px; margin: 0 1px; cursor: pointer;
   text-decoration: none; white-space: nowrap; vertical-align: baseline; letter-spacing: 0; text-transform: none;
 }
 .sv-chip:hover, .sv-chip:focus-visible { border-color: var(--term); outline: none; }
 .sv-chip::before { content: var(--sv-chip-icon); font-size: 0.85em; margin-right: 3px; opacity: 0.7; }
-.lbl .sv-chip, .src .sv-chip, cite .sv-chip { font-size: 0.95em; }
+.lbl .sv-chip, .src .sv-chip, cite .sv-chip { font-size: 0.75rem; }
 .sv-chip.on { border-color: var(--term); background: var(--term); color: var(--surface); }
 
 .sv-pop {
@@ -31,7 +31,7 @@
 .sv-pop[data-side="above"]::before { bottom: -7px; left: calc(var(--sv-nx, 24px) - 6px); border-left: 0; border-top: 0; }
 .sv-head, .sv-foot { position: relative; display: flex; align-items: center; gap: 8px; padding: 7px 10px; flex-wrap: wrap; }
 .sv-cap { font: 600 0.75rem var(--f-mono); min-width: 0; overflow-wrap: anywhere; }
-.sv-rng { font: 0.68rem var(--f-mono); color: var(--muted); padding: 0 6px; border-radius: 999px; border: 1px solid var(--rule); }
+.sv-rng { font: 0.75rem var(--f-mono); color: var(--muted); padding: 0 6px; border-radius: var(--radius-sm); border: 1px solid var(--rule); }
 .sv-rng:empty { display: none; }
 .sv-rng.in { color: var(--term); border-color: var(--term); }
 .sv-x { margin-left: auto; border: 0; background: none; color: var(--muted); font: 1rem/1 var(--f-mono); cursor: pointer; padding: 2px 4px; }
@@ -41,7 +41,7 @@
 .sv-msg { position: absolute; inset: 0; display: grid; place-items: center; padding: 12px; text-align: center; font: 0.8rem var(--f-mono); color: var(--sv-frame-ink); }
 .sv-foot { justify-content: center; }
 .sv-foot .btn { padding: 3px 10px; font-size: 0.75rem; }
-.sv-pos { font: 0.72rem var(--f-mono); color: var(--muted); min-width: 5.5em; text-align: center; }
+.sv-pos { font: 0.75rem var(--f-mono); color: var(--muted); min-width: 5.5em; text-align: center; }
 
 @media print {
   .sv-chip, .sv-ref { background: none; color: inherit; padding: 0; border: 0; font: inherit; }

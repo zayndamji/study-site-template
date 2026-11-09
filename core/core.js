@@ -86,10 +86,22 @@
   const applyTheme = (t) => { if (t === 'system') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', t); };
   let theme = store.get('theme', data.config.defaultTheme || 'system');
   applyTheme(theme);
+  // one icon per mode; shown instead of the words on narrow screens (the words stay for screen readers)
+  const THEME_ICONS = {
+    system: '<circle cx="10" cy="10" r="6.8"/><path class="fill" d="M10 3.2a6.8 6.8 0 0 1 0 13.6z"/>',
+    light: '<circle cx="10" cy="10" r="3.4"/><path d="M10 1.9v2.2M10 15.9v2.2M1.9 10h2.2M15.9 10h2.2M4.3 4.3l1.5 1.5M14.2 14.2l1.5 1.5M4.3 15.7l1.5-1.5M14.2 5.8l1.5-1.5"/>',
+    dark: '<path d="M15.8 12.4A6.6 6.6 0 0 1 7.6 4.2a6.6 6.6 0 1 0 8.2 8.2z"/>',
+  };
   function bindTheme() {
     document.querySelectorAll('[data-theme-toggle]').forEach((b) => {
       const name = (m) => t('theme' + m[0].toUpperCase() + m.slice(1));
-      const label = () => { b.textContent = ''; b.append(h('span', { class: 'theme-prefix', text: t('theme') }), name(theme)); b.title = t('themeTitle', { mode: name(theme) }); };
+      b.classList.add('theme-btn');
+      const label = () => {
+        b.textContent = '';
+        b.insertAdjacentHTML('afterbegin', '<svg class="theme-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false">' + THEME_ICONS[theme] + '</svg>');
+        b.append(h('span', { class: 'theme-text' }, h('span', { class: 'theme-prefix', text: t('theme') }), name(theme)));
+        b.title = t('themeTitle', { mode: name(theme) });
+      };
       label();
       b.addEventListener('click', () => {
         theme = theme === 'system' ? 'light' : theme === 'light' ? 'dark' : 'system';
@@ -159,19 +171,28 @@
     }
     if (reviewOn) updateProgress(); else if (prog) prog.hidden = true;
 
+    // the narrow-screen bar also names the section being read
+    const sum = toc.closest('details') && toc.closest('details').querySelector('summary');
+    const now = sum ? h('span', { class: 'rail-now', 'aria-hidden': 'true' }) : null;
+    if (now) sum.appendChild(now);
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
         if (!e.isIntersecting) return;
         links.forEach((a) => a.classList.remove('active'));
         const a = links.get(e.target.id); if (a) a.classList.add('active');
+        if (now && a) now.textContent = [a.querySelector('.n').textContent, a.querySelector('.t').textContent].filter(Boolean).join(' ');
       });
     }, { rootMargin: '-20% 0px -70% 0px' });
     sections.forEach((s) => io.observe(s));
     const d = toc.closest('details');
+    const wide = window.matchMedia('(min-width: 961px)');
     toc.addEventListener('click', (e) => {
-      if (e.target.closest('a') && d && window.matchMedia('(max-width: 960px)').matches) d.open = false;
+      if (e.target.closest('a') && d && !wide.matches) d.open = false;
     });
-    if (d && window.matchMedia('(min-width: 961px)').matches) d.open = true;
+    // wide: the list is always open; narrow: a slim bar (kept on screen by CSS) that opens it
+    const syncOpen = () => { if (d) d.open = wide.matches; };
+    syncOpen();
+    if (wide.addEventListener) wide.addEventListener('change', syncOpen); else if (wide.addListener) wide.addListener(syncOpen);
   }
 
   // ---- steppers: reveal an ordered list one item at a time ----

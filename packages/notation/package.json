@@ -13,7 +13,7 @@
     "tags": {
       "default": {},
       "private": true,
-      "description": "Colour classes to create: {\"name\": {\"light\": colour, \"dark\": colour, \"var\": optional CSS variable name, \"weight\": optional font weight}} or {\"name\": colour}. A colour is a CSS colour or a core token name (term, bad, ok, warn-edge, muted, …). <span class=\"name\"> is then shown in that colour; print uses the light colours."
+      "description": "Colour classes to create: {\"name\": {\"light\": colour, \"dark\": colour, \"var\": optional CSS variable name, \"weight\": optional font weight}} or {\"name\": colour}. A colour is a CSS colour or a core token name (term, bad, ok, warn-ink, muted, …). <span class=\"name\"> is then shown in that colour; print uses the light colours."
     }
   },
   "demoOptions": {
@@ -26,7 +26,7 @@
         "light": "#c0322a",
         "dark": "#f2897e"
       },
-      "adj": "warn-edge"
+      "adj": "warn-ink"
     }
   }
 }

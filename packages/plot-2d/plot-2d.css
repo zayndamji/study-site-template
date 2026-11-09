@@ -15,7 +15,7 @@ svg.plane {
   --pc: var(--ink);
   width: 100%; height: auto; display: block;
   background: var(--surface);
-  border: 1px solid var(--rule); border-radius: 8px;
+  border: 1px solid var(--rule); border-radius: var(--radius-sm);
   user-select: none; -webkit-user-select: none;
 }
 svg.plane.plot-draggable { touch-action: none; }
@@ -24,7 +24,7 @@ svg.plane.plot-dragging, svg.plane.plot-dragging .handle { cursor: grabbing; }
 svg.plane line, svg.plane polyline, svg.plane path { stroke: var(--pc); fill: none; stroke-width: 2; stroke-linecap: round; }
 svg.plane polygon, svg.plane circle { stroke: var(--pc); fill: var(--pc); stroke-width: 1; }
 svg.plane text { fill: var(--pt, var(--pc)); stroke: none; font-family: var(--f-math); font-size: 13px; }
-svg.plane text.small { font-size: 11px; fill: var(--muted); }
+svg.plane text.small { font-size: 12px; fill: var(--muted); }
 svg.plane text.halo { stroke: var(--surface); stroke-width: 3px; paint-order: stroke; stroke-linejoin: round; }
 
 svg.plane .grid { stroke: var(--rule); stroke-width: 1; }

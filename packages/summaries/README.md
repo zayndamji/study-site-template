@@ -42,7 +42,7 @@ Write each sheet once; both places always match.
 | `groupHeadings` | `false` | A heading above each group's sheets: the group title and its `sheetNote` (or `note`) |
 | `filterAria` | `"Filter sheets"` | Accessible name of the filter buttons |
 | `printLabel` | `"Print"` | Print button; `""` to omit |
-| `homeLink` | `"Summary sheets ↗"` | Link on the home intro line; `""` to omit |
+| `homeLink` | `"Summary sheets"` | Link on the home intro line; `""` to omit |
 | `topbarLink` | `""` | Link in every top bar; `""` to omit |
 
 ## Markup

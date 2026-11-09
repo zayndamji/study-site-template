@@ -146,7 +146,7 @@
       "description": "Print button label on the all-sheets page; empty to omit."
     },
     "homeLink": {
-      "default": "Summary sheets ↗",
+      "default": "Summary sheets",
       "description": "Link on the home page intro line; empty to omit."
     },
     "topbarLink": {

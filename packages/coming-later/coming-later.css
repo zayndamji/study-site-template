@@ -4,4 +4,4 @@
 .entry.planned { color: var(--muted); cursor: default; }
 .entry.planned:hover { color: var(--muted); }
 .entry.planned .arrow { display: none; }
-.entry.planned .later { display: inline-block; font: .62rem/1 var(--f-mono); letter-spacing: .04em; text-transform: uppercase; border: 1px solid var(--rule); border-radius: 999px; padding: 3px 7px; }
+.entry.planned .later { font: 500 .8rem var(--f-display); color: var(--muted); }

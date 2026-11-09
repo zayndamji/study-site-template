@@ -74,7 +74,7 @@
     "source-links": {},
     "widget-kit": {},
     "state-machine": {},
-    "notation": { "tags": { "ev-e": "term", "ev-f": "warn-edge" } },
+    "notation": { "tags": { "ev-e": "term", "ev-f": "warn-ink" } },
     "content-rules": {
       "kinds": ["lecture"],
       "forbidTags": { "img": "draw diagrams as SVG instead of using images" },

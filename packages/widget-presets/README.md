@@ -2,7 +2,7 @@
 
 ## What it does
 
-Adds a row of small pill buttons that load ready-made inputs into a widget. Each preset can
+Adds a row of small square-cornered buttons that load ready-made inputs into a widget. Each preset can
 carry a one-line **note** — why this case is worth trying — shown under the row when the preset is
 chosen. The chosen button is marked `aria-pressed="true"`. Works with any widget; no other
 package is needed.

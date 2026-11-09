@@ -3,4 +3,5 @@
 svg.plane.view3d { cursor: grab; touch-action: none; }
 svg.plane.view3d.v3-dragging { cursor: grabbing; }
 svg.plane.view3d:focus-visible { outline: 2px solid var(--term); outline-offset: 2px; }
+svg.plane.view3d text.v3-axis-hidden { visibility: hidden; }
 svg.plane.view3d .fill { fill-opacity: 0.13; stroke-opacity: 0.5; stroke-width: 0.8; }

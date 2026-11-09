@@ -16,7 +16,10 @@ sections:
 </section>
 ```
 
-- `id` is required (rail link, scrollspy, review state). `<span class="n">` is the number in the rail.
+- `id` is required (rail link, scrollspy, review state). `<span class="n">` is the number in the rail. In the heading it
+  is drawn at the heading's own size, in the accent colour.
+- Below 961 px the rail becomes a slim bar that stays at the top of the screen, names the section
+  being read, and opens the section list.
 - `data-toc-group="Label"` on a section starts a labelled group in the rail.
 - `data-toc-title="Short"` overrides the rail text.
 - `data-no-review` leaves the section out of review progress.
@@ -46,6 +49,14 @@ engine, which keeps pages light and searchable.
 <div class="pitfall"><span class="lbl">Pitfall</span><p>…</p></div>
 <details class="reveal"><summary>Proof</summary><div class="body">…</div></details>
 ```
+
+- A box's `.lbl` is a run-in lead: written in sentence case, it starts the first line of the paragraph
+  that follows, in the heading font. Before a list, formula or quote it stays on its own line.
+- Only `.box` keeps a border; `.key` and `.pitfall` are tinted, with no side stripe.
+- A `details.reveal` inside a card (`.widget`, `.box`, `.key`, a worked example) is drawn as a rule and
+  its summary line, not as a second box.
+- Corners: `--radius` for cards and boxes, `--radius-sm` for controls, inner panels and chips;
+  `999px` only for real buttons (`.btn`).
 
 ## Tables and diagrams
 

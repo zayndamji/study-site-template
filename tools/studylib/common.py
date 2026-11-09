@@ -85,7 +85,7 @@ DEFAULTS = {
         'quizReset': 'Reset', 'quizCorrect': 'Correct', 'quizWrong': 'Not quite',
         'quizScore': '{right} / {answered} correct \u00b7 {left} left', 'quizCount': '{n} questions',
         'quizCountOne': '1 question',
-        'skipLink': 'Skip to content', 'switchPage': 'Switch page', 'searchLabel': 'Search pages',
+        'skipLink': 'Skip to content', 'switchPage': 'Switch page', 'searchLabel': 'Search pages', 'searchKeyHint': 'Press / to search',
         'filterLabel': 'Filter pages', 'showEverything': 'Show everything',
         'matches': '{n} matching pages', 'matchesOne': '1 matching page',
     },

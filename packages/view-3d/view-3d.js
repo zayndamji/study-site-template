@@ -78,7 +78,7 @@
       names = names || opts.axisNames || ['x', 'y', 'z'];
       [[R, 0, 0], [0, R, 0], [0, 0, R]].forEach((e, i) => {
         V.line(e.map((t) => -t), e, 'axis');
-        if (names[i]) V.text(e, names[i], 'small', 4, 4);
+        if (names[i]) V.text(e, names[i], 'small v3-axis', 4, 4);
       });
     };
     /** A filled square patch of span(u, v) through the origin, half-width R. */
@@ -90,7 +90,26 @@
       const c = [[1, 1], [1, -1], [-1, -1], [-1, 1]].map(([s, t]) => [0, 1, 2].map((i) => R * (s * e1[i] + t * e2[i])));
       return V.pline(c, cls || 'fill c1', true);
     };
-    V.redraw = () => { g.replaceChildren(); if (V.draw) V.draw(V); };
+    /** Axis names give way to the picture's own labels: try a few nearby spots, else hide the name. */
+    function clearAxisNames() {
+      const names = [...g.querySelectorAll('text.v3-axis')];
+      if (!names.length) return;
+      const bb = (t) => { try { const b = t.getBBox(); return b.width ? b : null; } catch (e) { return null; } };
+      const others = [...g.querySelectorAll('text:not(.v3-axis)')].map(bb).filter(Boolean);
+      const placed = [];
+      const hit = (b) => others.concat(placed).some((o) => b.x < o.x + o.width + 2 && o.x < b.x + b.width + 2 && b.y < o.y + o.height + 2 && o.y < b.y + b.height + 2);
+      names.forEach((t) => {
+        const x0 = +t.getAttribute('x'), y0 = +t.getAttribute('y');
+        for (const [dx, dy] of [[0, 0], [-18, 0], [0, 14], [-18, 14], [0, -16], [10, -14]]) {
+          t.setAttribute('x', x0 + dx); t.setAttribute('y', y0 + dy);
+          const b = bb(t);
+          if (!b || !hit(b)) { if (b) placed.push(b); return; }
+        }
+        t.setAttribute('x', x0); t.setAttribute('y', y0);
+        t.classList.add('v3-axis-hidden');
+      });
+    }
+    V.redraw = () => { g.replaceChildren(); if (V.draw) V.draw(V); clearAxisNames(); };
     /** Get or set the zoom (pixels per unit); setting redraws. */
     V.scale = (s) => { if (s === undefined) return V.S; V.S = s; V.redraw(); return V.S; };
     /** Set the view angles (radians) and redraw. */

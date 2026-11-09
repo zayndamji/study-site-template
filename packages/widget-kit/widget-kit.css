@@ -14,8 +14,8 @@
 
 /* side-by-side worked methods */
 .methods { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-.method { border: 1px solid var(--rule); border-radius: 8px; padding: 10px 14px; background: var(--paper); min-width: 0; overflow-x: auto; }
-.method h4 { margin: 0 0 4px; font: 700 0.7rem var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--term); }
+.method { border: 1px solid var(--rule); border-radius: var(--radius-sm); padding: 10px 14px; background: var(--paper); min-width: 0; overflow-x: auto; }
+.method h4 { margin: 0 0 4px; font: 650 0.95rem var(--f-display); color: var(--term); }
 .method ol.calc { margin: 0; }
 .method ol.calc li { margin: 10px 0; }
 
@@ -39,7 +39,7 @@ input[type=range] { width: 100%; accent-color: var(--term); }
 
 /* grids of small inputs: matrix entries, vector components */
 .grid-in { display: inline-grid; grid-template-columns: repeat(3, auto); gap: 6px 8px; align-items: center; font-family: var(--f-math); }
-.grid-in input, .vrow input { width: 3.6rem; font: 1rem var(--f-math); padding: 4px 6px; border: 1px solid var(--rule); border-radius: 6px; background: var(--paper); color: var(--ink); text-align: center; }
+.grid-in input, .vrow input { width: 3.6rem; font: 1rem var(--f-math); padding: 4px 6px; border: 1px solid var(--rule); border-radius: var(--radius-sm); background: var(--paper); color: var(--ink); text-align: center; }
 .grid-in .bar { border-left: 1.5px solid var(--muted); padding-left: 8px; }
 .vecin { display: grid; gap: 6px; margin: 8px 0 12px; }
 .vrow { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
@@ -47,9 +47,9 @@ input[type=range] { width: 100%; accent-color: var(--term); }
 .vrow .vl { width: 2.2rem; font-family: var(--f-math); }
 
 /* results */
-.readout { font-family: var(--f-math); line-height: 1.6; }
+.readout { font-family: var(--f-math); line-height: 1.6; min-width: 0; overflow-x: auto; }
 .readout .row { margin: 4px 0; }
-.readout .k { font: 600 0.72rem var(--f-mono); color: var(--muted); text-transform: uppercase; letter-spacing: .03em; display: block; }
+.readout .k { font: 600 0.75rem var(--f-mono); color: var(--muted); text-transform: uppercase; letter-spacing: .03em; display: block; }
 .legend { font: 0.8rem var(--f-mono); color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 6px; }
 .legend b { font-weight: 700; }
 table.t.iter td, table.t.iter th { font-family: var(--f-mono); font-size: 0.8rem; white-space: nowrap; }
@@ -61,14 +61,16 @@ table.t.iter tr.cur td { background: var(--term-soft); }
 .legend .c3, .vl.c3, .wk-c3 { color: var(--plot-c3, var(--ok)); }
 .legend .c4, .vl.c4, .wk-c4 { color: var(--plot-c4-ink, var(--warn-ink)); }
 
-/* small status tags */
-.tag { display: inline-block; font: 600 0.75rem var(--f-mono); padding: 2px 8px; border-radius: 999px; background: var(--paper); color: var(--muted); border: 1px solid var(--rule); }
-.tag.ok { background: var(--ok-soft); color: var(--ok); border-color: transparent; }
-.tag.no { background: var(--bad-soft); color: var(--bad); border-color: transparent; }
-.tag.warn { background: var(--warn-soft); color: var(--warn-ink); border-color: transparent; }
+/* small status tags: a coloured dot and text, not a pill */
+.tag { display: inline-flex; align-items: baseline; gap: 6px; font: 600 0.85rem/1.4 var(--f-display); color: var(--muted); }
+.tag::before { content: ""; flex: none; width: 7px; height: 7px; border-radius: 50%; background: currentColor; transform: translateY(-1px); }
+.tag.ok { color: var(--ok); }
+.tag.no { color: var(--bad); }
+.tag.warn { color: var(--warn-ink); }
+.tag.warn::before { background: var(--warn-edge); }
 
 /* a short note inside or under a widget */
-.callout { margin: 4px 0 8px; padding: 8px 12px; border-left: 3px solid var(--term); background: var(--term-soft); border-radius: 0 8px 8px 0; font-size: 0.97rem; }
+.callout { margin: 4px 0 8px; padding: 8px 12px; background: var(--term-soft); border-radius: var(--radius-sm); font-size: 0.97rem; }
 
 @media (max-width: 760px) {
   .two, .two.even, .methods, .sliders { grid-template-columns: minmax(0, 1fr); }

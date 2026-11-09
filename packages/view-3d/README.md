@@ -24,7 +24,7 @@ automatically; the viewer shares plot-2d's colour classes and styles).
 | `keyStep` | `0.1` | Radians per arrow-key press (Shift × 4). |
 | `keyboard` | `true` | Make viewers focusable and keyboard-rotatable. |
 | `label` | `"3D view. Drag, or focus and use the arrow keys, to rotate. Home resets."` | `aria-label` for viewers without one. |
-| `axisNames` | `["x", "y", "z"]` | Labels written by `V.axes()`. |
+| `axisNames` | `["x", "y", "z"]` | Labels written by `V.axes()`. After each redraw an axis name that would cover another label moves to a free spot nearby, or is hidden. |
 | `arrowHead` | `11` | Maximum arrow-head length. |
 
 A view's own options (below) override the package defaults.

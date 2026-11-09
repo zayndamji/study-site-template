@@ -253,7 +253,7 @@ class Ctx:
         if extra:
             bits.append(extra)
         bits.append(self.render_prevnext(page))
-        bits.append(f'<button class="btn" type="button" data-theme-toggle>{esc(self.label("theme").strip(": ") or "Theme")}</button>')
+        bits.append(f'<button class="btn theme-btn" type="button" data-theme-toggle>{esc(self.label("theme").strip(": ") or "Theme")}</button>')
         return '<header class="topbar">' + ''.join(b for b in bits if b) + '</header>'
 
 
@@ -404,7 +404,7 @@ def render_home(ctx: Ctx):
     if home.get('search', True):
         tools.append(f'<label class="search">{SEARCH_ICON}<input type="search" id="catalog-search" '
                      f'placeholder="{esc(home.get("searchPlaceholder"))}" aria-label="{esc(ctx.label("searchLabel"))}" autocomplete="off">'
-                     '<kbd aria-hidden="true">/</kbd></label>')
+                     f'<kbd aria-hidden="true" title="{esc(ctx.label("searchKeyHint"))}">/</kbd></label>')
     sections, rendered, rendered_kinds = [], set(), set()
     for gi, g in enumerate(ctx.groups):
         rows, shown = [], []
