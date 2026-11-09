@@ -30,10 +30,11 @@ makes Unicode maths (no TeX engine) easier to read. The amount is an option.
 | `wordSpacing` | `"0.14em"` | Extra word spacing for the same elements; `"normal"` turns it off. |
 | `blockLineHeight` | `"2"` | Line height of `.mblock` display maths. |
 | `matrixGap` | `"3px 16px"` | Row and column gap between matrix entries. |
-| `bracket` | `"square"` | Default brackets drawn by `mat()` / `col()`: `"square"`, `"round"` or `"bar"`. |
+| `bracket` | `"square"` | Default brackets for every matrix (hand-written or from `mat()` / `col()`): `"square"`, `"round"`, `"bar"`, `"soft"` (rounded side bars) or `"none"`. |
 | `unicodeMinus` | `true` | Print negatives with − (U+2212) instead of a hyphen. |
 | `infinity` | `"∞"` | What `fmt()` prints for ±Infinity. |
 | `notANumber` | `"—"` | What `fmt()` prints for NaN. |
+| `strict` | `true` | Fractions throw on a zero denominator, division by zero or values past 2^53. `false` = no exceptions (a zero denominator gives `d = 0`, `gcd(0, 0) = 1`), like typical hand-rolled helpers. |
 | `globalAlias` | `null` | Also expose the flat helper names as `window[globalAlias]` (see migration notes). |
 
 The four spacing options are written by the build into a small `<style>` in each page's
@@ -50,7 +51,9 @@ Matrices written by hand need their column count:
 ```
 
 `data-cols` works for 1–6 columns (or set `style="grid-template-columns:repeat(N,auto)"`).
-Add `mat-round` for parentheses, `mat-bar` for determinant bars, `mat-none` for no brackets.
+The `bracket` option sets the look of every matrix. A class overrides it for one matrix:
+`mat-square`, `mat-round` (parentheses), `mat-bar` (determinant bars), `mat-soft` (rounded side
+bars) or `mat-none` (no brackets).
 
 ## JavaScript API
 
@@ -105,6 +108,8 @@ that object exists again, with these flat names: `NS $ el minus fmt gcd lcm F sn
 fmul fdiv fneg fzero fval fs parseF fsign vdot vsub vscale vzero mv mm det2 inv2 mat col`, plus
 `Plane drag` (plot-2d), `View3D gramSchmidtFloat` (view-3d) and `presetButtons` (widget-presets)
 when those packages are on. The same object is always available as `Study.legacy`. Differences
-from typical hand-rolled helpers: `inv2` returns `null` for a singular matrix, `F` throws on a zero
-denominator, and `gcd(0, 0)` is 0. Move each page's private `.mat` CSS and roomier-spacing rules
+from typical hand-rolled helpers: `inv2` returns `null` for a singular matrix, and with the default
+`strict: true`, `F` throws on a zero denominator and `gcd(0, 0)` is 0. Set `"strict": false` to keep
+old scripts' forgiving behaviour while they are ported, and `"notANumber": "∞"` if they relied on
+`fmt(NaN)` printing ∞. Pick the old matrix look with `bracket`. Move each page's private `.mat` CSS and roomier-spacing rules
 out of the page once this package is on.

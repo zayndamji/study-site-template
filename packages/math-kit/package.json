@@ -35,7 +35,7 @@
     },
     "bracket": {
       "default": "square",
-      "description": "Default bracket style drawn by Study.math.mat() and col(): \"square\", \"round\" or \"bar\" (determinant bars)."
+      "description": "Default bracket style for every matrix, hand-written or drawn by Study.math.mat() and col(): \"square\", \"round\", \"bar\" (determinant bars), \"soft\" (rounded side bars) or \"none\". A matrix's own mat-* class overrides it."
     },
     "unicodeMinus": {
       "default": true,
@@ -48,6 +48,10 @@
     "notANumber": {
       "default": "—",
       "description": "Text Study.math.fmt() returns for NaN."
+    },
+    "strict": {
+      "default": true,
+      "description": "true: fractions throw a RangeError on a zero denominator, division by zero or values past 2^53. false: no exceptions, like typical hand-rolled helpers (a zero denominator gives d = 0, gcd(0, 0) = 1)."
     },
     "globalAlias": {
       "default": null,

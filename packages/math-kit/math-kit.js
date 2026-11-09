@@ -6,7 +6,9 @@
   const opts = Study.options('math-kit');
   const NS = 'http://www.w3.org/2000/svg';
   const MINUS = opts.unicodeMinus === false ? '-' : '−';
-  const BRACKETS = { square: '', round: 'mat-round', bar: 'mat-bar', none: 'mat-none' };
+  const BRACKETS = { square: 'mat-square', round: 'mat-round', bar: 'mat-bar', none: 'mat-none', soft: 'mat-soft' };
+  // strict: false keeps the forgiving behaviour of older hand-rolled helpers (no exceptions)
+  const STRICT = opts.strict !== false;
 
   // ---------- DOM ----------
   const $ = (id) => document.getElementById(id);
@@ -33,13 +35,19 @@
   }
   const snap = (v, step) => Math.round(v / step) * step;
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-  /** Greatest common divisor of two integers (gcd(0, 0) = 0). */
-  function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { const t = a % b; a = b; b = t; } return a; }
+  /** Greatest common divisor of two integers (gcd(0, 0) = 0, or 1 when strict is off). */
+  function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { const t = a % b; a = b; b = t; } return a || (STRICT ? 0 : 1); }
   const lcm = (a, b) => (a === 0 || b === 0 ? 0 : Math.abs(a / gcd(a, b) * b));
 
   // ---------- exact fractions: plain {n, d} objects, always reduced, d > 0 ----------
   const isFrac = (p) => p !== null && typeof p === 'object' && typeof p.n === 'number' && typeof p.d === 'number';
   function make(n, d) {
+    if (!STRICT) {
+      // no checks: a zero denominator gives d = 0, huge values lose exactness quietly
+      if (d < 0) { n = -n; d = -d; }
+      const g = gcd(n, d);
+      return { n: n / g, d: d / g };
+    }
     if (d === 0) throw new RangeError('Study.math: fraction with zero denominator');
     if (!Number.isSafeInteger(n) || !Number.isSafeInteger(d)) {
       throw new RangeError('Study.math: fraction ' + n + '/' + d + ' is not exact (needs integers below 2^53)');
@@ -83,7 +91,7 @@
   }
   function inv(p) {
     p = frac(p);
-    if (p.n === 0) throw new RangeError('Study.math: division by zero');
+    if (p.n === 0 && STRICT) throw new RangeError('Study.math: division by zero');
     return make(p.d, p.n);
   }
   const div = (p, q) => mul(p, inv(q));
@@ -162,7 +170,7 @@
   /**
    * mat(rows, f?, o?) → '<span class="mat">…</span>' HTML string.
    * rows: array of equal-length arrays. f(entry, i, j): entry → HTML (default show).
-   * o.bracket: "square" | "round" | "bar" | "none" (default: the package option); o.class: extra classes.
+   * o.bracket: "square" | "round" | "bar" | "soft" | "none" (default: the package option); o.class: extra classes.
    */
   function mat(rows, f, o) {
     if (f && typeof f === 'object') { o = f; f = null; }

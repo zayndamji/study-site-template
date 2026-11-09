@@ -42,6 +42,11 @@
 .mat.mat-round::after { border-radius: 0 50% 50% 0 / 0 14px 14px 0; border-top-color: transparent; border-bottom-color: transparent; }
 /* vertical bars (determinants) */
 .mat.mat-bar::before, .mat.mat-bar::after { width: 0; border-top: 0; border-bottom: 0; }
+/* soft side bars: plain vertical rules with rounded ends */
+.mat.mat-soft { padding: 3px 8px; }
+.mat.mat-soft::before, .mat.mat-soft::after { width: 5px; border-top: 0; border-bottom: 0; border-width: 1.6px; }
+.mat.mat-soft::before { border-radius: 5px 0 0 5px; }
+.mat.mat-soft::after { border-radius: 0 5px 5px 0; }
 /* no brackets: an aligned grid of entries only */
 .mat.mat-none::before, .mat.mat-none::after { display: none; }
 
