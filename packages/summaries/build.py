@@ -62,6 +62,10 @@ def configure(ctx, opts):
     ctx._summaries = {}
 
 
+def _sheet_class(opts):
+    return 'sheet' if opts.get('boxed', True) else 'sheet plain'
+
+
 def content(ctx, opts, page, html):
     found = _sheet(ctx, opts, page)
     if found is None:
@@ -88,7 +92,7 @@ def content(ctx, opts, page, html):
         number = _auto_number(html, opts['marker'])
     section = (f'<section class="note sheet-section" id="{ctx.esc(opts["sectionId"])}"{review}>\n'
                f'<h2><span class="n">{ctx.esc(number)}</span> {ctx.esc(opts["sectionTitle"])}</h2>\n'
-               f'{src_line}<div class="sheet">\n{sheet}\n</div>\n{back}\n</section>\n')
+               f'{src_line}<div class="{_sheet_class(opts)}">\n{sheet}\n</div>\n{back}\n</section>\n')
     if opts['marker'] and opts['marker'] in html:
         return html.replace(opts['marker'], section, 1)
     return html + section
@@ -142,7 +146,7 @@ def extra_pages(ctx, opts):
                 f'data-sheet-group="{gid}" data-sheet-kind="{ctx.esc(p["kind"])}" data-sv-page="{ctx.esc(p["id"])}" data-no-review>\n'
                 f'<h2><span class="n">{num}</span> {ctx.esc(p["title"])}</h2>\n'
                 f'<p class="src sheet-links">{src_line}</p>\n'
-                f'<div class="sheet">\n{body}\n</div>\n</section>')
+                f'<div class="{_sheet_class(opts)}">\n{body}\n</div>\n</section>')
     tools = []
     sets = []
     for fs in opts.get('filterSets') or []:

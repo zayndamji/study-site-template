@@ -27,9 +27,28 @@ def configure(ctx, opts):
     opts['labelColor'] = c
 
 
+_ROLE = re.compile(r'\[data-sm~?="([\w-]+)"\]')
+
+
+def _class_css(prefix):
+    """The package CSS with every data-sm role selector rewritten to the prefixed class, so
+    elements a page script builds with those classes alone look the same."""
+    from pathlib import Path
+    css = (Path(__file__).with_name('state-machine.css')).read_text(encoding='utf-8')
+    css = re.sub(r'/\*.*?\*/', '', css, flags=re.S)
+    return _ROLE.sub(lambda m: '.' + prefix + m.group(1), css).strip()
+
+
 def head(ctx, opts, page):
+    bits = []
     c = opts.get('labelColor')
-    return f'<style data-package="state-machine">:root {{ --sm-label: {c}; }}</style>' if c else ''
+    if c:
+        bits.append(f':root {{ --sm-label: {c}; }}')
+    if opts.get('classStyles'):
+        if not hasattr(ctx, '_sm_class_css'):
+            ctx._sm_class_css = ' '.join(_class_css(opts['classPrefix']).split())
+        bits.append(ctx._sm_class_css)
+    return f'<style data-package="state-machine">{" ".join(bits)}</style>' if bits else ''
 
 
 def check(ctx, opts, outputs):

@@ -57,6 +57,10 @@
       "default": " · ",
       "description": "Separator used between the parts of source lines."
     },
+    "boxed": {
+      "default": true,
+      "description": "Draw each sheet in a bordered box. false = the sheet sits in the page like any other section content; on the all-sheets page a rule then separates consecutive sheets."
+    },
     "reviewable": {
       "default": true,
       "description": "Whether the inserted section gets a 'Mark as reviewed' button."

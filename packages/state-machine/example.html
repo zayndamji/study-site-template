@@ -40,3 +40,31 @@
       "edges": [ { "from": "s", "to": "t", "on": ["ε"] }, { "from": "t", "to": "t", "on": ["a"], "loop": "right" } ] }
   </script></div>
 </section>
+<section class="note" id="sm-batch">
+  <h2><span class="n">03</span> Many inputs at once</h2>
+  <p>A page script can run the turnstile above on a whole list of inputs and show a verdict for each.
+  The pieces it builds carry the package's classes (<code>sm-verdict</code>, <code>sm-status</code>), and the
+  <code>classStyles</code> option styles them like the simulator's own.</p>
+  <div class="widget" id="sm-batch-out">
+    <div class="lbl">Results · Does the turnstile end up locked?</div>
+    <ul class="sm-batch-list"></ul>
+    <p class="sm-status"></p>
+  </div>
+  <script>
+  Study.ready(function () {
+    var SM = Study.stateMachine, host = document.getElementById('sm-batch-out');
+    var spec = JSON.parse(document.querySelector('#sm-turnstile > script[type="application/json"]').textContent);
+    var m = SM.model(spec), inputs = ['', 'c', 'cp', 'ccp', 'pcpc', 'cpcp'], locked = 0;
+    var list = host.querySelector('ul');
+    inputs.forEach(function (w) {
+      var trace = SM.run(m, w), ok = SM.accepts(m, trace[trace.length - 1].set);
+      if (ok) locked++;
+      var li = document.createElement('li');
+      li.innerHTML = '<span class="sm-verdict ' + (ok ? 'ok' : 'no') + '">' + (ok ? 'Locked' : 'Open') + '</span> ' +
+        '<span class="m">' + (w || 'ε') + '</span>';
+      list.appendChild(li);
+    });
+    host.querySelector('.sm-status').textContent = locked + ' of ' + inputs.length + ' inputs leave it locked.';
+  });
+  </script>
+</section>

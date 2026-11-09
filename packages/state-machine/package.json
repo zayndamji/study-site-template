@@ -10,6 +10,10 @@
   "build": "build.py",
   "options": {
     "classPrefix": { "default": "sm-", "description": "Prefix of the classes on hosts (<prefix>sim, <prefix>figure) and on generated elements (<prefix>state, <prefix>edge, …), for page CSS and scripts. Change it to keep an existing site's class names." },
+    "classStyles": {
+      "default": false,
+      "description": "Also style elements that carry only the prefixed classes (<prefix>tape, <prefix>verdict, <prefix>status, …), e.g. parts a page script builds itself with Study.stateMachine. Without it the package styles only its own generated markup."
+    },
     "labelColor": { "default": "", "description": "Colour of edge labels: a CSS colour or a core token name; empty = the accent colour." },
     "startLabel": { "default": "start", "description": "Text by the arrow into the start state; empty = none." },
     "inputLabel": { "default": "Input string", "description": "Label of the input field." },
@@ -29,5 +33,5 @@
     "readsOnly": { "default": "this machine reads only {alphabet}", "description": "Explains the alphabet; {alphabet} lists its symbols." },
     "machineName": { "default": "Machine {n}", "description": "Switch-button text for an unnamed machine in a multi-machine simulator." }
   },
-  "demoOptions": {}
+  "demoOptions": { "classStyles": true }
 }

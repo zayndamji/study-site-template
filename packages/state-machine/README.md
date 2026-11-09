@@ -19,6 +19,7 @@ protocols, game rules, text patterns, parsers.
 | Option | Default | Meaning |
 |---|---|---|
 | `classPrefix` | `"sm-"` | Prefix of host classes (`sm-sim`, `sm-figure`) and of generated classes (`sm-state`, `sm-edge`, `sm-lbl`, `sm-tape`, …) |
+| `classStyles` | `false` | Also style elements that have only the prefixed classes (`sm-tape`, `sm-verdict`, `sm-status`, …), for page scripts that build parts of a simulator themselves |
 | `labelColor` | `""` | Edge-label colour: CSS colour or core token; `""` = accent |
 | `startLabel` | `"start"` | Text by the start arrow; `""` = none |
 | `inputLabel`, `tapeLabel` | `"Input string"`, `"input"` | Input field label, accessible name of the symbol row |
@@ -31,7 +32,8 @@ protocols, game rules, text patterns, parsers.
 | `machineName` | `"Machine {n}"` | Switch button of an unnamed machine |
 
 The package's own CSS targets `data-sm` attributes, so `classPrefix` can be anything; the classes
-are there for page CSS and scripts.
+are there for page CSS and scripts. A page script that builds extra pieces (a second tape, a verdict
+in a results list) can give them the prefixed classes and turn on `classStyles`.
 
 ## Markup
 ```html

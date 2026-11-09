@@ -26,6 +26,7 @@ Write each sheet once; both places always match.
 | `sectionSource` | `""` | Optional source line under the inserted sheet's heading (fields below); `""` = none |
 | `sourceComment` | `"source"` | A sheet may start with `<!-- source: … -->`; its text becomes `{source}`. Set the word (e.g. `"refs"`), or `""` to ignore such comments |
 | `sourceSeparator` | `" · "` | Separator between the parts of source lines |
+| `boxed` | `true` | Draw each sheet in a bordered box; `false` leaves it unboxed, and the all-sheets page separates sheets with a rule |
 | `reviewable` | `true` | Inserted section gets a "Mark as reviewed" button |
 | `marker` | `"<!-- summary -->"` | Where to insert the sheet |
 | `page` | `true` | Build the all-sheets page |
