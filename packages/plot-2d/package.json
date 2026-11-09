@@ -45,6 +45,25 @@
       "default": {},
       "private": true,
       "description": "Extra colour class names, each mapped to a palette slot 1–4, a core token name (e.g. \"ink\", \"muted\", \"term\") or a CSS colour: {\"blue\": 1, \"grey\": \"muted\"}. Lets existing markup keep its own class names."
+    },
+    "markNames": {
+      "default": {},
+      "description": "Extra class names that draw like the package's shape classes, e.g. {\"swept\": \"region\", \"latch\": \"hollow\", \"gate\": \"rod\"}. A value lists one or more of: fill outline thin dash faint region hollow rod pin. Rules are written in the order given; give the colour with colorNames (colours are written after shapes, so a modifier listed later wins)."
+    }
+  },
+  "demoOptions": {
+    "markNames": {
+      "swept": "region",
+      "gate": "rod",
+      "hinge": "pin",
+      "latch": "hollow"
+    },
+    "colorNames": {
+      "swept": 1,
+      "gate": "ink",
+      "hinge": "ink",
+      "latch": 3,
+      "blocked": 2
     }
   }
 }

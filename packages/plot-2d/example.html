@@ -32,3 +32,40 @@
   })();
   </script>
 </section>
+<section class="note" id="plot-shapes">
+  <h2><span class="n">03</span> Shapes: a swinging gate</h2>
+  <p>A gate turns on a hinge. The shaded <code>region</code> is the floor the gate sweeps, the gate
+  itself is a <code>rod</code>, the hinge a <code>pin</code>, and a <code>hollow</code> ring marks the latch.
+  Here the page uses its own class names (<code>swept</code>, <code>gate</code>, <code>hinge</code>, <code>latch</code>),
+  mapped onto those shapes and colours with the <code>markNames</code> and <code>colorNames</code> options.</p>
+  <div class="widget">
+    <div class="lbl">Try it · Open the gate</div>
+    <p class="how">Drag the end of the gate. It turns red past 120°, where it would hit the wall.</p>
+    <svg id="p3-svg"><title>A gate turning on a hinge, with the area it sweeps shaded</title></svg>
+    <div class="out" id="p3-out" aria-live="polite"></div>
+  </div>
+  <script>
+  (function () {
+    const { Plane, drag } = Study.plot;
+    const { fmt, $ } = Study.math;
+    const svg = $('p3-svg'), L = 4;
+    const P = Plane(svg, { xmin: -5, xmax: 5, ymin: -1, ymax: 5, labels: false });
+    let a = 60;   // degrees
+    function render() {
+      const r = a * Math.PI / 180, end = [L * Math.cos(r), L * Math.sin(r)];
+      const arc = [[0, 0]];
+      for (let i = 0; i <= 30; i++) { const t = r * i / 30; arc.push([L * Math.cos(t), L * Math.sin(t)]); }
+      P.clear();
+      P.poly(arc, 'swept');
+      P.line([-5, 0], [5, 0], 'muted thin');
+      P.dot([L, 0], 9, 'latch');
+      P.line([0, 0], end, 'gate' + (a > 120 ? ' blocked' : ''));
+      P.dot([0, 0], 6, 'hinge');
+      P.handle('e', end, 'c2');
+      $('p3-out').innerHTML = '<span class="k">angle</span>' + fmt(a, 0) + '°   <span class="k">swept area</span>' + fmt(L * L * r / 2, 2);
+    }
+    drag(svg, P, (id, p) => { a = Math.max(0, Math.min(170, Math.atan2(Math.max(p[1], 0), p[0]) * 180 / Math.PI)); render(); });
+    render();
+  })();
+  </script>
+</section>

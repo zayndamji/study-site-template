@@ -43,6 +43,13 @@ svg.plane .fill, svg.plane .fill polygon { fill: var(--pc); fill-opacity: 0.16; 
 svg.plane .outline { fill: none; }
 svg.plane .plot-head { stroke-width: 1; }
 
+/* shapes: a filled region with no outline, a hollow ring, a thick rod (e.g. a gate or a lever) and a
+   pin (a hinge or pivot drawn over it). They take the mark's colour like everything else. */
+svg.plane .region { fill: var(--pc); fill-opacity: 0.16; stroke: none; }
+svg.plane .hollow { fill: none; stroke-width: 2.5; }
+svg.plane .rod { stroke-width: 6; stroke-linecap: round; fill: none; }
+svg.plane .pin { fill: var(--surface); fill-opacity: 1; stroke: var(--pc); stroke-width: 2; }
+
 /* handles (Study.plot.Plane().handle) */
 svg.plane .handle { cursor: grab; }
 svg.plane .handle circle { stroke: var(--surface); stroke-width: 2; }

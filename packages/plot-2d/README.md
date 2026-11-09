@@ -23,6 +23,7 @@ Requires `math-kit` (added automatically).
 | `hitRadius` | `16` | Radius of the invisible touch target around a handle. |
 | `colors` | `[]` | Up to four CSS colours for `c1`…`c4` in light mode; empty = core tokens. |
 | `darkColors` | `[]` | Up to four CSS colours for `c1`…`c4` in dark mode. |
+| `markNames` | `{}` | Extra class names that draw like shape classes, e.g. `{"swept": "region", "gate": "rod"}`; a value lists `fill` `outline` `thin` `dash` `faint` `region` `hollow` `rod` `pin` |
 | `colorNames` | `{}` | Extra colour class names mapped to a slot `1`–`4`, a core token (`"ink"`, `"muted"`) or a CSS colour, e.g. `{"blue": 1, "grey": "muted"}`. |
 
 Without `colors`, `c1`…`c4` are `--term`, `--bad`, `--ok`, `--warn-edge`. The palette is also
@@ -45,9 +46,25 @@ Classes for drawn marks (combine freely):
 | `fill` | translucent fill in the mark's colour (for polygons) |
 | `outline` | no fill |
 | `thin` `dash` `faint` | thinner stroke, dashed stroke, 35 % opacity |
+| `region` | a filled area with no outline (a feasible set, a shaded strip) |
+| `hollow` | an open ring: no fill, heavier stroke |
+| `rod` | a thick round-ended line, e.g. a gate or a lever |
+| `pin` | a hinge or pivot: background-filled dot with an outline in the mark's colour |
 | `small` | small muted text (tick labels) |
 | `halo` | text with a background-coloured outline, readable over lines |
 | `grid` `axis` | grid and axis lines (used by the plane itself) |
+
+A site whose scripts already use their own class names (`swept`, `gate`, …) keeps them: map each to
+these shapes with `markNames` and to a colour with `colorNames`, and drop the page CSS that styled them.
+For an element with two such classes (`<line class="gate blocked">`), list the modifier after the base
+name in each option so its rules come later:
+
+```json
+"plot-2d": {
+  "markNames":  { "gate": "rod", "hinge": "pin" },
+  "colorNames": { "gate": "ink", "hinge": "ink", "blocked": 2 }
+}
+```
 
 ## JavaScript API
 
