@@ -48,38 +48,12 @@
   }
 
   /**
-   * Write an object's values into the target's form controls named by data-field or name
-   * (option fillFields). Each changed control gets input and change events, so a widget
-   * that recomputes on input needs no load listener at all.
-   */
-  function fill(target, value) {
-    if (opts.fillFields === false || !isPlain(value)) return 0;
-    let n = 0;
-    for (const key in value) {
-      const sel = '[data-field="' + CSS.escape(key) + '"], [name="' + CSS.escape(key) + '"]';
-      target.querySelectorAll(sel).forEach((c) => {
-        if (!('value' in c)) return;
-        const v = value[key];
-        if (c.type === 'checkbox') c.checked = !!v;
-        else if (c.type === 'radio') c.checked = String(c.value) === String(v);
-        else c.value = Array.isArray(v) ? v.join(', ') : v === null || v === undefined ? '' : String(v);
-        c.dispatchEvent(new Event('input', { bubbles: true }));
-        c.dispatchEvent(new Event('change', { bubbles: true }));
-        n++;
-      });
-    }
-    return n;
-  }
-
-  /**
-   * Send value to the element with id targetId: fill its named fields (fillFields), then
-   * dispatch a CustomEvent (option eventName, default "load") with the value as detail.
+   * Send value to the element with id targetId through core Study.send: fill its named fields
+   * (option fillFields), then dispatch option eventName (default "load") with the value as detail.
    */
   function load(targetId, value, from) {
-    const target = typeof targetId === 'string' ? document.getElementById(targetId) : targetId;
-    if (!target) { console.warn('[study] worked-examples: no element with id "' + targetId + '"'); return false; }
-    fill(target, value);
-    target.dispatchEvent(new CustomEvent(opts.eventName || 'load', { detail: value, bubbles: false }));
+    const target = Study.send(targetId, value, { event: opts.eventName || 'load', fill: opts.fillFields !== false });
+    if (!target) return false;
     Study.emit('example:load', { target: target.id, value, example: from && from.id ? from.id : null });
     flash(target);
     return true;
@@ -111,6 +85,8 @@
     });
   }
 
+  /** Only the field writing (respects option fillFields); returns how many controls changed. */
+  const fill = (target, value) => (opts.fillFields === false ? 0 : Study.fill(target, value));
   Study.examples = { load, flash, fill, valueOf };
   Study.define('worked-examples', { enhance });
 })();

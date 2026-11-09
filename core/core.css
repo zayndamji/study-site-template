@@ -367,6 +367,7 @@ footer.page .spacer { flex: 1; }
 .entries li { margin: 0; border-top: 1px solid var(--rule); }
 .entry { display: grid; grid-template-columns: 26px minmax(0, 1fr) 14px; gap: 4px 9px; align-items: baseline; padding: 15px 0; text-decoration: none; color: var(--ink); }
 .entry .num { font: 400 .75rem/1.65 var(--f-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.entries li[data-num=""] .entry .num:empty { visibility: hidden; }
 .entry .ttl { font: 400 var(--step-0)/1.45 var(--f-body); }
 .entry .arrow { color: var(--term); font: .9rem var(--f-display); opacity: 0; transition: opacity .15s; }
 .entry:hover, .entry:focus-visible { color: var(--term); }

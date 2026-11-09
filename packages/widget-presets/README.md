@@ -20,6 +20,7 @@ package is needed.
 | `selectFirst` | `true` | Start each row with its first preset selected (declarative rows also send it to the target). |
 | `noteLabel` | `""` | Short text before each note, e.g. `"Why:"`. |
 | `eventName` | `"preset"` | Event a declarative row dispatches on its target. |
+| `fillFields` | `true` | First write an object value into the target's `data-field` / `name` controls (as `worked-examples` does). |
 
 ## Markup
 
@@ -43,6 +44,9 @@ Declarative form — no script needed for the buttons:
 
 - `data-target` — id of the element that receives the event (it bubbles).
 - `data-preset` — JSON value; `data-note` — the note (HTML allowed).
+- Rows send through core's `Study.send`: an object value is first written into the target's controls
+  with a matching `data-field` or `name` (each gets `input` and `change` events), so a widget that
+  recomputes on input needs no listener (`"fillFields": false` turns this off).
 - Optional on the row: `data-note-target="id"` to show notes in your own element (otherwise a
   `<p class="preset-note">` is added after the row); `data-select-first="false"`.
 

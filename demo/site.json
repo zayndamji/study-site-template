@@ -25,6 +25,11 @@
     "unit": {
       "noun": "Lecture",
       "file": "lecture-{id}.html", "source": "lectures/{id}.html"
+    },
+    "guide": {
+      "noun": "Guide", "plural": "Guides & resources", "file": "guide-{id}.html", "source": "guides/{id}.html",
+      "eyebrow": "{noun}", "rail": "On this page", "review": false, "prevNext": false, "numbered": false,
+      "titleFormat": "{title} — {site}", "pageFooter": "{site} · {plural}"
     }
   },
   "groups": [
@@ -70,14 +75,13 @@
     "topic-details": {},
     "coming-later": {},
     "preview-pages": {},
-    "resources": {},
     "privacy": { "forbid": ["DRAFT-ONLY"], "noindex": false },
     "source-links": {},
     "widget-kit": {},
     "state-machine": {},
     "notation": { "tags": { "ev-e": "term", "ev-f": "warn-ink" } },
     "content-rules": {
-      "kinds": ["lecture"],
+      "kinds": ["unit"],
       "forbidTags": { "img": "draw diagrams as SVG instead of using images" },
       "minSections": 4,
       "quizExplanations": true,

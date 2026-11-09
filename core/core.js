@@ -18,6 +18,13 @@
                                 'review:change', 'quiz:answer', 'theme:change'
      Study.h(tag, attrs, ...children)   tiny DOM builder
      Study.ready(fn)            run fn after core init (or now, if done)
+     Study.send(target, value, { event, fill, bubbles })   hand a value to a widget
+                                (element or id): write a plain object's keys into its
+                                [data-field]/[name] controls (fill, default true; each
+                                changed control gets input + change events), then
+                                dispatch CustomEvent `event` (default "load") with the
+                                value as detail. Returns the element, or null.
+     Study.fill(el, object)     only the control writing; returns how many changed
    Storage keys (with the configured prefix, default "study:"):
      theme · reviewed:<unit> · total:<unit> · quiz:<id> · last-page
    ========================================================================== */
@@ -56,6 +63,35 @@
     return e;
   }
 
+  // ---- hand a value to a widget (used by preset rows, worked-example load buttons, page scripts) ----
+  const isPlain = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
+  function fillControls(target, value) {
+    let n = 0;
+    if (!target || !isPlain(value)) return 0;
+    for (const key in value) {
+      const sel = '[data-field="' + CSS.escape(key) + '"], [name="' + CSS.escape(key) + '"]';
+      target.querySelectorAll(sel).forEach((c) => {
+        if (!('value' in c)) return;
+        const v = value[key];
+        if (c.type === 'checkbox') c.checked = !!v;
+        else if (c.type === 'radio') c.checked = String(c.value) === String(v);
+        else c.value = Array.isArray(v) ? v.join(', ') : v === null || v === undefined ? '' : String(v);
+        c.dispatchEvent(new Event('input', { bubbles: true }));
+        c.dispatchEvent(new Event('change', { bubbles: true }));
+        n++;
+      });
+    }
+    return n;
+  }
+  function send(target, value, o) {
+    o = o || {};
+    const el = typeof target === 'string' ? document.getElementById(target) : target;
+    if (!el) { console.warn('[study] send: no element with id "' + target + '"'); return null; }
+    if (o.fill !== false && isPlain(value)) fillControls(el, value);
+    el.dispatchEvent(new CustomEvent(o.event || 'load', { detail: value, bubbles: !!o.bubbles }));
+    return el;
+  }
+
   const Study = window.Study = {
     version: '1.0.0',
     data,
@@ -79,6 +115,8 @@
       packages.forEach((p) => { if (p.enhance) { try { p.enhance(root, Study); } catch (err) { console.error('[study] ' + p.name + '.enhance', err); } } });
     },
     ready(fn) { if (booted) fn(Study); else readyQueue.push(fn); },
+    send,
+    fill: fillControls,
   };
 
   // ---- theme: system -> light -> dark (applied immediately to avoid a flash) ----

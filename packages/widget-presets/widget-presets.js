@@ -99,9 +99,7 @@
       const note = box.dataset.noteTarget ? document.getElementById(box.dataset.noteTarget) : undefined;
       const sf = box.dataset.selectFirst;
       mount(box, list, (p, i) => {
-        const target = document.getElementById(box.dataset.target);
-        if (!target) { console.warn('[study] widget-presets: no element with id "' + box.dataset.target + '"'); return; }
-        target.dispatchEvent(new CustomEvent(opts.eventName || 'preset', { detail: p.value, bubbles: true }));
+        if (!Study.send(box.dataset.target, p.value, { event: opts.eventName || 'preset', fill: opts.fillFields !== false, bubbles: true })) return;
         Study.emit('preset:pick', { target: box.dataset.target, index: i, name: p.name, value: p.value });
       }, { buttons: btns, note, selectFirst: sf === undefined ? undefined : sf !== 'false' });
     });

@@ -379,8 +379,8 @@ def render_unit(ctx: Ctx, page):
         head += f'\n<link rel="stylesheet" href="{esc(s)}">'
     scripts = ''.join(f'\n<script src="{esc(s)}"></script>' for s in meta.get('scripts', []))
     main = '\n'.join(headbits) + '\n' + body + scripts
-    doc_title = meta.get('docTitle') or fmt(ctx.config['site'].get('titleFormat'), **dict(vals, title=page['title']))
-    footer = fmt(meta.get('footer', ctx.config['site'].get('pageFooter')),
+    doc_title = meta.get('docTitle') or fmt(k.get('titleFormat') or ctx.config['site'].get('titleFormat'), **dict(vals, title=page['title']))
+    footer = fmt(meta.get('footer', k.get('pageFooter') or ctx.config['site'].get('pageFooter')),
                  **{k: esc(v) for k, v in dict(ctx.site_vals(), **vals).items()})
     return ctx.render_document(
         title=doc_title, main=main, page=page, kind=page['kind'], page_id=page['id'],
@@ -441,8 +441,8 @@ def render_home(ctx: Ctx):
                         '\n'.join(rows) + '\n</ol></section>')
     filters = home.get('filters', 'auto')
     buttons = []
-    if filters == 'auto':
-        filters = 'groups' if len(ctx.groups) > 1 else 'none'
+    if filters == 'auto':  # several kinds on the home page: filter by kind; else by group
+        filters = 'kinds' if len(rendered_kinds) > 1 else 'groups' if len(ctx.groups) > 1 else 'none'
     if filters == 'groups':
         buttons = [(g['id'], g.get('filterLabel') or g.get('title', g['id'])) for g in ctx.groups
                    if g['id'] in rendered]

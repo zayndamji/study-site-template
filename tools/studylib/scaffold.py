@@ -12,7 +12,7 @@ from .common import CORE_DIR, PACKAGES_DIR, TEMPLATE_DIR, StudyError, log, read_
 STARTER = TEMPLATE_DIR / 'templates' / 'site'
 CATEGORY_TITLES = {
     'content': 'Writing the page', 'sources': 'Sources and citations', 'widgets': 'Widgets',
-    'home': 'Home page', 'navigation': 'Navigation and page kinds', 'site': 'Site-wide',
+    'home': 'Home page', 'site': 'Site-wide',
 }
 
 
@@ -103,14 +103,18 @@ def _add_demo(dest: Path, cfg: dict):
         entry.update(meta.get('demoPage') or {})  # extra page fields the package's demo needs
         cfg['pages'].append(entry)
         cfg['packages'][meta['name']] = dict(meta.get('demoOptions') or {})  # options its demo page needs
+    # a second page kind (core): a resource page with no numbering, review buttons or Prev/Next
+    guides = dest / 'content' / 'guides'
+    guides.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(TEMPLATE_DIR / 'templates' / 'demo-guide.html', guides / 'style.html')
+    cfg['kinds']['guide'] = {'noun': 'Guide', 'plural': 'Guides & resources', 'file': 'guide-{id}.html',
+                             'source': 'guides/{id}.html', 'eyebrow': '{noun}', 'rail': 'On this page',
+                             'review': False, 'prevNext': False, 'numbered': False,
+                             'titleFormat': '{title} — {site}', 'pageFooter': '{site} · {plural}'}
+    cfg['groups'].append({'id': 'help', 'title': 'Guides'})
+    cfg['pages'].append({'id': 'style', 'kind': 'guide', 'title': 'Example guide', 'group': 'help',
+                         'description': 'A resource page: no numbering, no review buttons'})
     # extra pages that show off page-level packages
-    if 'resources' in cfg['packages']:
-        guides = dest / 'content' / 'guides'
-        guides.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(PACKAGES_DIR / 'resources' / 'example.html', guides / 'style.html')
-        cfg['groups'].append({'id': 'help', 'title': 'Guides'})
-        cfg['pages'].append({'id': 'style', 'kind': 'guide', 'title': 'Example guide', 'group': 'help',
-                             'description': 'A resource page: no numbering, no review buttons'})
     if 'coming-later' in cfg['packages']:
         cfg['pages'].append({'id': f'{n + 1:02d}', 'title': 'A page still to be written', 'status': 'planned',
                              'group': metas[-1][1].get('category') if metas else 'core'})

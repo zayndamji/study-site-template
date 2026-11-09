@@ -82,7 +82,9 @@ loads examples without any listener:
 ```
 
 The `load` event still fires afterwards, for anything the fields don't cover. Turn the field writing
-off with `"fillFields": false`. Each load also emits
+off with `"fillFields": false`. The sending itself is core's `Study.send`, which `widget-presets` uses
+too, so a widget written for one works with the other (listen for both event names, or give both
+packages the same `eventName`). Each load also emits
 `Study.on('example:load', ({ target, value, example }) => …)`.
 
 ## JavaScript API

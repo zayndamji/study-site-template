@@ -49,7 +49,7 @@ page fields.
     "intro": { "eyebrow": "", "tagline": "" },   // HTML allowed; both empty = no intro line
     "search": true,
     "searchPlaceholder": "Find a page or topic…",
-    "filters": "auto",                    // auto | groups | kinds | none
+    "filters": "auto",                    // auto (kinds if several kinds are listed, else groups) | groups | kinds | none
     "allLabel": "Everything",
     "columns": 3,
     "showRange": true,                    // "01–09" above each group
@@ -69,7 +69,9 @@ page fields.
       "review": true,                     // "Mark section as reviewed" buttons + progress
       "prevNext": true,
       "numbered": true,                   // show the id as a number on home rows
-      "inPicker": true
+      "inPicker": true,
+      "titleFormat": null,                // browser title of this kind's pages; null = site.titleFormat
+      "pageFooter": null                  // footer of this kind's pages; null = site.pageFooter
     }
   },
   "groups": [
@@ -151,5 +153,18 @@ multi-file page.
 
 ## Several kinds
 
-The first kind in `kinds` is the main sequence. Add more for other page types, or enable the
-`resources` package, which adds a `guide` kind. Prev/Next runs within a kind.
+The first kind in `kinds` is the main sequence. Add more for other page types (guides, handouts,
+checklists, reference pages). Prev/Next runs within a kind, and with `home.filters: "auto"` the home
+page filters by kind ("All / Units / Guides") once more than one kind is listed. A typical resource
+kind has no numbering, review buttons or Prev/Next, and its own title and footer:
+
+```json
+"kinds": {
+  "unit":  { "noun": "Unit" },
+  "guide": { "noun": "Guide", "plural": "Guides & resources", "file": "guide-{id}.html", "source": "guides/{id}.html",
+             "eyebrow": "{noun}", "rail": "On this page", "review": false, "prevNext": false, "numbered": false,
+             "titleFormat": "{title} — {site}", "pageFooter": "{site} · {plural}" }
+}
+```
+
+Give un-numbered sections plain headings (no `<span class="n">`).

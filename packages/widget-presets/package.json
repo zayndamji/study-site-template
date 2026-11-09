@@ -10,6 +10,7 @@
   "options": {
     "selectFirst": { "default": true, "description": "Start every preset row with its first preset selected (and, for declarative rows, sent to the target)." },
     "noteLabel": { "default": "", "description": "Short text shown before each note, e.g. \"Why:\". Empty = no label." },
-    "eventName": { "default": "preset", "description": "Name of the CustomEvent a declarative row dispatches on its target element." }
+    "eventName": { "default": "preset", "description": "Name of the CustomEvent a declarative row dispatches on its target element." },
+    "fillFields": { "default": true, "description": "Before a declarative row dispatches its event, write an object value into the target's data-field / name controls (each gets input and change events)." }
   }
 }

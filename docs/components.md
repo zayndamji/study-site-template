@@ -116,4 +116,7 @@ Widgets that build markup after load (e.g. a stepper inside generated output) ca
 
 See the header comment of `core/core.js`: `Study.store`, `Study.define`, `Study.options`,
 `Study.enhance`, `Study.on/emit` (`ready`, `review:change`, `quiz:answer`, `theme:change`, `home:filter`),
-`Study.h`, `Study.ready`, `Study.page`, `Study.pages`.
+`Study.h`, `Study.ready`, `Study.page`, `Study.pages`, and `Study.send(target, value, { event, fill, bubbles })`,
+which hands a value to a widget: it writes a plain object's keys into the widget's `[data-field]` / `[name]`
+controls (each gets `input` and `change` events), then dispatches `event` (default `load`) with the value as
+`detail`. Preset rows (`widget-presets`) and example load buttons (`worked-examples`) both send this way.

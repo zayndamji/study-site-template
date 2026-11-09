@@ -15,6 +15,7 @@ Reader JSON: {"pages": [{"heading": "…", "paragraphs": ["…", …]}, …]}   
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import sys
 from pathlib import Path
@@ -25,6 +26,11 @@ DEMO = Path(__file__).resolve().parents[1]
 SLIDES_IN, READER_IN = DEMO / 'sources' / 'slides', DEMO / 'sources' / 'reader'
 OUT = DEMO / 'static' / 'assets' / 'sources'
 READER_OUT = DEMO / 'static' / 'reader.pdf'
+# the manifest is read and written by the source-viewer package's own tool
+_spec = importlib.util.spec_from_file_location(
+    'build_sources', DEMO.parent / 'packages' / 'source-viewer' / 'tools' / 'build_sources.py')
+BUILD_SOURCES = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(BUILD_SOURCES)
 W, H = 960, 540
 PAGE_W, PAGE_H = 1240, 1754  # A4 at 150 dpi
 
@@ -132,8 +138,7 @@ def main():
     ap.add_argument('--no-reader', action='store_true')
     a = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
-    man_p = OUT / 'index.json'
-    manifest = json.loads(man_p.read_text()) if man_p.exists() else {'decks': {}}
+    manifest = BUILD_SOURCES.read_manifest(OUT)
     only = set(a.only.split(',')) if a.only else None
     for f in sorted(SLIDES_IN.glob('*.json')):
         if only and f.stem not in only:
@@ -141,8 +146,7 @@ def main():
         deck, entry = render_deck(f.stem)
         manifest['decks'][deck] = entry
         print(f'{deck}: {entry["n"]} slides')
-    man_p.write_text(json.dumps(manifest, indent=1, ensure_ascii=False) + '\n', encoding='utf-8')
-    (OUT / 'index.js').write_text('window.STUDY_SOURCES = ' + json.dumps(manifest, ensure_ascii=False) + ';\n', encoding='utf-8')
+    BUILD_SOURCES.write_manifest(OUT, manifest)
     if not a.no_reader:
         print(f'reader.pdf: {render_reader()} pages')
 

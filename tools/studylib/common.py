@@ -108,6 +108,8 @@ KIND_DEFAULTS = {
     'prevNext': True,
     'numbered': True,
     'inPicker': True,
+    'titleFormat': None,   # browser title of this kind's pages; None = site.titleFormat
+    'pageFooter': None,    # footer of this kind's pages; None = site.pageFooter
 }
 
 

@@ -53,13 +53,7 @@ The page text, tooltip and link are added by the script; the pill look itself is
 Icons are CSS masks in the text colour; override `--cp-book` / `--cp-page` with your own SVG data URL.
 
 A pill that already contains its page text as `<span class="pg">p. 49</span>` keeps it; the
-script does not add a second label. `tools/add_pages.py` fills in `data-page` from a JSON map of
-citation text to page:
-```sh
-python3 packages/cite-pills/tools/add_pages.py content/units/02.html pages.json           # report
-python3 packages/cite-pills/tools/add_pages.py content/units/02.html pages.json --write   # edit
-```
-It touches only `span.cite` / `td.cite` without a `data-page`.
+script does not add a second label.
 
 ## JavaScript API
 None. `Study.enhance(el)` processes citations in content added later. Processed elements carry

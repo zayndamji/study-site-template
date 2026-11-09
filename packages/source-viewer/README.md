@@ -9,7 +9,7 @@ the chip). Clicking outside closes it. Nothing is downloaded until a chip is ope
 neighbouring frames are preloaded.
 
 Chips come from explicit markup or from plain text such as `s12` or `s12–14` inside citation
-elements, so existing notes need no rewriting. In print, chips are plain text and the popover is hidden.
+elements, so a citation needs no extra markup. In print, chips are plain text and the popover is hidden.
 
 ## Enable
 ```json

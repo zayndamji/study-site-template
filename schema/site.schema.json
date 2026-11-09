@@ -110,7 +110,8 @@
         "noun": { "type": "string" }, "plural": { "type": ["string", "null"] }, "short": { "type": ["string", "null"] },
         "file": { "type": "string" }, "source": { "type": "string" }, "storageKey": { "type": "string" },
         "eyebrow": { "type": "string" }, "rail": { "type": "string" }, "review": { "type": "boolean" },
-        "prevNext": { "type": "boolean" }, "numbered": { "type": "boolean" }, "inPicker": { "type": "boolean" }
+        "prevNext": { "type": "boolean" }, "numbered": { "type": "boolean" }, "inPicker": { "type": "boolean" },
+        "titleFormat": { "type": ["string", "null"] }, "pageFooter": { "type": ["string", "null"] }
       }
     }
   }
