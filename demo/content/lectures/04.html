@@ -314,6 +314,29 @@
     </div>
   </div></details>
 
+  <details class="reveal more"><summary>Waiting for a pattern: two heads in a row</summary><div class="body">
+    <p>Waiting for <em>two</em> heads in a row is no longer a wait for one success, because a tail undoes
+    progress. It helps to remember only how much of the pattern the last flips match: nothing, one
+    head, or both heads. Each flip moves between those three states. <span class="beyond"></span></p>
+    <div class="widget sm-sim" id="l04-hh">
+      <div class="lbl">Try it · Flip until HH</div>
+      <script type="application/json">
+      { "alphabet": ["H", "T"], "start": "n", "title": "Three states: no progress, one head, two heads in a row",
+        "states": [ { "id": "n", "label": "none", "x": 0, "y": 0, "shape": "box" },
+                    { "id": "h", "label": "H", "x": 170, "y": 0 },
+                    { "id": "hh", "label": "HH", "x": 320, "y": 0, "accept": true } ],
+        "edges": [ { "from": "n", "to": "h", "on": ["H"] }, { "from": "n", "to": "n", "on": ["T"], "loop": "top" },
+                   { "from": "h", "to": "hh", "on": ["H"] }, { "from": "h", "to": "n", "on": ["T"], "bend": 0.35 },
+                   { "from": "hh", "to": "hh", "on": ["Σ"], "loop": "top" } ],
+        "inputs": ["THTHH", "HTHTT", "TTHH", "HH"],
+        "note": "The run is accepted once HH has appeared; after that, further flips change nothing." }
+      </script>
+    </div>
+    <p>Writing <span class="m"><i>a</i></span>, <span class="m"><i>b</i></span> for the expected number of flips still needed from “none” and from “H”
+    with a fair coin, conditioning on the next flip gives <span class="m"><i>a</i> = 1 + ½<i>b</i> + ½<i>a</i></span> and
+    <span class="m"><i>b</i> = 1 + ½ · 0 + ½<i>a</i></span>, so <span class="m"><i>a</i> = 6</span>: six flips on average, not four.</p>
+  </div></details>
+
   <details class="reveal check"><summary>Quick check</summary><div class="body">
     <p>Each attempt succeeds with probability 1/4. What is the chance that the first two attempts both fail? What is the mean number of attempts?</p>
     <p><span class="m">P(<i>T</i> &gt; 2) = (3/4)² = 9/16</span>; <span class="m">E[<i>T</i>] = 4</span>.</p>

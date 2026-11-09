@@ -1,0 +1,33 @@
+{
+  "name": "state-machine",
+  "title": "State machines",
+  "description": "State diagrams drawn from a small JSON spec, and a simulator that steps a machine through an input string (deterministic or not, with ε moves).",
+  "category": "widgets",
+  "version": "1.0.0",
+  "requires": [],
+  "css": ["state-machine.css"],
+  "js": ["state-machine.js"],
+  "build": "build.py",
+  "options": {
+    "classPrefix": { "default": "sm-", "description": "Prefix of the classes on hosts (<prefix>sim, <prefix>figure) and on generated elements (<prefix>state, <prefix>edge, …), for page CSS and scripts. Change it to keep an existing site's class names." },
+    "labelColor": { "default": "", "description": "Colour of edge labels: a CSS colour or a core token name; empty = the accent colour." },
+    "startLabel": { "default": "start", "description": "Text by the arrow into the start state; empty = none." },
+    "inputLabel": { "default": "Input string", "description": "Label of the input field." },
+    "tapeLabel": { "default": "input", "description": "Accessible name of the row of input symbols." },
+    "resetLabel": { "default": "Reset", "description": "Reset button." },
+    "backLabel": { "default": "Back", "description": "Back one symbol." },
+    "stepLabel": { "default": "Step", "description": "Read one symbol." },
+    "runLabel": { "default": "Run to end", "description": "Read the rest of the input." },
+    "progress": { "default": "Read {k} of {n}", "description": "Status: {k} symbols read of {n}." },
+    "currentState": { "default": "current state {state}", "description": "Status for a deterministic machine; {state} is its label." },
+    "noTransition": { "default": "no current state (no transition)", "description": "Status when a deterministic machine has no move." },
+    "currentStates": { "default": "current states {{states}}", "description": "Status for a nondeterministic machine; {states} lists the labels (the doubled braces print as set braces)." },
+    "noStatesLeft": { "default": " — no states left", "description": "Added when a nondeterministic machine has no states left." },
+    "acceptLabel": { "default": "Accept", "description": "Verdict when the whole input is read and the machine accepts." },
+    "rejectLabel": { "default": "Reject", "description": "Verdict when it rejects." },
+    "notInAlphabet": { "default": "Not in the alphabet", "description": "Verdict when the input has a symbol the machine does not read." },
+    "readsOnly": { "default": "this machine reads only {alphabet}", "description": "Explains the alphabet; {alphabet} lists its symbols." },
+    "machineName": { "default": "Machine {n}", "description": "Switch-button text for an unnamed machine in a multi-machine simulator." }
+  },
+  "demoOptions": {}
+}

@@ -63,6 +63,7 @@ all come from the page list.
 | `widget-kit` | Layout helpers for widgets: two-column and panel grids, sliders, readouts, legends, tags, callouts |
 | `plot-2d` | A coordinate-plane SVG widget with draggable handles |
 | `view-3d` | A rotatable 3D SVG viewer |
+| `state-machine` | State diagrams from a JSON spec and a step-by-step simulator |
 | `home-progress` | Review meters on the home page |
 | `resume-link` | "Continue: …" link to the last page read |
 | `topic-details` | Show page descriptions on the home page |

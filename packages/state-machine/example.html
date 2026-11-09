@@ -1,0 +1,42 @@
+<section class="note" id="sm-sim">
+  <h2><span class="n">01</span> A turnstile, step by step</h2>
+  <p>A coin-operated turnstile is locked until a coin goes in; one push lets a person through and locks
+  it again. Type a sequence of coins (<span class="m">c</span>) and pushes (<span class="m">p</span>),
+  then step through it. The machine accepts when the turnstile ends up locked.</p>
+  <div class="widget sm-sim" id="sm-turnstile">
+    <div class="lbl">Try it · Coins and pushes</div>
+    <script type="application/json">
+    { "alphabet": ["c", "p"], "start": "L", "title": "A turnstile with states locked and open",
+      "states": [ { "id": "L", "label": "locked", "x": 0, "y": 0, "accept": true, "shape": "box" },
+                  { "id": "U", "label": "open", "x": 220, "y": 0, "shape": "box" } ],
+      "edges": [ { "from": "L", "to": "U", "on": ["c"] },
+                 { "from": "U", "to": "L", "on": ["p"] },
+                 { "from": "L", "to": "L", "on": ["p"], "loop": "top" },
+                 { "from": "U", "to": "U", "on": ["c"], "loop": "top" } ],
+      "inputs": ["cp", "ppcp", "cc", "cpc", ""],
+      "table": true,
+      "note": "A push while locked does nothing; a second coin while open is wasted." }
+    </script>
+  </div>
+</section>
+<section class="note" id="sm-guess">
+  <h2><span class="n">02</span> Guessing machines</h2>
+  <p>A machine may have several moves for one symbol, or free moves (ε) that read nothing; it then
+  follows all of them at once. This one looks for the word <span class="m">ab</span> anywhere in the input.</p>
+  <div class="widget sm-sim" id="sm-ab">
+    <div class="lbl">Try it · Find “ab”</div>
+    <script type="application/json">
+    { "alphabet": ["a", "b"], "start": "q0",
+      "states": [ { "id": "q0", "x": 0, "y": 0 }, { "id": "q1", "x": 140, "y": 0 },
+                  { "id": "q2", "x": 280, "y": 0, "accept": true } ],
+      "edges": [ { "from": "q0", "to": "q0", "on": ["Σ"] }, { "from": "q0", "to": "q1", "on": ["a"] },
+                 { "from": "q1", "to": "q2", "on": ["b"] }, { "from": "q2", "to": "q2", "on": ["Σ"] } ],
+      "inputs": ["bab", "aab", "ba", "abba"] }
+    </script>
+  </div>
+  <div class="sm-figure"><script type="application/json">
+    { "alphabet": ["a"], "start": "s", "title": "A diagram only: two states joined by a free move",
+      "states": [ { "id": "s", "x": 0, "y": 0 }, { "id": "t", "x": 160, "y": 0, "accept": true } ],
+      "edges": [ { "from": "s", "to": "t", "on": ["ε"] }, { "from": "t", "to": "t", "on": ["a"], "loop": "right" } ] }
+  </script></div>
+</section>
