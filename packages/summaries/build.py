@@ -80,7 +80,7 @@ def extra_pages(ctx, opts):
             num = ctx.esc(p['badge']) if k.get('numbered', True) else '·'
             blocks.append(
                 f'<section class="note sheet-page-entry" id="{_anchor(ctx, opts, p)}" data-toc-group="{ctx.esc(g.get("title", g["id"]))}" '
-                f'data-sheet-group="{ctx.esc(g["id"])}" data-no-review>\n'
+                f'data-sheet-group="{ctx.esc(g["id"])}" data-sheet-kind="{ctx.esc(p["kind"])}" data-sv-page="{ctx.esc(p["id"])}" data-no-review>\n'
                 f'<h2><span class="n">{num}</span> {ctx.esc(p["title"])}</h2>\n'
                 f'<p class="src sheet-links">{ctx.esc(k["noun"])} {ctx.esc(p["badge"])} · {" · ".join(links)}</p>\n'
                 f'<div class="sheet">\n{sheets[(p["kind"], p["id"])]}\n</div>\n</section>')

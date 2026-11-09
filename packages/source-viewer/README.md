@@ -53,7 +53,8 @@ Several sources per page, e.g. a short and a long version of the same slides plu
 ]
 ```
 The page id is `body[data-page]`; a `data-sv-page="…"` attribute on any ancestor overrides it (handy
-on review pages that gather several pages' material). `P03 s12` overrides it for one citation.
+on review pages that gather several pages' material; the `summaries` package sets it on every sheet
+of its all-sheets page). `P03 s12` overrides it for one citation.
 
 ## Markup
 Automatic (inside an element matched by `selectors`):
