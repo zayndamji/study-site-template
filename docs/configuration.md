@@ -16,7 +16,7 @@ page fields.
     "storagePrefix": "study:",            // localStorage key prefix: give every site its own
     "defaultTheme": "system",             // system | light | dark
     "favicon": "auto",                    // "auto" (generated from brand + accent), a path, or null
-    "footer": "{site}",                   // home and package pages
+    "footer": "{site}",                   // home and package pages (HTML allowed; site fields below)
     "pageFooter": "{site} · {noun} {badge} · {position} of {count}",
     "titleFormat": "{short} {badge} · {title} — {site}"   // browser tab title of a page
   },
@@ -53,7 +53,10 @@ page fields.
     "allLabel": "Everything",
     "columns": 3,
     "showRange": true,                    // "01–09" above each group
-    "emptyText": "No matching pages."
+    "emptyText": "No matching pages.",
+    "columnWidths": null,                 // e.g. ".9fr 1fr 1.1fr": unequal columns on wide screens
+    "after": "",                          // HTML after the catalog (a help box, a note); site fields allowed
+    "afterFile": null                     // or a file under content/ with that HTML
   },
   "kinds": {
     "unit": {
@@ -104,6 +107,11 @@ Unknown fields are left as written.
 - `{num}` is the number in the id without leading zeros (`"07"` → `7`), or the id itself when the id
   has no number. Use it for labels like `"Ch {num}"`; keep `{id}` in file names and storage keys.
 
+**Site fields** — the home `intro`, `home.after`, `site.footer` and `site.pageFooter` can also use
+`{pages}` (number of ready pages) and, for each kind, `{<kind>Count}`, `{<kind>First}` and
+`{<kind>Last}` (the badges of its first and last ready page), e.g.
+`"footer": "{site} · {lectureCount} lectures &amp; {guideCount} guides"`.
+
 The page switcher lists pages group by group, in the order of `groups`, even when the page order
 (which drives Prev/Next) moves back and forth between groups.
 
@@ -124,6 +132,20 @@ A content file may start with a JSON comment. All keys are optional:
 ```
 
 Packages read their own keys from it too (e.g. `one-minute` reads `"overview": [...]`).
+
+## Hosting
+
+`dist/` is plain static files: serve it from any web server, GitHub Pages, or upload it as a
+multi-file page.
+
+- `build.cacheBust` adds `?v=<hash>` to the two bundled assets so browsers fetch new versions. Turn
+  it off (`false`) for hosts that do not serve URLs with a query string.
+- `.study-build` in the output folder only marks it as generated (the build refuses to overwrite a
+  folder without it). Leave it out when you upload the files somewhere.
+- Rebuilds sync the output folder rather than wiping it, so a large `static/` (source images) is
+  copied only when files change.
+- Readers' progress is stored per origin: serve a migrated site where the old one was served (same
+  host, or the same published page) to keep it.
 
 ## Several kinds
 

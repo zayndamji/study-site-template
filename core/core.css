@@ -324,6 +324,9 @@ footer.page .spacer { flex: 1; }
 .entry .state:empty { display: none; }
 .entry .sub { display: none; color: var(--muted); font-size: .92rem; line-height: 1.5; }
 .empty-state { padding: 30px 0 60px; color: var(--muted); }
+.home-after { margin-top: 44px; max-width: var(--content-width, 46rem); }
+.home-after > details { border-top: 1px solid var(--rule); padding-top: 14px; }
+.home-after summary { cursor: pointer; font: 600 .86rem var(--f-display); }
 .empty-state p { font: 650 var(--step-2) var(--f-display); }
 @media (max-width: 960px) { .catalog { gap: 28px; } .group-heading h2 { font-size: 1.4rem; } }
 @media (max-width: 760px) { .catalog { grid-template-columns: repeat(min(2, var(--home-columns, 3)), minmax(0, 1fr)); } .home-intro .home-extra { flex-basis: 100%; margin-left: 0; } }

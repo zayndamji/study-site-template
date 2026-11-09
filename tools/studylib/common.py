@@ -72,6 +72,9 @@ DEFAULTS = {
         'columns': 3,
         'showRange': True,
         'emptyText': 'No matching pages.',
+        'columnWidths': None,
+        'after': '',
+        'afterFile': None,
     },
     'labels': {
         'theme': 'Theme: ', 'themeTitle': 'Colour theme: {mode}',

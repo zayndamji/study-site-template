@@ -17,7 +17,10 @@ You are probably here to do one of three things. Find yours, then read only what
 ## B. Move an existing notes site onto the template
 
 Read [docs/migration.md](docs/migration.md). Keep the old URLs, storage prefix, page storage ids and
-section ids so readers keep their progress. Subject-specific code becomes a site package, not a template change.
+section ids so readers keep their progress. Everything the old site does should map onto the
+template's core, packages and options; when something has no equivalent, add it to the template in a
+general form first (generic examples, original demo). Site packages are for new features, which
+are later generalized and moved into the template.
 
 ## C. Change the template itself
 

@@ -1,4 +1,6 @@
 /* coming-later */
+.catalog-later { margin-top: 38px; border-top: 1px solid var(--rule); }
+.catalog-later .later-title { font: 600 .8rem var(--f-mono); color: var(--muted); margin: 14px 0 0; }
 .entry.planned { color: var(--muted); cursor: default; }
 .entry.planned:hover { color: var(--muted); }
 .entry.planned .arrow { display: none; }

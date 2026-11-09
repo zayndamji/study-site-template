@@ -65,8 +65,14 @@ uses different class names. Typical mappings:
 | home progress, continue link, description toggle | `home-progress`, `resume-link`, `topic-details` | none |
 | "don't mention X" rules | `privacy` | list terms in `forbidFile` |
 
-Code that only one subject needs (a special simulator, colour coding for one notation) becomes a
-**site package** in `<new-site>/packages/<name>/`, not part of the template.
+Everything an existing site already does should be possible with the template's core, packages and
+`site.json` options, without site-specific code. If a feature has no template equivalent yet, add it
+to the template in a general form (with generic examples and an original demo) before migrating, so
+every site can use it. A site's own `packages/` and `custom/` are for building *new* features in one
+site; once they prove useful, generalize them and move them into the template.
+
+When the old combined summaries page held citation chips, the new all-sheets page keeps them
+working: each sheet carries `data-sv-page` with its page id, which `source-viewer` uses for `{page}`.
 
 ## 5. Verify
 

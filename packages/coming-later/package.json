@@ -5,12 +5,36 @@
   "category": "home",
   "version": "1.0.0",
   "requires": [],
-  "css": ["coming-later.css"],
+  "css": [
+    "coming-later.css"
+  ],
   "build": "build.py",
   "options": {
-    "statuses": { "default": ["planned"], "description": "Page statuses shown as coming later." },
-    "label": { "default": "Coming later", "description": "Badge on the row; per-page override with \"statusLabel\" in site.json." },
-    "inPicker": { "default": true, "description": "List them (disabled) in the page switcher." },
-    "searchable": { "default": true, "description": "Let search find them." }
+    "statuses": {
+      "default": [
+        "planned"
+      ],
+      "description": "Page statuses shown as coming later."
+    },
+    "label": {
+      "default": "Coming later",
+      "description": "Badge on the row; per-page override with \"statusLabel\" in site.json."
+    },
+    "inPicker": {
+      "default": true,
+      "description": "List them (disabled) in the page switcher."
+    },
+    "searchable": {
+      "default": true,
+      "description": "Let search find them (with placement \"after\", they otherwise disappear while searching)."
+    },
+    "placement": {
+      "default": "group",
+      "description": "\"group\": each planned page sits in its group, greyed out. \"after\": all planned pages in one row block below the catalog (hidden while a filter is on; while searching too unless searchable)."
+    },
+    "afterTitle": {
+      "default": "",
+      "description": "Optional small heading above the \"after\" block."
+    }
   }
 }

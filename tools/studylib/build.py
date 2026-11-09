@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import shutil
 from pathlib import Path
 
@@ -76,6 +77,17 @@ class Ctx:
                     plural=k.get('plural', ''),
                     kind=page.get('kind', ''), group=self.group_title(page.get('group')),
                     site=self.config['site']['title'], position=pos, count=len(same), last=last)
+
+    def site_vals(self):
+        """Fields every footer and the home intro may use: {site} {pages}, and per kind
+        {<kind>Count} {<kind>First} {<kind>Last} (badges of the first and last ready page)."""
+        v = {'site': self.config['site']['title'], 'pages': len(self.ready_pages())}
+        for name in self.kinds:
+            same = self.ready_pages(name)
+            v[f'{name}Count'] = len(same)
+            v[f'{name}First'] = same[0]['badge'] if same else ''
+            v[f'{name}Last'] = same[-1]['badge'] if same else ''
+        return v
 
     def group_title(self, gid):
         for g in self.groups:
@@ -168,7 +180,7 @@ class Ctx:
                     f'</details></nav>\n<article id="main">\n{main}\n</article>\n</div>')
         else:
             body = f'<div class="layout no-rail">\n<article id="main">\n{main}\n</article>\n</div>'
-        foot = footer if footer is not None else esc(fmt(site.get('footer'), site=site['title']))
+        foot = footer if footer is not None else fmt(site.get('footer'), **{k: esc(v) for k, v in self.site_vals().items()})
         return ('<!doctype html>\n'
                 f'<html lang="{esc(site.get("lang", "en"))}">\n<head>\n' + '\n'.join(head_bits) + '\n</head>\n'
                 f'<body {" ".join(attrs)}>\n<a class="skip-link" href="#main">{esc(self.label("skipLink"))}</a>\n'
@@ -268,6 +280,12 @@ def theme_css(cfg):
     cols = cfg['home'].get('columns')
     if cols:
         out.append(f'.catalog {{ --home-columns: {int(cols)}; }}')
+    widths = cfg['home'].get('columnWidths')
+    if widths:
+        if not re.match(r'^[\w\s.%()+,-]+$', str(widths)):
+            raise StudyError(f'home.columnWidths is not a plain CSS grid value: {widths!r}')
+        # wide screens only: narrower screens keep the responsive 2- and 1-column layouts
+        out.append(f'@media (min-width: 761px) {{ .catalog {{ grid-template-columns: {widths}; }} }}')
     return '\n'.join(out)
 
 
@@ -362,7 +380,8 @@ def render_unit(ctx: Ctx, page):
     scripts = ''.join(f'\n<script src="{esc(s)}"></script>' for s in meta.get('scripts', []))
     main = '\n'.join(headbits) + '\n' + body + scripts
     doc_title = meta.get('docTitle') or fmt(ctx.config['site'].get('titleFormat'), **dict(vals, title=page['title']))
-    footer = esc(fmt(meta.get('footer', ctx.config['site'].get('pageFooter')), **vals))
+    footer = fmt(meta.get('footer', ctx.config['site'].get('pageFooter')),
+                 **{k: esc(v) for k, v in dict(ctx.site_vals(), **vals).items()})
     return ctx.render_document(
         title=doc_title, main=main, page=page, kind=page['kind'], page_id=page['id'],
         unit=page['storageKey'], review=bool(k.get('review')) and meta.get('review', True),
@@ -375,10 +394,11 @@ def render_home(ctx: Ctx):
     cfg, home = ctx.config, ctx.config['home']
     intro = home.get('intro') or {}
     intro_bits = []
+    sv = ctx.site_vals()
     if intro.get('eyebrow'):
-        intro_bits.append(f'<p class="eyebrow">{intro["eyebrow"]}</p>')
+        intro_bits.append(f'<p class="eyebrow">{fmt(intro["eyebrow"], **sv)}</p>')
     if intro.get('tagline'):
-        intro_bits.append(f'<p class="tagline">{intro["tagline"]}</p>')
+        intro_bits.append(f'<p class="tagline">{fmt(intro["tagline"], **sv)}</p>')
     intro_bits += ctx.call('home_intro')
     tools = []
     if home.get('search', True):
@@ -387,7 +407,7 @@ def render_home(ctx: Ctx):
                      '<kbd aria-hidden="true">/</kbd></label>')
     sections, rendered, rendered_kinds = [], set(), set()
     for gi, g in enumerate(ctx.groups):
-        rows = []
+        rows, shown = [], []
         members = [p for p in ctx.pages if p['group'] == g['id']]
         for p in members:
             row = None
@@ -401,12 +421,14 @@ def render_home(ctx: Ctx):
                         row = r
             if row:
                 rows.append(row)
+                shown.append(p)
         if not rows:
             continue
         rendered.add(g['id'])
         rendered_kinds.update(p['kind'] for p in members)
         heading = []
-        nums = [p['badge'] for p in members if p['num'] is not None and (p['status'] == 'ready' or ctx.config['nav'].get('showPlanned'))]
+        # the range covers the rows drawn in this group (ready pages, plus planned ones a package shows here)
+        nums = [p['badge'] for p in shown if p['num'] is not None]
         if home.get('showRange') and len(nums) > 1 and g.get('range') is not False:
             heading.append(f'<span class="range">{esc(g.get("range") or nums[0] + "–" + nums[-1])}</span>')
         elif g.get('range'):
@@ -440,6 +462,12 @@ def render_home(ctx: Ctx):
             f'<div id="empty-state" class="empty-state" hidden><p>{esc(home.get("emptyText"))}</p>'
             f'<button class="btn" type="button" id="clear-search">{esc(ctx.label("showEverything"))}</button></div>')
     main += ''.join(ctx.call('home_after'))
+    after = home.get('after') or ''
+    if home.get('afterFile'):
+        _, after_html, after_styles = ctx.read_content(home['afterFile'])
+        after = '\n'.join(after_styles) + after_html + after
+    if after:
+        main += f'\n<div class="home-after">{fmt(after, **sv)}</div>'
     doc = ctx.render_document(title=cfg['site']['title'], main=main, kind='home', rail=False, body_class='home')
     # the home page uses a full-width main instead of the reading column
     doc = doc.replace('<div class="layout no-rail">\n<article id="main">', '<main class="home-main" id="main">', 1)
