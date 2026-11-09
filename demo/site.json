@@ -69,6 +69,14 @@
     "topic-details": {},
     "coming-later": {},
     "resources": {},
-    "privacy": { "forbid": ["DRAFT-ONLY"], "noindex": false }
+    "privacy": { "forbid": ["DRAFT-ONLY"], "noindex": false },
+    "content-rules": {
+      "kinds": ["lecture"],
+      "forbidTags": { "img": "draw diagrams as SVG instead of using images" },
+      "minSections": 4,
+      "quizExplanations": true,
+      "proseExclude": ["span.ref", "cite", "p.src", ".lbl"],
+      "prose": [{ "pattern": "\\bthe (?:reader|book) (?:shows|draws)\\b", "message": "describes the source instead of showing its content", "outsideQuotes": true }]
+    }
   }
 }
