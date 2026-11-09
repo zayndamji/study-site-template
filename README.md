@@ -66,6 +66,7 @@ all come from the page list.
 | `coming-later` | Planned pages shown greyed out |
 | `resources` | A second page kind for guides and handouts |
 | `privacy` | Forbidden-term scanning, noindex, no third-party requests |
+| `content-rules` | A site's own writing rules (forbidden tags and phrases, minimum sections), reported by `check` |
 
 `python3 tools/study.py packages` lists them; `python3 tools/study.py info <name>` shows options.
 Sites can add their own packages or override these (`docs/packages.md`).

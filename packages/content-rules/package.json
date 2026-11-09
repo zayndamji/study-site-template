@@ -1,0 +1,18 @@
+{
+  "name": "content-rules",
+  "title": "Content rules",
+  "description": "A site's own writing rules (forbidden tags, phrases that must not appear in prose, minimum sections, quiz explanations), reported by study.py check.",
+  "category": "site",
+  "version": "1.0.0",
+  "requires": [],
+  "build": "build.py",
+  "options": {
+    "kinds": { "default": null, "description": "Page kinds the rules apply to (list of kind names); null = every kind." },
+    "forbidTags": { "default": {}, "description": "Tags that must not appear in a page body, each with the message to print: {\"img\": \"redraw diagrams as SVG instead of using images\"}." },
+    "minSections": { "default": 0, "description": "Report pages with fewer section.note elements than this; 0 = off." },
+    "quizExplanations": { "default": false, "description": "Report pages whose quiz questions and <template class=\"q-explain\"> explanations do not pair up." },
+    "prose": { "default": [], "description": "Rules on the page's readable text: [{\"pattern\": regular expression (Python syntax), \"message\": what to print, \"outsideQuotes\": true to ignore text inside the quotes elements, \"caseSensitive\": false, \"kinds\": null or a list, \"pages\": null or a list of page ids}]." },
+    "proseExclude": { "default": [], "description": "Simple selectors (tag, .class or tag.class) of elements whose text the prose rules skip, e.g. [\"span.ref\", \"cite\", \"p.src\"]. Scripts, styles, SVG and templates are always skipped." },
+    "quotes": { "default": ["blockquote.quote", "q.quote"], "description": "Simple selectors of verbatim quotes, skipped by prose rules that set outsideQuotes." }
+  }
+}
