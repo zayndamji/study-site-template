@@ -1,4 +1,4 @@
-/* summaries: group filter and print button on the all-sheets page */
+/* summaries: group and set filters and the print button on the all-sheets page */
 (function () {
   'use strict';
   Study.define('summaries', {
@@ -10,8 +10,12 @@
       const rail = new Map([...document.querySelectorAll('.toc a')].map((a) => [a.getAttribute('href').slice(1), a.closest('li')]));
       function apply(f) {
         buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.sheetFilter === f)));
+        // "set:<id>" filters show a union of groups (data-sheet-groups on the button)
+        const btn = buttons.find((b) => b.dataset.sheetFilter === f);
+        const groups = f.startsWith('set:') && btn ? (btn.dataset.sheetGroups || '').split(' ') : null;
+        const shown = (g) => f === 'all' || (groups ? groups.includes(g) : g === f);
         sections.forEach((s) => {
-          const hide = f !== 'all' && s.dataset.sheetGroup !== f;
+          const hide = !shown(s.dataset.sheetGroup);
           s.hidden = hide;
           const li = rail.get(s.id); if (li) li.hidden = hide;
         });

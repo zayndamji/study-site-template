@@ -11,8 +11,15 @@
 .sheet-filters .btn { padding: 6px 12px; font-size: .78rem; }
 .sheet-links a { color: var(--term); }
 .sheets-page section.note { padding-top: 40px; }
+.sheet-group-head { margin: 56px 0 0; padding-bottom: 8px; border-bottom: 2px solid var(--ink); display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.sheet-group-head h2 { font: 650 var(--step-1, 1.3rem) var(--f-display); margin: 0; }
+.sheet-group-head .note { font: .8rem var(--f-mono); color: var(--muted); }
+.sheet-group-head + section.note { padding-top: 24px; }
+.sheet-section .sheet-source { margin-bottom: 10px; }
+@media (max-width: 720px) { .sheet-group-head { margin-top: 24px; } }
 @media print {
   .sheets-page section.note { padding-top: 10px; break-inside: avoid-page; }
   .sheet { border: 0; padding: 0; }
   .sheet-back, .sheet-filters, .sheet-links { display: none !important; }
+  .sheet-group-head { margin-top: 14px; break-after: avoid-page; }
 }

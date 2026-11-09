@@ -22,15 +22,24 @@ Write each sheet once; both places always match.
 | `otherSource` | `"{kind}-{id}.html"` | Sheet file for pages of other kinds |
 | `kinds` | `null` | Kinds that get sheets; `null` = all |
 | `require` | `false` | Warn when a ready page has no sheet |
-| `sectionTitle` / `sectionNumber` / `sectionId` | `"Summary sheet"` / `"∗"` / `"summary"` | The inserted section's heading, rail number and anchor |
+| `sectionTitle` / `sectionNumber` / `sectionId` | `"Summary sheet"` / `"∗"` / `"summary"` | The inserted section's heading, rail number and anchor. `sectionNumber: "auto"` = the number after the last numbered section before it (`04` → `05`); front matter `"summaryNumber"` overrides it per page |
+| `sectionSource` | `""` | Optional source line under the inserted sheet's heading (fields below); `""` = none |
+| `sourceComment` | `"source"` | A sheet may start with `<!-- source: … -->`; its text becomes `{source}`. Set the word (e.g. `"refs"`), or `""` to ignore such comments |
+| `sourceSeparator` | `" · "` | Separator between the parts of source lines |
 | `reviewable` | `true` | Inserted section gets a "Mark as reviewed" button |
 | `marker` | `"<!-- summary -->"` | Where to insert the sheet |
 | `page` | `true` | Build the all-sheets page |
 | `file`, `title`, `eyebrow`, `intro`, `railTitle` | … | All-sheets page file name and text |
 | `anchor` / `otherAnchor` | `"s-{kind}-{id}"` | Each sheet's anchor on the all-sheets page |
 | `backLink` | `"All summary sheets →"` | Link under each inserted sheet; `""` to omit |
+| `backLinkPlacement` | `"below"` | `"below"` the sheet, or `"source"`: at the end of the source line |
 | `notesLink`, `extraLinks` | `"Full notes"`, `[]` | Links from each sheet on the all-sheets page back to its page, e.g. `[{"label":"Self-test","anchor":"selftest"}]` |
+| `entrySource` | `"{noun} {badge}{sourceSep}"` | Start of each sheet's line on the all-sheets page, before those links |
 | `filters`, `allLabel` | `true`, `"All"` | Group filter buttons |
+| `filterSets` | `[]` | Extra buttons that each show several groups, e.g. `[{"id": "first-half", "label": "First half", "groups": ["part-1", "part-2"]}]` |
+| `groupFilterLabel` | `"{title}"` | A group button's label unless the group has `filterLabel`; fields `{title}` `{range}` (e.g. `"{title} · {range}"` → "Part one · 01–04") |
+| `groupHeadings` | `false` | A heading above each group's sheets: the group title and its `sheetNote` (or `note`) |
+| `filterAria` | `"Filter sheets"` | Accessible name of the filter buttons |
 | `printLabel` | `"Print"` | Print button; `""` to omit |
 | `homeLink` | `"Summary sheets ↗"` | Link on the home intro line; `""` to omit |
 | `topbarLink` | `""` | Link in every top bar; `""` to omit |
@@ -42,7 +51,17 @@ Page (`content/units/03.html`):
 <!-- summary -->
 <section class="note" id="selftest">…</section>
 ```
-Sheet (`content/summaries/03.html`): any HTML fragment, no `<section>` wrapper needed.
+Sheet (`content/summaries/03.html`): any HTML fragment, no `<section>` wrapper needed. It may start
+with a source comment, shown in the source lines:
+```html
+<!-- source: pp. 12–15 -->
+<p>…</p>
+```
+
+Fields for `sectionSource` and `entrySource`: the page fields (`{noun}` `{badge}` `{id}` `{num}`
+`{title}` `{label}` …), `{nounLower}`, `{source}` (the comment's text) and `{sourceSep}` (separator +
+source, or nothing when the sheet has no source). Example: `"Everything from this {nounLower} on one
+screen{sourceSep}"`.
 
 Styles a sheet needs must be in a package or `custom/site.css`, not in one page's `<style>`,
 because the sheet also appears on the all-sheets page.

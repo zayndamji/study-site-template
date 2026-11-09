@@ -71,7 +71,9 @@ class Ctx:
         num = page.get('num')
         return dict(id=pid, badge=page.get('badge') or pid, num=pid if num is None else str(num),
                     title=page.get('title', ''), label=page.get('label', ''),
-                    noun=k.get('noun', ''), short=k.get('short', ''), plural=k.get('plural', ''),
+                    noun=page.get('noun') or k.get('noun', ''),
+                    short=page.get('short') or page.get('noun') or k.get('short', ''),
+                    plural=k.get('plural', ''),
                     kind=page.get('kind', ''), group=self.group_title(page.get('group')),
                     site=self.config['site']['title'], position=pos, count=len(same), last=last)
 
@@ -448,9 +450,9 @@ def render_home(ctx: Ctx):
 def default_row(ctx: Ctx, p, extra_class='', state=''):
     k = ctx.kinds[p['kind']]
     search = ' '.join(str(x) for x in (p['id'], p['badge'] if p['badge'] != p['id'] else '', p['title'], p['label'], p['description'], p['keywords'],
-                                        ctx.group_title(p['group']), k['noun']) if x)
+                                        ctx.group_title(p['group']), p.get('noun') or k['noun']) if x)
     num = esc(p['badge']) if k.get('numbered', True) else ''
-    title_attr = f' title="{esc(k["noun"] + " " + p["badge"] + ": " + p["title"])}"' if p['label'] != p['title'] else ''
+    title_attr = f' title="{esc((p.get("noun") or k["noun"]) + " " + p["badge"] + ": " + p["title"])}"' if p['label'] != p['title'] else ''
     href = f' href="{esc(p["href"])}"' if p['status'] == 'ready' else ''
     tag = 'a' if href else 'div'
     return (f'<li data-search-row data-kind="{esc(p["kind"])}" data-group="{esc(p["group"])}" '

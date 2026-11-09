@@ -76,6 +76,7 @@ page fields.
     {
       "id": "01",                         // string; numeric ids get number search ("3" finds 03)
       "badge": "A1",                      // optional display number (home rows, picker, titles, footer); defaults to id
+      "noun": "Appendix", "short": "App.", // optional per-page overrides of the kind's noun / short noun
       "kind": "unit",                     // defaults to the first kind
       "title": "Full title",
       "label": "Short title for lists",   // defaults to title

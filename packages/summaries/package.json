@@ -39,11 +39,23 @@
     },
     "sectionNumber": {
       "default": "∗",
-      "description": "What appears in the heading's number slot and the rail."
+      "description": "What appears in the heading's number slot and the rail. \"auto\" = the number after the last numbered section before the sheet (zero-padded like it). A page can override it with front matter \"summaryNumber\"."
     },
     "sectionId": {
       "default": "summary",
       "description": "id of the inserted section (anchor target)."
+    },
+    "sectionSource": {
+      "default": "",
+      "description": "Optional source line (p.src) under the inserted sheet's heading; empty = none. Fields: the page fields ({noun} {badge} {id} {title} …), {nounLower}, {source} (the sheet's source comment) and {sourceSep} (separator + source, or nothing). HTML allowed."
+    },
+    "sourceComment": {
+      "default": "source",
+      "description": "A sheet file may start with <!-- source: … -->; its text becomes {source}. This sets the word before the colon (e.g. \"refs\"); empty = don't read it."
+    },
+    "sourceSeparator": {
+      "default": " · ",
+      "description": "Separator used between the parts of source lines."
     },
     "reviewable": {
       "default": true,
@@ -85,9 +97,17 @@
       "default": "All summary sheets →",
       "description": "Link text under each inserted sheet that jumps to it on the all-sheets page; empty to omit."
     },
+    "backLinkPlacement": {
+      "default": "below",
+      "description": "Where the back link goes: \"below\" the sheet, or at the end of the \"source\" line."
+    },
     "notesLink": {
       "default": "Full notes",
       "description": "Link text on the all-sheets page back to each page."
+    },
+    "entrySource": {
+      "default": "{noun} {badge}{sourceSep}",
+      "description": "Start of each sheet's line on the all-sheets page, before the links. Same fields as sectionSource."
     },
     "extraLinks": {
       "default": [],
@@ -96,6 +116,22 @@
     "filters": {
       "default": true,
       "description": "Group filter buttons on the all-sheets page."
+    },
+    "filterSets": {
+      "default": [],
+      "description": "Extra filter buttons that each show several groups: [{\"id\": \"first-half\", \"label\": \"First half\", \"groups\": [\"part-1\", \"part-2\"]}]. They come before the group buttons."
+    },
+    "groupFilterLabel": {
+      "default": "{title}",
+      "description": "Label of a group's filter button unless the group has its own filterLabel. Fields: {title} {range} (first–last badge of the group's sheets, or the group's range)."
+    },
+    "groupHeadings": {
+      "default": false,
+      "description": "Show each group's title (and its sheetNote, or else its note) as a heading above its sheets."
+    },
+    "filterAria": {
+      "default": "Filter sheets",
+      "description": "Accessible name of the filter button group."
     },
     "allLabel": {
       "default": "All",
