@@ -45,7 +45,8 @@ Each pattern is `{"prefix": "...", "deck": "..."}`. Text made of the prefix and 
 a range with an en dash or hyphen (`s12–14`, `s12-14`, `s12–s14`), becomes a chip for the deck named
 by `deck`, where `{page}` is the page id and `{prefix}` the prefix. A match must stand alone: `items2`,
 `s2x`, `s2(` and `a.s2` are left alone, as is text inside math (`.m`, `.mblock`, `.eq`), code, links,
-buttons, scripts and anything marked `data-sv-skip`.
+buttons, scripts and anything marked `data-sv-skip`. A citation element placed inside a line of math
+(`<div class="mblock">… <span class="ref">s12</span></div>`) is still scanned; math inside it is not.
 
 Several sources per page, e.g. a short and a long version of the same slides plus scanned handouts:
 ```json

@@ -50,8 +50,12 @@
     // [P03 ]s12[–[s]14] — not inside a word, not followed by a letter, digit or "("
     RX = new RegExp(ovr + '(?<![\\w.\\/])(' + alt + ')(\\d{1,4})(?:\\s*[\\u2013-]\\s*(?:\\2)?(\\d{1,4}))?(?![\\w(])', 'g');
   }
-  const SKIP = '.sv-chip, .sv-ref, .sv-pop, script, style, template, textarea, select, button, a, code, pre, .m, .mblock, .eq, [data-sv-skip]'
+  // never inside these, wherever they are
+  const SKIP = '.sv-chip, .sv-ref, .sv-pop, script, style, template, textarea, select, button, a, code, pre, [data-sv-skip]'
     + (O.skip ? ', ' + O.skip : '');
+  // maths text is not a citation, but a citation element placed in a line of maths still is
+  const MATH = '.m, .mblock, .eq';
+  const inMath = (t, host) => { const m = t.parentElement.closest(MATH); return !!m && (m === host || host.contains(m)); };
   const pageOf = (el) => {
     const c = el.closest && el.closest('[data-sv-page]');
     return c ? c.getAttribute('data-sv-page') : (document.body.dataset.page || '');
@@ -121,7 +125,7 @@
       const walker = document.createTreeWalker(host, NodeFilter.SHOW_TEXT);
       const nodes = [];
       let t;
-      while ((t = walker.nextNode())) if (!t.parentElement.closest(SKIP)) nodes.push(t);
+      while ((t = walker.nextNode())) if (!t.parentElement.closest(SKIP) && !inMath(t, host)) nodes.push(t);
       nodes.forEach((n) => chipText(n, host));
     });
   }

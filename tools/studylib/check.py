@@ -29,7 +29,7 @@ from .common import log
 BLOCK = {'div', 'section', 'article', 'details', 'summary', 'ul', 'ol', 'li', 'table', 'thead', 'tbody', 'tr',
          'td', 'th', 'nav', 'header', 'footer', 'main', 'figure', 'figcaption', 'blockquote', 'p', 'span',
          'button', 'label', 'select', 'template', 'svg', 'g', 'a', 'h1', 'h2', 'h3', 'h4', 'pre', 'code'}
-PLACEHOLDER = re.compile(r'%%\w+%%|\{\{\s*\w+\s*\}\}')
+PLACEHOLDER = re.compile(r'%%[A-Za-z_]\w*%%|\{\{\s*[A-Za-z_]\w*\s*\}\}')  # names start with a letter: {{137}} is maths
 _SCRIPTS = re.compile(r'<(script|style|template)\b.*?</\1>', re.S | re.I)
 
 

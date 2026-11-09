@@ -52,8 +52,43 @@ def _url(ctx, opts, page):
     return u
 
 
-def content(ctx, opts, page, html):
-    url = _url(ctx, opts, page)
+def head(ctx, opts, page):
+    """The page's source address, for the script that links references page scripts add later."""
+    url = _url(ctx, opts, page) if page else None
+    return f'<meta name="source-links-url" content="{ctx.esc(url)}">' if url else ''
+
+
+_SECTION = re.compile(r'<section\b(?P<attrs>[^>]*)>.*?</section>', re.S)
+_ATTR = re.compile(r'\b(data-sv-page|data-sheet-kind)="([^"]*)"')
+
+
+def finalize(ctx, opts, outputs):
+    """Link finished pages, so content other packages insert (summary sheets) is covered too.
+    A page that gathers other pages' content (the all-sheets page) marks each block with
+    data-sv-page (and data-sheet-kind); such a block links to its own page's source."""
+    files = {p['file']: p for p in ctx.ready_pages()}
+    by_id = {}
+    for p in ctx.ready_pages():
+        by_id.setdefault(p['id'], []).append(p)
+    for rel in list(outputs):
+        if not rel.endswith('.html'):
+            continue
+        page = files.get(rel)
+        if page:
+            outputs[rel] = _apply(ctx, opts, _url(ctx, opts, page), outputs[rel])
+            continue
+
+        def block(m):
+            a = dict(_ATTR.findall(m.group('attrs')))
+            cands = by_id.get(a.get('data-sv-page'), [])
+            if a.get('data-sheet-kind'):
+                cands = [p for p in cands if p['kind'] == a['data-sheet-kind']]
+            return _apply(ctx, opts, _url(ctx, opts, cands[0]), m.group(0)) if len(cands) == 1 else m.group(0)
+        if 'data-sv-page=' in outputs[rel]:
+            outputs[rel] = _SECTION.sub(block, outputs[rel])
+
+
+def _apply(ctx, opts, url, html):
     marker = opts.get('marker') or ''
     if not url or not marker or marker not in html:
         return html

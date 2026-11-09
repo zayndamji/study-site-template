@@ -8,6 +8,9 @@
   "css": [
     "source-links.css"
   ],
+  "js": [
+    "source-links.js"
+  ],
   "build": "build.py",
   "options": {
     "urlField": {

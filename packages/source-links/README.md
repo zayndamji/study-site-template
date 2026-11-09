@@ -42,8 +42,14 @@ Quotes and parenthetical asides in a reference are left out of the fragment; `st
 range. With `requireUrl`, `study.py check` reports pages that use the marker in a source line but
 have no address.
 
+Links are added to the finished page, so content that other packages insert (a summary sheet) is
+linked too. On a page that gathers several pages' content, such as the `summaries` all-sheets page,
+each `<section data-sv-page="…" data-sheet-kind="…">` links to the source of the page it came from.
+
 ## JavaScript API
-None.
+References that a page script writes after load (`el.textContent = "§ Heading"`) are linked at
+start-up and whenever `Study.enhance(el)` runs; `Study.sourceLinks.link(el)` does it directly. The
+script reads the page's address from `<meta name="source-links-url">`, which the build adds.
 
 ## Notes for migrating existing notes
 A script that turned "§ Heading" text into links from a hard-coded table of page → address becomes
