@@ -5,17 +5,49 @@
   "category": "sources",
   "version": "1.0.0",
   "requires": [],
-  "css": ["fidelity.css"],
-  "js": ["fidelity.js"],
+  "css": [
+    "fidelity.css"
+  ],
+  "js": [
+    "fidelity.js"
+  ],
   "build": "build.py",
   "options": {
-    "beyondLabel": { "default": "Beyond the source", "description": "Text of an empty inline <span class=\"beyond\"></span> tag." },
-    "beyondBlockLabel": { "default": "Beyond the source", "description": "Label added to a <div class=\"beyond-block\"> that has no .lbl of its own." },
-    "erratumLabel": { "default": "Erratum", "description": "Label of an <div class=\"erratum\"> box whose .lbl is empty or missing." },
-    "legend": { "default": false, "description": "Add a one-line legend explaining the markers at the top of every unit page. A page can opt out with front matter \"fidelityLegend\": false." },
-    "legendText": { "default": "Indented quotes are the source's exact wording. {beyond} marks material added beyond the source. {erratum} boxes correct a mistake in the source.", "description": "Legend text (HTML allowed). {beyond} and {erratum} become small samples of those markers." },
-    "legendLabel": { "default": "How to read these notes", "description": "Accessible name of the legend; also shown before it when legendShowLabel is true." },
-    "legendShowLabel": { "default": false, "description": "Show legendLabel as a visible prefix of the legend line." },
-    "legendKinds": { "default": null, "description": "Page kinds that get the legend (list of kind names); null = every kind." }
+    "beyondLabel": {
+      "default": "Beyond the source",
+      "description": "Text of an empty inline <span class=\"beyond\"></span> tag."
+    },
+    "beyondBlockLabel": {
+      "default": "Beyond the source",
+      "description": "Label added to a <div class=\"beyond-block\"> that has no .lbl of its own."
+    },
+    "erratumLabel": {
+      "default": "Erratum",
+      "description": "Label of an <div class=\"erratum\"> box whose .lbl is empty or missing."
+    },
+    "legend": {
+      "default": false,
+      "description": "Add a one-line legend explaining the markers at the top of every unit page. A page can opt out with front matter \"fidelityLegend\": false."
+    },
+    "legendText": {
+      "default": "Indented quotes are the source's exact wording. {beyond} marks material added beyond the source. {erratum} boxes correct a mistake in the source.",
+      "description": "Legend text (HTML allowed). {beyond} and {erratum} become small samples of those markers."
+    },
+    "legendLabel": {
+      "default": "How to read these notes",
+      "description": "Accessible name of the legend; also shown before it when legendShowLabel is true."
+    },
+    "legendShowLabel": {
+      "default": false,
+      "description": "Show legendLabel as a visible prefix of the legend line."
+    },
+    "legendKinds": {
+      "default": null,
+      "description": "Page kinds that get the legend (list of kind names); null = every kind."
+    },
+    "quoteAliases": {
+      "default": [],
+      "description": "Other class names that mark verbatim quotes, e.g. [\"slide\"]: <blockquote> and <q> elements with one of them are styled as quotes too (they also get the quote class), so existing markup needs no renaming."
+    }
   }
 }

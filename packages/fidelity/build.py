@@ -33,6 +33,31 @@ def fill_labels(html, opts, esc):
     return html
 
 
+_ALIAS_TAG = re.compile(r'<(blockquote|q)\b([^>]*?)\bclass="([^"]*)"', re.I)
+
+
+def add_quote_class(html, aliases):
+    """Give <blockquote>/<q> elements that carry an alias class the quote class as well."""
+    if not aliases:
+        return html
+    names = set(aliases)
+
+    def fix(m):
+        classes = m.group(3).split()
+        if 'quote' in classes or not names.intersection(classes):
+            return m.group(0)
+        return f'<{m.group(1)}{m.group(2)}class="{m.group(3)} quote"'
+    return _ALIAS_TAG.sub(fix, html)
+
+
+def configure(ctx, opts):
+    raw = opts.get('quoteAliases') or []
+    good = [a for a in raw if isinstance(a, str) and re.match(r'^[A-Za-z_][\w-]*$', a)]
+    if len(good) != len(raw):
+        ctx.warn('fidelity: quoteAliases must be a list of CSS class names; others ignored')
+    opts['quoteAliases'] = good
+
+
 def legend_html(ctx, opts):
     esc = ctx.esc
     samples = {
@@ -48,6 +73,7 @@ def legend_html(ctx, opts):
 
 def content(ctx, opts, page, html):
     html = fill_labels(html, opts, ctx.esc)
+    html = add_quote_class(html, opts.get('quoteAliases'))
     kinds = opts.get('legendKinds')
     if (opts.get('legend') and (page.get('meta') or {}).get('fidelityLegend', True) is not False
             and (kinds is None or page.get('kind') in kinds)):

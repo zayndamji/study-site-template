@@ -15,6 +15,7 @@
       all(root, 'span.beyond').forEach((el) => { if (!el.textContent.trim() && !el.children.length && O.beyondLabel) el.textContent = O.beyondLabel; });
       all(root, '.beyond-block').forEach((el) => label(el, O.beyondBlockLabel));
       all(root, '.erratum').forEach((el) => label(el, O.erratumLabel));
+      (O.quoteAliases || []).forEach((c) => all(root, 'blockquote.' + c + ', q.' + c).forEach((el) => el.classList.add('quote')));
     },
   });
 })();

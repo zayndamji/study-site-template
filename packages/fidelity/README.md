@@ -31,6 +31,7 @@ With the legend: `"fidelity": { "legend": true }`.
 | `legendLabel` | `"How to read these notes"` | Accessible name of the legend |
 | `legendShowLabel` | `false` | Also show `legendLabel` at the start of the line |
 | `legendKinds` | `null` | Page kinds that get the legend; `null` = all |
+| `quoteAliases` | `[]` | Other class names for verbatim quotes, e.g. `["slide"]`: `blockquote.slide` and `q.slide` look and count as quotes without renaming |
 
 ## Markup
 ```html
