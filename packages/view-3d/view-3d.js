@@ -138,6 +138,5 @@
   }
 
   Study.view3d = { View, gramSchmidt };
-  Object.assign(Study.legacy = Study.legacy || {}, { View3D: View, gramSchmidtFloat: gramSchmidt });
   Study.define('view-3d', {});
 })();

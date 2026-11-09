@@ -68,7 +68,7 @@
       const grp = el('g', { class: cls || '' }, g || P.fg);
       const ux = (x2 - x1) / L, uy = (y2 - y1) / L, s = Math.min(num(opts.arrowHead, 11), L * 0.5);
       // the class goes on the <g> and on both parts, so page CSS that targets `line.cls` or
-      // `polygon.cls` (as older hand-rolled helpers did) still colours the arrow
+      // `polygon.cls` also colours the arrow
       el('line', { x1, y1, x2: x2 - ux * s * 0.8, y2: y2 - uy * s * 0.8, class: cls || '' }, grp);
       el('polygon', { class: ('plot-head ' + (cls || '')).trim(), points: [x2, y2, x2 - ux * s - uy * s * 0.45, y2 - uy * s + ux * s * 0.45, x2 - ux * s + uy * s * 0.45, y2 - uy * s - ux * s * 0.45].join(',') }, grp);
       return grp;
@@ -148,6 +148,5 @@
   }
 
   Study.plot = { Plane, drag, snap: M.snap, clamp: M.clamp };
-  Object.assign(Study.legacy = Study.legacy || {}, { Plane, drag });
   Study.define('plot-2d', {});
 })();

@@ -114,9 +114,5 @@
     /** Un-press a row's buttons and show text (optional) as its note. */
     clear: (container, text) => { const hd = handles.get(byId(container)); if (hd) hd.clear(text); },
   };
-  // old-style helper: presetButtons(box, list, onPick) marks the first preset without calling onPick
-  Object.assign(Study.legacy = Study.legacy || {}, {
-    presetButtons: (box, list, onPick) => mount(box, list, onPick, { note: false, selectFirst: true, pickFirst: false }),
-  });
   Study.define('widget-presets', { enhance });
 })();

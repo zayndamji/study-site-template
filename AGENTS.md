@@ -7,7 +7,7 @@ You are probably here to do one of two things. Find yours, then read only what i
 1. `python3 tools/study.py new <dir> --title "<title>" --noun <Lecture|Chapter|Week|Unit>`
 2. Read `<dir>/AGENTS.md` (the site's own instructions — they travel with the site), then
    [docs/configuration.md](docs/configuration.md) and [docs/components.md](docs/components.md).
-3. Look at working markup: `demo/` is a complete real-content site using every package but `legacy-globals`; `python3 tools/study.py new /tmp/x --demo` makes one placeholder page per package.
+3. Look at working markup: `demo/` is a complete real-content site using every package; `python3 tools/study.py new /tmp/x --demo` makes one placeholder page per package.
 4. Pick packages: `python3 tools/study.py packages`, then `info <name>` and the package README.
 5. Follow [docs/agent-workflow.md](docs/agent-workflow.md): recon → report and ask → one page →
    iterate with the human → batch.

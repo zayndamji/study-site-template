@@ -61,11 +61,7 @@
     },
     "strict": {
       "default": true,
-      "description": "true: fractions throw a RangeError on a zero denominator, division by zero or values past 2^53. false: no exceptions, like typical hand-rolled helpers (a zero denominator gives d = 0, gcd(0, 0) = 1)."
-    },
-    "globalAlias": {
-      "default": null,
-      "description": "Also expose the flat helper names (F, fadd, fmt, mat, …, plus Plane, View3D, presetButtons from the other widget packages) as window[globalAlias], for page scripts that take their helpers from one global object. null = off."
+      "description": "true: fractions throw a RangeError on a zero denominator, division by zero or values past 2^53. false: no exceptions (a zero denominator gives d = 0, gcd(0, 0) = 1), for widgets that should never stop on bad input."
     }
   }
 }

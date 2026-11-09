@@ -36,8 +36,7 @@ makes Unicode maths (no TeX engine) easier to read. The amount is an option.
 | `unicodeMinus` | `true` | Print negatives with − (U+2212) instead of a hyphen. |
 | `infinity` | `"∞"` | What `fmt()` prints for ±Infinity. |
 | `notANumber` | `"—"` | What `fmt()` prints for NaN. |
-| `strict` | `true` | Fractions throw on a zero denominator, division by zero or values past 2^53. `false` = no exceptions (a zero denominator gives `d = 0`, `gcd(0, 0) = 1`), like typical hand-rolled helpers. |
-| `globalAlias` | `null` | Also expose the flat helper names (below) as `window[globalAlias]`, for page scripts that take their helpers from one global object. |
+| `strict` | `true` | Fractions throw on a zero denominator, division by zero or values past 2^53. `false` = no exceptions (a zero denominator gives `d = 0`, `gcd(0, 0) = 1`), for widgets that should never stop on bad input. |
 
 The four spacing options are written by the build into a small `<style>` in each page's
 `<head>` as CSS variables (`--mk-letter-spacing`, `--mk-word-spacing`,
@@ -101,10 +100,3 @@ out.innerHTML = 'A = ' + mat([[F(1, 2), 0], [0, 2]]) + ', x = ' + col([1, -1]);
 
 **SVG**: `svgEl(tag, attrs, parent)` creates an SVG element; `NS` is the SVG namespace; `$(id)`
 is `document.getElementById`.
-
-**Flat helpers** (`Study.legacy`, and `window[globalAlias]` when that option is set): one object
-with short names for scripts that prefer them: `NS $ el minus fmt gcd lcm F snap clamp fadd fsub
-fmul fdiv fneg fzero fval fs parseF fsign vdot vsub vscale vzero mv mm det2 inv2 mat col`, plus
-`Plane drag` (plot-2d), `View3D gramSchmidtFloat` (view-3d) and `presetButtons` (widget-presets)
-when those packages are on. `inv2` returns `null` for a singular matrix; with `strict: false`, `F`
-never throws (a zero denominator gives `d = 0`) and `gcd(0, 0)` is 1.

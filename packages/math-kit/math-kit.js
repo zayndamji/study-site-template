@@ -7,7 +7,7 @@
   const NS = 'http://www.w3.org/2000/svg';
   const MINUS = opts.unicodeMinus === false ? '-' : '−';
   const BRACKETS = { square: 'mat-square', round: 'mat-round', bar: 'mat-bar', none: 'mat-none', soft: 'mat-soft' };
-  // strict: false keeps the forgiving behaviour of older hand-rolled helpers (no exceptions)
+  // strict: false never throws (for widgets that should not stop on bad input)
   const STRICT = opts.strict !== false;
 
   // ---------- DOM ----------
@@ -192,21 +192,6 @@
     vec, m2, mat, col, show,
   };
 
-  // ---------- flat helper names (Study.legacy, optionally window[globalAlias]) ----------
-  // Other widget packages add their own names (Plane, drag, View3D, presetButtons, …)
-  // to the same shared object, whichever order the packages load in.
-  const legacy = Study.legacy = Study.legacy || {};
-  Object.assign(legacy, {
-    NS, $, el: svgEl, minus, fmt, gcd, lcm, F, snap, clamp,
-    fadd: add, fsub: sub, fmul: mul, fdiv: div, fneg: neg, fzero: isZero, fval: value, fs: str, parseF: parse, fsign: sign,
-    vdot: vec.dot, vsub: vec.sub, vscale: vec.scale, vzero: vec.isZero,
-    mv: m2.mv, mm: m2.mm, det2: m2.det, inv2: m2.inv, mat, col,
-  });
-  const alias = opts.globalAlias;
-  if (typeof alias === 'string' && alias) {
-    if (alias in window && window[alias] !== legacy) console.warn('[study] math-kit: window.' + alias + ' already exists; globalAlias not set');
-    else window[alias] = legacy;
-  }
 
   Study.define('math-kit', {});
 })();
