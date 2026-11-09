@@ -2,11 +2,11 @@
 """study — build, check and scaffold study sites made from this template.
 
   python3 tools/study.py new <dir> [--title T] [--noun Chapter] [--demo]   scaffold a new site
-  python3 tools/study.py build [site_dir] [--force]                       build site_dir/dist
-  python3 tools/study.py check [site_dir] [--no-build]                     build, then run every check
+  python3 tools/study.py build [site_dir] [--force] [--variant V|--all]  build site_dir/dist (and variants)
+  python3 tools/study.py check [site_dir] [--no-build] [--variant V|--all] build, then run every check
   python3 tools/study.py packages [--json|--check]                         list (or validate) packages
   python3 tools/study.py info <package>                                    show one package's options
-  python3 tools/study.py serve [site_dir] [--port 8000]                    serve the built site locally
+  python3 tools/study.py serve [site_dir] [--port 8000] [--variant V]      serve the built site locally
 
 Only the Python 3.9+ standard library is required (node is optional, used by `check` to
 syntax-check scripts).
@@ -23,15 +23,34 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from studylib.common import PACKAGES_DIR, StudyError, read_package_meta  # noqa: E402
 
 
+def _variants(a):
+    """The builds a command covers: the main one, one named variant, or (--all) every one."""
+    if not a.all:
+        return [a.variant]
+    from studylib.common import load_config
+    return [None] + load_config(Path(a.site))['variant']['all']
+
+
 def cmd_build(a):
     from studylib.build import build
-    ctx = build(Path(a.site), force=a.force, out_dir=a.out)
-    return 1 if (a.strict and ctx.warnings) else 0
+    if a.out and a.all:
+        raise StudyError('--out builds one variant; leave out --all')
+    status = 0
+    for v in _variants(a):
+        ctx = build(Path(a.site), force=a.force, out_dir=a.out, variant=v)
+        if a.strict and ctx.warnings:
+            status = 1
+    return status
 
 
 def cmd_check(a):
     from studylib.check import run_checks
-    return run_checks(Path(a.site), rebuild=not a.no_build, page=a.page)
+    status = 0
+    for v in _variants(a):
+        if a.all:
+            print(f'== {v or "default"} ==')
+        status = max(status, run_checks(Path(a.site), rebuild=not a.no_build, page=a.page, variant=v))
+    return status
 
 
 def cmd_new(a):
@@ -114,7 +133,7 @@ def cmd_serve(a):
     import http.server
     from studylib.common import load_config
     site = Path(a.site).resolve()
-    out = site / load_config(site)['build']['outDir']
+    out = site / load_config(site, a.variant)['build']['outDir']
     handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(out))
     print(f'serving {out} at http://localhost:{a.port}/  (Ctrl-C to stop)')
     http.server.ThreadingHTTPServer(('127.0.0.1', a.port), handler).serve_forever()
@@ -128,11 +147,15 @@ def main(argv=None):
     b.add_argument('--force', action='store_true', help='overwrite an output folder this tool did not create')
     b.add_argument('--strict', action='store_true', help='exit non-zero on warnings')
     b.add_argument('--out', default=None, help='output folder (default: build.outDir in site.json)')
+    b.add_argument('--variant', default=None, help='build this entry of site.json "variants" (into its own folder)')
+    b.add_argument('--all', action='store_true', help='build the main site and every variant')
     b.set_defaults(fn=cmd_build)
     c = sub.add_parser('check', help='build and verify a site')
     c.add_argument('site', nargs='?', default='.')
     c.add_argument('--no-build', action='store_true', help="check the existing output folder instead of a fresh temporary build")
     c.add_argument('--page', default=None, help='only report problems in this page (by id)')
+    c.add_argument('--variant', default=None, help='check this entry of site.json "variants"')
+    c.add_argument('--all', action='store_true', help='check the main site and every variant')
     c.set_defaults(fn=cmd_check)
     n = sub.add_parser('new', help='scaffold a new site')
     n.add_argument('dir')
@@ -152,6 +175,7 @@ def main(argv=None):
     s = sub.add_parser('serve', help='serve the built site')
     s.add_argument('site', nargs='?', default='.')
     s.add_argument('--port', type=int, default=8000)
+    s.add_argument('--variant', default=None, help="serve this variant's output folder")
     s.set_defaults(fn=cmd_serve)
     a = ap.parse_args(argv)
     try:

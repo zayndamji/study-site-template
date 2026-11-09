@@ -12,6 +12,7 @@ Checks (each problem is printed as `file: message`; exit status 1 if any):
   - content files that no page uses
   - unfilled placeholders (%%name%% or {{name}}) left in page text
   - each package's own check() hook
+With a variant (site.json "variants"), the variant's build is checked: its excluded files count as missing.
 """
 from __future__ import annotations
 
@@ -23,7 +24,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
-from .build import Ctx, build
+from .build import Ctx, build, excluded
 from .common import log
 
 BLOCK = {'div', 'section', 'article', 'details', 'summary', 'ul', 'ol', 'li', 'table', 'thead', 'tbody', 'tr',
@@ -139,24 +140,24 @@ def _node_check(code: str, label: str):
     return None
 
 
-def run_checks(site_dir: Path, rebuild=True, page=None) -> int:
+def run_checks(site_dir: Path, rebuild=True, page=None, variant=None) -> int:
     """page: only report problems in the output file(s) of this page id (the whole site is still
     built, so links into other pages are checked)."""
     tmp = None
     try:
         if rebuild:
             tmp = tempfile.mkdtemp(prefix='study-check-')
-        return _run(site_dir, tmp, page)
+        return _run(site_dir, tmp, page, variant)
     finally:
         if tmp:
             shutil.rmtree(tmp, ignore_errors=True)
 
 
-def _run(site_dir: Path, tmp, page) -> int:
+def _run(site_dir: Path, tmp, page, variant=None) -> int:
     if tmp:
-        ctx = build(site_dir, quiet=True, out_dir=tmp, copy_static=False)
+        ctx = build(site_dir, quiet=True, out_dir=tmp, copy_static=False, variant=variant)
     else:
-        ctx = Ctx(site_dir)
+        ctx = Ctx(site_dir, variant=variant)
         for f in ctx.out_dir.rglob('*.html'):
             ctx.outputs[str(f.relative_to(ctx.out_dir))] = f.read_text(encoding='utf-8')
     out = ctx.out_dir
@@ -222,7 +223,8 @@ def _run(site_dir: Path, tmp, page) -> int:
                 continue
             target = str((base / unquote(u.path)).as_posix()) if u.path else rel
             target = re.sub(r'(^|/)\./', r'\1', target)
-            exists = target in ctx.outputs or (out / target).exists() or (ctx.static_dir / target).exists()
+            exists = target in ctx.outputs or (out / target).exists() or (
+                (ctx.static_dir / target).exists() and not excluded(ctx, target))
             if u.path and not exists:
                 problems.append(f'{rel}: broken link/asset "{href}"')
                 continue
@@ -235,7 +237,7 @@ def _run(site_dir: Path, tmp, page) -> int:
         if r:
             problems.append(r)
     # unused content files
-    used = {ctx.content_dir / p['source'] for p in ctx.pages}
+    used = {ctx.content_dir / src for src in [p['source'] for p in ctx.pages] + ctx.config['variant'].get('skipped', [])}
     pk_dirs = {ctx.content_dir / (p.options.get('dir') or '') for p in ctx.packages if p.options.get('dir')}
     for kd in {(ctx.content_dir / p['source']).parent for p in ctx.pages}:
         if kd.exists() and kd not in pk_dirs:

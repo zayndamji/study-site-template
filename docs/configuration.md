@@ -91,9 +91,13 @@ page fields.
       "status": "ready",                  // ready | planned | anything else (only ready is built)
       "statusLabel": "Draft",             // badge text: coming-later (planned pages), preview-pages (ready ones)
       "statusNote": "…",                  // preview-pages: this page's banner text
-      "file": "…", "source": "…", "storageKey": "…"   // per-page overrides of the kind templates
+      "file": "…", "source": "…", "storageKey": "…",  // per-page overrides of the kind templates
+      "only": ["default"], "except": ["public"]       // which builds include the page (see Variants)
     }
   ],
+  "variants": {                           // other builds of the same sources (see Variants)
+    "public": { "outDir": "dist-public", "config": {}, "exclude": [] }
+  },
   "packages": {
     "summaries": {},                      // {} = defaults; list options with `study.py info <name>`
     "cite-pills": { "pageLabel": "p. {page}" }
@@ -150,6 +154,39 @@ multi-file page.
   copied only when files change.
 - Readers' progress is stored per origin (browser storage): moving the site to another address
   starts everyone afresh.
+- To keep a hosted site out of search engines, use the `privacy` package (`noindex`, on by default).
+
+## Variants
+
+One set of sources can build more than one site: for example the full notes for yourself, and a
+public copy without private material (source images you may not share, personal pages). The main
+build is called `default`. Each entry of `variants` is another build:
+
+```jsonc
+"variants": {
+  "public": {
+    "outDir": "dist-public",              // default dist-<name>
+    "config": {                           // merged over site.json for this build
+      "packages": { "image-viewer": false },   // false leaves a package out
+      "home": { "after": "<p>Public edition.</p>" }
+    },
+    "exclude": ["assets/private/**"]      // output paths (globs) left out of this build
+  }
+}
+```
+
+Mark what belongs to only some builds:
+
+- **Pages:** `"except": ["public"]` (or `"only": ["default"]`) on the page in `pages` leaves it out of
+  the other builds entirely: no file, no home row, no picker entry, no Prev/Next link.
+- **Parts of a page:** any element with `data-except="public"` or `data-only="default"` (names
+  separated by spaces) is removed from the builds it doesn't belong to. This works in content files,
+  summary sheets and `home.after`; build hooks see the full HTML, and the removal happens last.
+- **Static files:** `exclude` globs.
+
+`study.py build --variant public` builds one variant, `build --all` builds the main site and every
+variant, and `check --variant public` / `check --all` checks them. In a check, an excluded file
+counts as missing, so a link to it is reported.
 
 ## Several kinds
 

@@ -1,13 +1,15 @@
 """Build a site: site.json + content/ + packages -> a static folder (default dist/)."""
 from __future__ import annotations
 
+import fnmatch
 import hashlib
 import json
 import re
 import shutil
+from html.parser import HTMLParser
 from pathlib import Path
 
-from .common import (CORE_DIR, StudyError, esc, fmt, load_config, log, normalize_kinds,
+from .common import (CORE_DIR, StudyError, esc, fmt, in_variant, load_config, log, normalize_kinds,
                      normalize_pages, parse_content, resolve_packages)
 
 MARKER = '.study-build'
@@ -18,10 +20,11 @@ SEARCH_ICON = ('<svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="tru
 class Ctx:
     """Everything a build hook can see. Passed as the first argument to every hook."""
 
-    def __init__(self, site_dir: Path, strict=False):
+    def __init__(self, site_dir: Path, strict=False, variant=None):
         self.site_dir = site_dir.resolve()
         self.warnings, self.strict = [], strict
-        self.config = load_config(self.site_dir)
+        self.config = load_config(self.site_dir, variant)
+        self.variant = self.config['variant']['name']   # "default", or the "variants" entry being built
         self.kinds = normalize_kinds(self.config)
         self.packages = resolve_packages(self.config, self.site_dir, self.warn)
         for p in self.packages:
@@ -492,6 +495,75 @@ def default_row(ctx: Ctx, p, extra_class='', state='', flag=''):
             f'<span class="state">{state}</span><span class="sub">{esc(p["description"])}</span></{tag}></li>')
 
 
+# --------------------------------------------------------------------------- variants
+class _Spans(HTMLParser):
+    """Finds the source spans of elements whose data-only / data-except leave them out of a variant."""
+    VOID = {'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr'}
+
+    def __init__(self, text, variant):
+        super().__init__(convert_charrefs=False)
+        self.text, self.variant = text, variant
+        self.starts = [0]
+        for line in text.splitlines(keepends=True):
+            self.starts.append(self.starts[-1] + len(line))
+        self.stack, self.spans = [], []
+
+    def _pos(self):
+        line, col = self.getpos()
+        return self.starts[line - 1] + col
+
+    def handle_starttag(self, tag, attrs):
+        a = dict(attrs)
+        drop = ('data-only' in a or 'data-except' in a) and not in_variant(a.get('data-only'), a.get('data-except'), self.variant)
+        start = self._pos()
+        if tag in self.VOID:
+            if drop:
+                self.spans.append((start, start + len(self.get_starttag_text())))
+            return
+        self.stack.append((tag, start if drop else None))
+
+    def handle_startendtag(self, tag, attrs):
+        a = dict(attrs)
+        if ('data-only' in a or 'data-except' in a) and not in_variant(a.get('data-only'), a.get('data-except'), self.variant):
+            start = self._pos()
+            self.spans.append((start, start + len(self.get_starttag_text())))
+
+    def handle_endtag(self, tag):
+        if not any(t == tag for t, _ in self.stack):
+            return
+        end = self.text.find('>', self._pos()) + 1
+        while self.stack:
+            t, start = self.stack.pop()
+            if start is not None:
+                self.spans.append((start, end))
+            if t == tag:
+                break
+
+
+def strip_variant(html: str, variant: str) -> str:
+    """Remove every element marked data-only="…" / data-except="…" that does not belong in `variant`."""
+    if 'data-only' not in html and 'data-except' not in html:
+        return html
+    p = _Spans(html, variant)
+    p.feed(html)
+    p.close()
+    spans = sorted(p.spans)
+    out, at = [], 0
+    for a, b in spans:
+        if a < at:          # inside an element already removed
+            continue
+        out.append(html[at:a])
+        at = b
+    out.append(html[at:])
+    return ''.join(out)
+
+
+def excluded(ctx: Ctx, rel: str) -> bool:
+    """Whether an output path matches the variant's "exclude" globs (e.g. "assets/private/**")."""
+    return any(fnmatch.fnmatchcase(rel, g) or (g.endswith('/**') and rel.startswith(g[:-2]))
+               for g in ctx.config['variant']['exclude'])
+
+
 # --------------------------------------------------------------------------- driver
 def _write_if_changed(path: Path, data: bytes):
     if path.exists() and path.stat().st_size == len(data) and path.read_bytes() == data:
@@ -520,6 +592,8 @@ def write_outputs(ctx: Ctx, force=False, copy_static=True):
             if src.is_dir() or src.name == '.DS_Store':
                 continue
             rel = src.relative_to(ctx.static_dir).as_posix()
+            if excluded(ctx, rel):
+                continue
             keep.add(rel)
             dst = out / rel
             st = src.stat()
@@ -545,10 +619,11 @@ def write_outputs(ctx: Ctx, force=False, copy_static=True):
     (out / MARKER).write_text('Generated by study-site-template. Do not edit files here; edit the site sources and rebuild.\n')
 
 
-def build(site_dir: Path, force=False, quiet=False, out_dir=None, copy_static=True) -> Ctx:
+def build(site_dir: Path, force=False, quiet=False, out_dir=None, copy_static=True, variant=None) -> Ctx:
     """Build site_dir. out_dir overrides build.outDir; copy_static=False leaves static/ out
-    (the checker uses that and looks static files up in the site instead)."""
-    ctx = Ctx(site_dir)
+    (the checker uses that and looks static files up in the site instead). variant builds an entry
+    of site.json "variants" into its own folder."""
+    ctx = Ctx(site_dir, variant=variant)
     if out_dir is not None:
         ctx.out_dir = Path(out_dir).resolve()
     bundle(ctx)
@@ -562,7 +637,15 @@ def build(site_dir: Path, force=False, quiet=False, out_dir=None, copy_static=Tr
         fn = p.hook('finalize')
         if fn:
             fn(ctx, p.options, ctx.outputs)
+    for rel in list(ctx.outputs):
+        if excluded(ctx, rel):
+            del ctx.outputs[rel]
+        elif rel.endswith('.html'):
+            ctx.outputs[rel] = strip_variant(ctx.outputs[rel], ctx.variant)
+    for rel in [r for r in ctx.extra_assets if excluded(ctx, r)]:
+        del ctx.extra_assets[rel]
     write_outputs(ctx, force=force, copy_static=copy_static)
     if not quiet:
-        log(f'built {len(ctx.outputs)} pages with {len(ctx.packages)} packages -> {ctx.out_dir}')
+        name = '' if ctx.variant == 'default' else f' (variant {ctx.variant})'
+        log(f'built {len(ctx.outputs)} pages with {len(ctx.packages)} packages{name} -> {ctx.out_dir}')
     return ctx

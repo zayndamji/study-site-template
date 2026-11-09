@@ -141,7 +141,12 @@ def fmt(template, **vals) -> str:
 
 
 # --------------------------------------------------------------------------- config
-def load_config(site_dir: Path) -> dict:
+DEFAULT_VARIANT = 'default'
+
+
+def load_config(site_dir: Path, variant: str | None = None) -> dict:
+    """Read site.json with the defaults filled in. `variant` names an entry of "variants": its
+    "config" is merged over site.json and its "outDir" (default dist-<name>) becomes build.outDir."""
     p = site_dir / 'site.json'
     if not p.exists():
         raise StudyError(f'No site.json in {site_dir}. Create one with: python3 tools/study.py new <dir>')
@@ -151,7 +156,19 @@ def load_config(site_dir: Path) -> dict:
         raise StudyError(f'site.json is not valid JSON: {e}') from e
     raw.pop('$schema', None)
     raw.pop('$comment', None)
+    variants = raw.pop('variants', None) or {}
+    name = variant or DEFAULT_VARIANT
+    v = {}
+    if variant and variant != DEFAULT_VARIANT:
+        if variant not in variants:
+            known = ', '.join(variants) or 'none'
+            raise StudyError(f'unknown variant "{variant}" (site.json "variants": {known})')
+        v = variants[variant] or {}
+        raw = deep_merge(raw, v.get('config') or {})
+        raw.setdefault('build', {})
+        raw['build']['outDir'] = v.get('outDir') or f'dist-{variant}'
     cfg = deep_merge(DEFAULTS, raw)
+    cfg['variant'] = {'name': name, 'exclude': list(v.get('exclude') or []), 'all': list(variants)}
     if not cfg['site']['brand'].get('text'):
         cfg['site']['brand']['text'] = cfg['site']['title']
     return cfg
@@ -179,6 +196,7 @@ def normalize_pages(cfg: dict, warn) -> list:
     default_kind = next(iter(kinds))
     seen = set()
     pages = []
+    variant = (cfg.get('variant') or {}).get('name', DEFAULT_VARIANT)
     for i, raw in enumerate(cfg.get('pages') or []):
         if 'id' not in raw:
             raise StudyError(f'pages[{i}] has no "id"')
@@ -207,11 +225,29 @@ def normalize_pages(cfg: dict, warn) -> list:
         e['badge'] = str(e.get('badge') or e['id'])   # display number, e.g. "A2"; defaults to the id
         e['index'] = i
         pages.append(e)
+    # pages marked "only" / "except" that leave this variant out are not built (listed for the checker)
+    skipped = [e for e in pages if not in_variant(e.get('only'), e.get('except'), variant)]
+    if 'variant' in cfg:
+        cfg['variant']['skipped'] = [e['source'] for e in skipped]
+    pages = [e for e in pages if e not in skipped]
     groups = {g['id'] for g in cfg.get('groups') or []}
     for e in pages:
         if e['group'] and groups and e['group'] not in groups:
             warn(f'page {e["id"]}: group "{e["group"]}" is not listed in "groups"')
     return pages
+
+
+def _names(v):
+    if not v:
+        return []
+    return v.split() if isinstance(v, str) else [str(x) for x in v]
+
+
+def in_variant(only, exclude, variant: str) -> bool:
+    """Whether something marked only=/except= (a list or a space-separated string of variant
+    names; the main build is "default") belongs in this variant's build."""
+    o, e = _names(only), _names(exclude)
+    return (not o or variant in o) and variant not in e
 
 
 # --------------------------------------------------------------------------- packages

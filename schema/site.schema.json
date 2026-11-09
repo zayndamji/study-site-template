@@ -36,7 +36,8 @@
             "math": { "type": ["string", "null"] }, "mono": { "type": ["string", "null"] }
           }
         },
-        "tokens": {
+        "variantNames": { "type": ["string", "array"], "items": { "type": "string" }, "description": "Variant names (the main build is \"default\"), as a list or space-separated." },
+    "tokens": {
           "type": "object",
           "properties": {
             "all": { "$ref": "#/$defs/tokens" }, "light": { "$ref": "#/$defs/tokens" }, "dark": { "$ref": "#/$defs/tokens" }
@@ -91,7 +92,20 @@
           "id": { "type": ["string", "integer"] }, "badge": { "type": "string" }, "noun": { "type": "string" }, "short": { "type": "string" }, "kind": { "type": "string" }, "title": { "type": "string" },
           "label": { "type": "string" }, "description": { "type": "string" }, "keywords": { "type": "string" },
           "group": { "type": ["string", "null"] }, "status": { "type": "string" }, "statusLabel": { "type": "string" }, "statusNote": { "type": "string" },
-          "file": { "type": "string" }, "source": { "type": "string" }, "storageKey": { "type": "string" }
+          "file": { "type": "string" }, "source": { "type": "string" }, "storageKey": { "type": "string" },
+          "only": { "$ref": "#/$defs/variantNames" }, "except": { "$ref": "#/$defs/variantNames" }
+        }
+      }
+    },
+    "variants": {
+      "type": "object",
+      "description": "Other builds of the same site, e.g. a public copy without private material. Build with `study.py build --variant <name>` or `--all`.",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "outDir": { "type": "string", "description": "Output folder; default dist-<name>." },
+          "config": { "type": "object", "description": "Merged over site.json for this build (objects merge, lists and values replace; a package set to false is left out)." },
+          "exclude": { "type": "array", "items": { "type": "string" }, "description": "Output paths (globs) left out, e.g. \"assets/private/**\"." }
         }
       }
     },
