@@ -33,6 +33,16 @@
       "description": "Row and column gap between matrix entries (CSS gap value).",
       "private": true
     },
+    "eqAlign": {
+      "default": "center",
+      "description": "Alignment of .eq equation lines: \"center\" or \"left\" (one line can use .eq.center or .eq.left).",
+      "private": true
+    },
+    "eqLineHeight": {
+      "default": "normal",
+      "description": "Line height of .eq lines (CSS line-height), e.g. \"2.4\" for tall fractions and matrices.",
+      "private": true
+    },
     "bracket": {
       "default": "square",
       "description": "Default bracket style for every matrix, hand-written or drawn by Study.math.mat() and col(): \"square\", \"round\", \"bar\" (determinant bars), \"soft\" (rounded side bars) or \"none\". A matrix's own mat-* class overrides it."

@@ -30,6 +30,8 @@ makes Unicode maths (no TeX engine) easier to read. The amount is an option.
 | `wordSpacing` | `"0.14em"` | Extra word spacing for the same elements; `"normal"` turns it off. |
 | `blockLineHeight` | `"2"` | Line height of `.mblock` display maths. |
 | `matrixGap` | `"3px 16px"` | Row and column gap between matrix entries. |
+| `eqAlign` | `"center"` | Alignment of `.eq` lines (`"left"` or `"center"`); `.eq.center` / `.eq.left` for one line. |
+| `eqLineHeight` | `"normal"` | Line height of `.eq` lines, e.g. `"2.4"` for tall fractions and matrices. |
 | `bracket` | `"square"` | Default brackets for every matrix (hand-written or from `mat()` / `col()`): `"square"`, `"round"`, `"bar"`, `"soft"` (rounded side bars) or `"none"`. |
 | `unicodeMinus` | `true` | Print negatives with − (U+2212) instead of a hyphen. |
 | `infinity` | `"∞"` | What `fmt()` prints for ±Infinity. |

@@ -1,0 +1,45 @@
+<section class="note" id="wk-layout">
+  <h2><span class="n">01</span> Building blocks for widgets</h2>
+  <div class="widget" id="wk-demo">
+    <div class="lbl">Try it · Mixing two paints</div>
+    <p class="how">Move the sliders; the readout and the tags update.</p>
+    <div class="two">
+      <div>
+        <div class="sliders">
+          <label class="field">blue parts <input type="range" id="wk-a" min="0" max="10" value="3"></label>
+          <label class="field">yellow parts <input type="range" id="wk-b" min="0" max="10" value="5"></label>
+          <label class="field">batches <input type="range" id="wk-n" min="1" max="5" value="2"></label>
+        </div>
+        <div class="controls"><span class="seg"><button class="btn" type="button" aria-pressed="true" data-unit="cups">cups</button><button class="btn" type="button" aria-pressed="false" data-unit="litres">litres</button></span><span class="status" id="wk-status"></span></div>
+      </div>
+      <div class="readout" id="wk-out"></div>
+    </div>
+    <p class="legend"><span class="c1">■ blue</span> <span class="c4">■ yellow</span> <span>mixed: green</span></p>
+    <p class="callout">Doubling both parts keeps the colour: only the ratio matters.</p>
+  </div>
+  <div class="methods">
+    <div class="method"><h4>By fractions</h4><ol class="calc"><li>blue share = 3 / (3 + 5)</li><li>= 3/8</li></ol></div>
+    <div class="method"><h4>By percent</h4><ol class="calc"><li>3 ÷ 8 = 0.375</li><li>= 37.5 %</li></ol></div>
+  </div>
+  <script>
+    (function () {
+      const $ = (id) => document.getElementById(id);
+      let unit = 'cups';
+      function render() {
+        const a = +$('wk-a').value, b = +$('wk-b').value, n = +$('wk-n').value;
+        const share = a + b ? a / (a + b) : 0;
+        const tag = share > 0.6 ? '<span class="tag no">too blue</span>' : share < 0.3 ? '<span class="tag warn">very yellow</span>' : '<span class="tag ok">balanced</span>';
+        $('wk-out').innerHTML = '<div class="row"><span class="k">total</span>' + (a + b) * n + ' ' + unit + '</div>' +
+          '<div class="row"><span class="k">blue share</span>' + Math.round(share * 100) + ' % ' + tag + '</div>';
+        $('wk-status').textContent = n + (n === 1 ? ' batch' : ' batches');
+      }
+      ['wk-a', 'wk-b', 'wk-n'].forEach((id) => $(id).addEventListener('input', render));
+      document.querySelectorAll('#wk-demo [data-unit]').forEach((b) => b.addEventListener('click', () => {
+        unit = b.dataset.unit;
+        document.querySelectorAll('#wk-demo [data-unit]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        render();
+      }));
+      render();
+    })();
+  </script>
+</section>

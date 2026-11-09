@@ -3,8 +3,6 @@
 .l04-range input[type=range] { padding: 0; accent-color: var(--term); }
 .l04-out div + div { margin-top: 4px; }
 .l04-strip { font-family: var(--f-mono); font-size: 0.85rem; letter-spacing: 0.06em; word-break: break-all; }
-.l04-legend { font-size: 0.85rem; color: var(--muted); margin: 6px 0 0; }
-.l04-legend b { font-weight: 600; }
 </style>
 
 <section class="note" id="trials">
@@ -355,7 +353,7 @@
       <span class="aside" id="l04-lseed"></span>
     </div>
     <svg id="l04-lln-svg"><title>The running proportion of successes against the number of trials, with the true p and a band of width ε around it</title></svg>
-    <p class="l04-legend"><b>solid</b>: running proportion · <b>dashed red</b>: true <i>p</i> · <b>green band</b>: <i>p</i> ± ε · <b>dashed amber</b>: expected proportion after a forced streak</p>
+    <p class="legend"><span class="c1"><b>solid</b>: running proportion</span> <span class="c2"><b>dashed</b>: true <i>p</i></span> <span class="c3"><b>band</b>: <i>p</i> ± ε</span> <span class="c4"><b>dashed</b>: expected proportion after a forced streak</span></p>
     <div class="out l04-out" id="l04-lln-out" aria-live="polite"></div>
   </div>
   <script>

@@ -59,6 +59,7 @@ all come from the page list.
 | `worked-examples` | Example cards with folded solutions and "load into widget" buttons |
 | `widget-presets` | Annotated preset buttons for any widget |
 | `math-kit` | Exact fractions, vector/matrix helpers and matrix rendering |
+| `widget-kit` | Layout helpers for widgets: two-column and panel grids, sliders, readouts, legends, tags, callouts |
 | `plot-2d` | A coordinate-plane SVG widget with draggable handles |
 | `view-3d` | A rotatable 3D SVG viewer |
 | `home-progress` | Review meters on the home page |

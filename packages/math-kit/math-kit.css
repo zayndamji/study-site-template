@@ -8,6 +8,10 @@
 }
 .m i, .mblock i, .eq i, .mat i { letter-spacing: 0.02em; }
 .mblock { line-height: var(--mk-block-line-height, 2); }
+/* .eq lines: alignment and line height from the options; .eq.center / .eq.left for one line */
+.eq { text-align: var(--mk-eq-align, center); line-height: var(--mk-eq-line-height, normal); }
+.eq.center { text-align: center; }
+.eq.left { text-align: left; }
 
 /* <span class="mat"> is a grid of entries; JS sets grid-template-columns.
    The brackets are drawn by ::before / ::after so they always span the full

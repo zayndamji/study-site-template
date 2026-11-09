@@ -23,6 +23,8 @@ _VARS = {
     'wordSpacing': ('--mk-word-spacing', '0.14em'),
     'blockLineHeight': ('--mk-block-line-height', '2'),
     'matrixGap': ('--mk-matrix-gap', '3px 16px'),
+    'eqAlign': ('--mk-eq-align', 'center'),
+    'eqLineHeight': ('--mk-eq-line-height', 'normal'),
 }
 
 

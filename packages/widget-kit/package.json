@@ -1,0 +1,10 @@
+{
+  "name": "widget-kit",
+  "title": "Widget layout kit",
+  "description": "Layout helpers for widgets: two-column and panel grids, side-by-side methods, sliders, compact fields, input grids, readouts, legends, status tags and callouts.",
+  "category": "widgets",
+  "version": "1.0.0",
+  "requires": [],
+  "css": ["widget-kit.css"],
+  "options": {}
+}
