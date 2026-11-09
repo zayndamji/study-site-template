@@ -8,7 +8,7 @@
   "css": ["resume-link.css"],
   "js": ["resume-link.js"],
   "options": {
-    "label": { "default": "Continue: {label} →", "description": "Link text. Fields: {title} {label} {id} {noun}." },
+    "label": { "default": "Continue: {label} →", "description": "Link text. Fields: {title} {label} {id} {badge} {num} {noun}." },
     "where": { "default": "intro", "description": "\"intro\" (home intro line) or \"tools\" (after search and filters)." },
     "kinds": { "default": null, "description": "Only remember pages of these kinds (list); null = all kinds." }
   }

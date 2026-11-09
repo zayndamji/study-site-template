@@ -67,7 +67,10 @@ class Ctx:
         same = self.ready_pages(page.get('kind'))
         pos = next((i + 1 for i, p in enumerate(same) if p is page), 0)
         last = same[-1]['id'] if same else ''
-        return dict(id=page.get('id', ''), title=page.get('title', ''), label=page.get('label', ''),
+        pid = page.get('id', '')
+        num = page.get('num')
+        return dict(id=pid, badge=page.get('badge') or pid, num=pid if num is None else str(num),
+                    title=page.get('title', ''), label=page.get('label', ''),
                     noun=k.get('noun', ''), short=k.get('short', ''), plural=k.get('plural', ''),
                     kind=page.get('kind', ''), group=self.group_title(page.get('group')),
                     site=self.config['site']['title'], position=pos, count=len(same), last=last)
@@ -175,7 +178,10 @@ class Ctx:
             return ''
         opts = [f'<option value="index.html">{esc(nav.get("home") or "Home")}</option>']
         group = None
-        for p in self.pages:
+        order = {g['id']: i for i, g in enumerate(self.groups)}
+        # options follow the group order, so a group never appears twice even when the page
+        # (Prev/Next) order moves between groups
+        for p in sorted(self.pages, key=lambda p: (order.get(p['group'], len(order)), p['index'])):
             k = self.kinds[p['kind']]
             if not k.get('inPicker', True):
                 continue
@@ -291,7 +297,7 @@ def bundle(ctx: Ctx):
                       for n, kd in ctx.kinds.items()},
         },
         'pages': [{k: p.get(k) for k in ('id', 'kind', 'title', 'label', 'description', 'group', 'status',
-                                          'href', 'storageKey', 'num')} for p in ctx.pages],
+                                          'href', 'storageKey', 'num', 'badge')} for p in ctx.pages],
         'groups': [{'id': g['id'], 'title': g.get('title', g['id'])} for g in ctx.groups],
         'packages': {p.name: browser_options(p) for p in ctx.packages if p.meta['js']},
     }
@@ -392,7 +398,7 @@ def render_home(ctx: Ctx):
         rendered.add(g['id'])
         rendered_kinds.update(p['kind'] for p in members)
         heading = []
-        nums = [p['id'] for p in members if p['num'] is not None and (p['status'] == 'ready' or ctx.config['nav'].get('showPlanned'))]
+        nums = [p['badge'] for p in members if p['num'] is not None and (p['status'] == 'ready' or ctx.config['nav'].get('showPlanned'))]
         if home.get('showRange') and len(nums) > 1 and g.get('range') is not False:
             heading.append(f'<span class="range">{esc(g.get("range") or nums[0] + "–" + nums[-1])}</span>')
         elif g.get('range'):
@@ -435,10 +441,10 @@ def render_home(ctx: Ctx):
 
 def default_row(ctx: Ctx, p, extra_class='', state=''):
     k = ctx.kinds[p['kind']]
-    search = ' '.join(str(x) for x in (p['id'], p['title'], p['label'], p['description'], p['keywords'],
+    search = ' '.join(str(x) for x in (p['id'], p['badge'] if p['badge'] != p['id'] else '', p['title'], p['label'], p['description'], p['keywords'],
                                         ctx.group_title(p['group']), k['noun']) if x)
-    num = esc(p['id']) if k.get('numbered', True) else ''
-    title_attr = f' title="{esc(k["noun"] + " " + p["id"] + ": " + p["title"])}"' if p['label'] != p['title'] else ''
+    num = esc(p['badge']) if k.get('numbered', True) else ''
+    title_attr = f' title="{esc(k["noun"] + " " + p["badge"] + ": " + p["title"])}"' if p['label'] != p['title'] else ''
     href = f' href="{esc(p["href"])}"' if p['status'] == 'ready' else ''
     tag = 'a' if href else 'div'
     return (f'<li data-search-row data-kind="{esc(p["kind"])}" data-group="{esc(p["group"])}" '

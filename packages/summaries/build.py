@@ -77,12 +77,12 @@ def extra_pages(ctx, opts):
             links = [f'<a href="{ctx.esc(p["href"])}">{ctx.esc(opts["notesLink"])}</a>']
             for extra in opts['extraLinks']:
                 links.append(f'<a href="{ctx.esc(p["href"])}#{ctx.esc(extra.get("anchor", ""))}">{ctx.esc(extra.get("label", ""))}</a>')
-            num = ctx.esc(p['id']) if k.get('numbered', True) else '·'
+            num = ctx.esc(p['badge']) if k.get('numbered', True) else '·'
             blocks.append(
                 f'<section class="note sheet-page-entry" id="{_anchor(ctx, opts, p)}" data-toc-group="{ctx.esc(g.get("title", g["id"]))}" '
                 f'data-sheet-group="{ctx.esc(g["id"])}" data-no-review>\n'
                 f'<h2><span class="n">{num}</span> {ctx.esc(p["title"])}</h2>\n'
-                f'<p class="src sheet-links">{ctx.esc(k["noun"])} {ctx.esc(p["id"])} · {" · ".join(links)}</p>\n'
+                f'<p class="src sheet-links">{ctx.esc(k["noun"])} {ctx.esc(p["badge"])} · {" · ".join(links)}</p>\n'
                 f'<div class="sheet">\n{sheets[(p["kind"], p["id"])]}\n</div>\n</section>')
     tools = []
     if opts['filters'] and len(used_groups) > 1:

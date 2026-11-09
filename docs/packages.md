@@ -122,7 +122,7 @@ Useful `ctx` members:
 
 - `ctx.config` (merged site.json), `ctx.kinds`, `ctx.groups`, `ctx.pages`,
   `ctx.ready_pages(kind=None)`, `ctx.page_vals(page)` (template variables
-  `{id} {title} {label} {noun} {short} {plural} {group} {site} {position} {count}`).
+  `{id} {badge} {num} {title} {label} {noun} {short} {plural} {group} {site} {position} {count}`).
 - `ctx.site_dir`, `ctx.content_dir`, `ctx.out_dir`, `ctx.packages`, `ctx.has('name')`,
   `ctx.option('pkg', 'key')`.
 - `ctx.read_content(rel)` → `(front_matter, body_html, style_blocks)` for a file under `content/`.
@@ -132,7 +132,7 @@ Useful `ctx` members:
   `ctx.warn(msg)`, `ctx.extra_assets[path] = bytes` (extra files to write).
 - Raise `StudyError` (from `studylib.common`) for problems the author must fix.
 
-Each page dict has: `id kind title label description group status file href source
+Each page dict has: `id badge kind title label description group status file href source
 storageKey num keywords`, any extra keys from site.json, and `meta` (the page's
 front matter) once it has been read.
 

@@ -11,7 +11,7 @@ Remembers the last page you opened and puts a **Continue: <page> →** link on t
 ## Options
 | Option | Default | Meaning |
 |---|---|---|
-| `label` | `"Continue: {label} →"` | Fields `{title}`, `{label}`, `{id}`, `{noun}` |
+| `label` | `"Continue: {label} →"` | Fields `{title}`, `{label}`, `{id}`, `{badge}`, `{num}`, `{noun}` |
 | `where` | `"intro"` | `"intro"` line or `"tools"` row |
 | `kinds` | `null` | Only remember these kinds, e.g. `["unit"]` |
 

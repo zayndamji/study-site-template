@@ -13,7 +13,7 @@
       const p = S.pages.find((x) => x.href === href && x.status === 'ready');
       if (!p) return;
       const k = (S.config.kinds || {})[p.kind] || {};
-      const text = String(o.label).replace('{title}', p.title).replace('{label}', p.label).replace('{id}', p.id).replace('{noun}', k.noun || '');
+      const text = String(o.label).replace('{title}', p.title).replace('{label}', p.label).replace('{id}', p.id).replace('{badge}', p.badge || p.id).replace('{num}', p.num == null ? p.id : String(p.num)).replace('{noun}', k.noun || '');
       const a = S.h('a', { class: 'home-extra resume-link', href: p.href, text });
       const host = o.where === 'tools' ? document.querySelector('.catalog-tools') : document.querySelector('.home-intro');
       if (host) host.append(a);

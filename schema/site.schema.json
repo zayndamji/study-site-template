@@ -87,7 +87,7 @@
       "items": {
         "type": "object", "required": ["id", "title"],
         "properties": {
-          "id": { "type": ["string", "integer"] }, "kind": { "type": "string" }, "title": { "type": "string" },
+          "id": { "type": ["string", "integer"] }, "badge": { "type": "string" }, "kind": { "type": "string" }, "title": { "type": "string" },
           "label": { "type": "string" }, "description": { "type": "string" }, "keywords": { "type": "string" },
           "group": { "type": ["string", "null"] }, "status": { "type": "string" }, "statusLabel": { "type": "string" },
           "file": { "type": "string" }, "source": { "type": "string" }, "storageKey": { "type": "string" }

@@ -17,8 +17,8 @@ page fields.
     "defaultTheme": "system",             // system | light | dark
     "favicon": "auto",                    // "auto" (generated from brand + accent), a path, or null
     "footer": "{site}",                   // home and package pages
-    "pageFooter": "{site} · {noun} {id} · {position} of {count}",
-    "titleFormat": "{short} {id} · {title} — {site}"   // browser tab title of a page
+    "pageFooter": "{site} · {noun} {badge} · {position} of {count}",
+    "titleFormat": "{short} {badge} · {title} — {site}"   // browser tab title of a page
   },
   "theme": {
     "fonts": {
@@ -41,8 +41,8 @@ page fields.
     "prevNext": true,
     "home": "Home",                       // first option of the switcher
     "prevShort": "← Prev", "nextShort": "Next →",          // narrow screens
-    "prevLong": "← {short} {id}", "nextLong": "Next: {label} →",  // wide screens
-    "pickerOption": "{id} · {label}",
+    "prevLong": "← {short} {badge}", "nextLong": "Next: {label} →",  // wide screens
+    "pickerOption": "{badge} · {label}",
     "showPlanned": false                  // set by the coming-later package
   },
   "home": {
@@ -61,7 +61,7 @@ page fields.
       "file": "unit-{id}.html",           // output file name
       "source": "units/{id}.html",        // under content/
       "storageKey": "{id}",               // progress key; keep an old site's ids here when migrating
-      "eyebrow": "{noun} {id}",
+      "eyebrow": "{noun} {badge}",
       "rail": "Sections",                 // rail heading
       "review": true,                     // "Mark section as reviewed" buttons + progress
       "prevNext": true,
@@ -75,6 +75,7 @@ page fields.
   "pages": [
     {
       "id": "01",                         // string; numeric ids get number search ("3" finds 03)
+      "badge": "A1",                      // optional display number (home rows, picker, titles, footer); defaults to id
       "kind": "unit",                     // defaults to the first kind
       "title": "Full title",
       "label": "Short title for lists",   // defaults to title
@@ -95,8 +96,15 @@ page fields.
 ## Template fields
 
 Strings such as `titleFormat`, `eyebrow`, `pageFooter`, `nav.*Long` and kind `file`/`source` accept:
-`{id} {title} {label} {noun} {short} {plural} {kind} {group} {site} {position} {count} {last}`.
+`{id} {badge} {num} {title} {label} {noun} {short} {plural} {kind} {group} {site} {position} {count} {last}`.
 Unknown fields are left as written.
+
+- `{badge}` is the page's display number: its `badge` field, or its id when there is none.
+- `{num}` is the number in the id without leading zeros (`"07"` → `7`), or the id itself when the id
+  has no number. Use it for labels like `"Ch {num}"`; keep `{id}` in file names and storage keys.
+
+The page switcher lists pages group by group, in the order of `groups`, even when the page order
+(which drives Prev/Next) moves back and forth between groups.
 
 ## Page front matter
 

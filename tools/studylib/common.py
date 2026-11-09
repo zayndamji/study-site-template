@@ -30,8 +30,8 @@ DEFAULTS = {
         'defaultTheme': 'system',
         'favicon': 'auto',
         'footer': '{site}',
-        'pageFooter': '{site} · {noun} {id} · {position} of {count}',
-        'titleFormat': '{short} {id} · {title} — {site}',
+        'pageFooter': '{site} · {noun} {badge} · {position} of {count}',
+        'titleFormat': '{short} {badge} · {title} — {site}',
     },
     'theme': {
         'fonts': {
@@ -58,9 +58,9 @@ DEFAULTS = {
         'home': 'Home',
         'prevShort': '← Prev',
         'nextShort': 'Next →',
-        'prevLong': '← {short} {id}',
+        'prevLong': '← {short} {badge}',
         'nextLong': 'Next: {label} →',
-        'pickerOption': '{id} · {label}',
+        'pickerOption': '{badge} · {label}',
         'showPlanned': False,
     },
     'home': {
@@ -99,7 +99,7 @@ KIND_DEFAULTS = {
     'file': '{kind}-{id}.html',
     'source': '{kind}s/{id}.html',
     'storageKey': '{id}',
-    'eyebrow': '{noun} {id}',
+    'eyebrow': '{noun} {badge}',
     'rail': 'Sections',
     'review': True,
     'prevNext': True,
@@ -199,6 +199,7 @@ def normalize_pages(cfg: dict, warn) -> list:
         e['href'] = e['file']
         m = re.match(r'^\D*0*(\d+)$', e['id'])
         e['num'] = int(m.group(1)) if (m and k.get('numbered', True)) else None
+        e['badge'] = str(e.get('badge') or e['id'])   # display number, e.g. "A2"; defaults to the id
         e['index'] = i
         pages.append(e)
     groups = {g['id'] for g in cfg.get('groups') or []}
