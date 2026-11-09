@@ -6,7 +6,8 @@ searchable home page. Static HTML/CSS/JS, no framework, no runtime dependencies;
 only Python 3.9+.
 
 **Live demo:** the [Probability Notebook](https://zayndamji.github.io/study-site-template/) — original notes on introductory
-probability that use every package. Its source is in [`demo/`](demo/).
+probability that use every package (except `legacy-globals`, which only matters for sites moved from
+older code; `study.py new --demo` shows it). Its source is in [`demo/`](demo/).
 
 ## Quick start
 
@@ -70,6 +71,7 @@ all come from the page list.
 | `coming-later` | Planned pages shown greyed out |
 | `resources` | A second page kind for guides and handouts |
 | `privacy` | Forbidden-term scanning, noindex, no third-party requests |
+| `legacy-globals` | Old global names (`window.Old.member`) mapped onto the template's APIs, for unchanged old scripts |
 | `content-rules` | A site's own writing rules (forbidden tags and phrases, minimum sections), reported by `check` |
 
 `python3 tools/study.py packages` lists them; `python3 tools/study.py info <name>` shows options.
