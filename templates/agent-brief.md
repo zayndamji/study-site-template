@@ -25,7 +25,8 @@ Rules:
    cite every claim with …]. Never invent citations or page numbers.
 4. [N] interactive widgets, each with a one-line `p.how`[ and 8–10 annotated presets via widget-presets].
 5. Scripts go after the markup they use; vanilla JS only; no external requests.
-6. Run `python3 [template]/tools/study.py check [site]` and fix every problem in your page.
+6. Run `python3 [template]/tools/study.py check [site] --page [id]` and fix every problem it reports.
+   (Checks build into a private temporary folder, so several agents can run them at once.)
    Do not open a browser.
 
 Report back: what you wrote (sections, widgets, quizzes), anything in the source that looks wrong

@@ -1,4 +1,7 @@
-"""`study.py check`: build the site, then verify the output and the sources.
+"""`study.py check`: build the site into a temporary folder, then verify the output and the sources.
+
+The check build never touches the site's own output folder and does not copy static/ (static files
+are looked up in the site), so several checks can run at once and a large static/ costs nothing.
 
 Checks (each problem is printed as `file: message`; exit status 1 if any):
   - every HTML page parses with balanced block tags and has unique element ids
@@ -126,9 +129,22 @@ def _node_check(code: str, label: str):
     return None
 
 
-def run_checks(site_dir: Path, rebuild=True) -> int:
-    if rebuild:
-        ctx = build(site_dir, quiet=True)
+def run_checks(site_dir: Path, rebuild=True, page=None) -> int:
+    """page: only report problems in the output file(s) of this page id (the whole site is still
+    built, so links into other pages are checked)."""
+    tmp = None
+    try:
+        if rebuild:
+            tmp = tempfile.mkdtemp(prefix='study-check-')
+        return _run(site_dir, tmp, page)
+    finally:
+        if tmp:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+
+def _run(site_dir: Path, tmp, page) -> int:
+    if tmp:
+        ctx = build(site_dir, quiet=True, out_dir=tmp, copy_static=False)
     else:
         ctx = Ctx(site_dir)
         for f in ctx.out_dir.rglob('*.html'):
@@ -194,7 +210,7 @@ def run_checks(site_dir: Path, rebuild=True) -> int:
                 continue
             target = str((base / unquote(u.path)).as_posix()) if u.path else rel
             target = re.sub(r'(^|/)\./', r'\1', target)
-            exists = target in ctx.outputs or (out / target).exists()
+            exists = target in ctx.outputs or (out / target).exists() or (ctx.static_dir / target).exists()
             if u.path and not exists:
                 problems.append(f'{rel}: broken link/asset "{href}"')
                 continue
@@ -216,6 +232,14 @@ def run_checks(site_dir: Path, rebuild=True) -> int:
                     problems.append(f'{f.relative_to(ctx.site_dir)}: not listed in site.json "pages"')
     for found in ctx.call('check', ctx.outputs):
         problems += list(found)
+    if page is not None:
+        files = {p['file'] for p in ctx.pages if p['id'] == str(page)}
+        sources = {str(Path(ctx.config['build']['contentDir']) / p['source']) for p in ctx.pages if p['id'] == str(page)}
+        if not files:
+            print(f'error: no page with id "{page}"')
+            return 2
+        problems = [pr for pr in problems if pr.split(':', 1)[0] in files | sources]
+        parsed = {rel: p for rel, p in parsed.items() if rel in files}
     if shutil.which('node') is None:
         log('note: node not found; script syntax checks skipped')
     for pr in problems:

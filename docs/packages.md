@@ -124,6 +124,8 @@ Useful `ctx` members:
   `ctx.ready_pages(kind=None)`, `ctx.page_vals(page)` (template variables
   `{id} {badge} {num} {title} {label} {noun} {short} {plural} {group} {site} {position} {count}`).
 - `ctx.site_dir`, `ctx.content_dir`, `ctx.out_dir`, `ctx.packages`, `ctx.has('name')`,
+  `ctx.built_file(rel)` (a file of the built site, found in the output folder or, during `check`,
+  which does not copy `static/`, in the site's `static/`),
   `ctx.option('pkg', 'key')`.
 - `ctx.read_content(rel)` → `(front_matter, body_html, style_blocks)` for a file under `content/`.
 - `ctx.render_document(title=…, main=…, kind=…, page_id=…, rail=True, rail_title=…, head=…, …)`

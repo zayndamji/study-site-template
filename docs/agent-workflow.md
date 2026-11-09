@@ -32,7 +32,8 @@ Give each writing agent `templates/agent-brief.md` filled in, plus that unit's r
 
 - edits **only** its own `content/<kind>/<id>.html` (and its summary sheet, if used);
 - never touches `site.json`, shared CSS/JS or other pages — the coordinating agent does that;
-- runs `study.py check` and fixes everything it reports in its page;
+- runs `study.py check <site> --page <id>` and fixes everything it reports (checks build into a
+  temporary folder, so writers can run them in parallel);
 - does not use a shared browser; the coordinator does browser checks one page at a time.
 
 The coordinator then adds the pages to `site.json`, rebuilds, checks, reviews each page in a browser

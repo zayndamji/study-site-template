@@ -21,7 +21,7 @@ def _manifest(ctx, opts):
     if re.match(r'^[a-z][\w+.-]*:|^/', base, re.I):
         return None, None  # absolute URL or root path: cannot check locally
     folder = ctx.out_dir / base
-    j, s = folder / 'index.json', folder / 'index.js'
+    j, s = ctx.built_file(f'{base}/index.json'), ctx.built_file(f'{base}/index.js')
     try:
         if j.exists():
             return json.loads(j.read_text(encoding='utf-8')), _rel(ctx, j)

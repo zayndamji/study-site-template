@@ -25,8 +25,10 @@ jobs:
       - uses: actions/checkout@v6
       - name: Check every package follows the contract
         run: python3 tools/study.py packages --check
-      - name: Build and check the demo
+      - name: Check the demo
         run: python3 tools/study.py check demo
+      - name: Build the demo
+        run: python3 tools/study.py build demo --strict
       - name: Build and check a scaffolded site with every package
         run: |
           python3 tools/study.py new "$RUNNER_TEMP/scaffold" --demo

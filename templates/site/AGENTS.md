@@ -8,7 +8,7 @@ Run from this folder. `$T` is the template path from `site.json`.
 
 ```bash
 python3 $T/tools/study.py build .      # writes dist/ (never edit dist/ by hand)
-python3 $T/tools/study.py check .      # build + verify; must print OK before you finish
+python3 $T/tools/study.py check .      # verify a fresh temporary build (dist/ is untouched); must print OK
 python3 $T/tools/study.py packages     # list features you can switch on
 python3 $T/tools/study.py info <name>  # one package's options
 python3 $T/tools/study.py serve .      # preview at http://localhost:8000/

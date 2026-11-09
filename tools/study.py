@@ -25,13 +25,13 @@ from studylib.common import PACKAGES_DIR, StudyError, read_package_meta  # noqa:
 
 def cmd_build(a):
     from studylib.build import build
-    ctx = build(Path(a.site), force=a.force)
+    ctx = build(Path(a.site), force=a.force, out_dir=a.out)
     return 1 if (a.strict and ctx.warnings) else 0
 
 
 def cmd_check(a):
     from studylib.check import run_checks
-    return run_checks(Path(a.site), rebuild=not a.no_build)
+    return run_checks(Path(a.site), rebuild=not a.no_build, page=a.page)
 
 
 def cmd_new(a):
@@ -127,10 +127,12 @@ def main(argv=None):
     b.add_argument('site', nargs='?', default='.')
     b.add_argument('--force', action='store_true', help='overwrite an output folder this tool did not create')
     b.add_argument('--strict', action='store_true', help='exit non-zero on warnings')
+    b.add_argument('--out', default=None, help='output folder (default: build.outDir in site.json)')
     b.set_defaults(fn=cmd_build)
     c = sub.add_parser('check', help='build and verify a site')
     c.add_argument('site', nargs='?', default='.')
-    c.add_argument('--no-build', action='store_true')
+    c.add_argument('--no-build', action='store_true', help="check the existing output folder instead of a fresh temporary build")
+    c.add_argument('--page', default=None, help='only report problems in this page (by id)')
     c.set_defaults(fn=cmd_check)
     n = sub.add_parser('new', help='scaffold a new site')
     n.add_argument('dir')
