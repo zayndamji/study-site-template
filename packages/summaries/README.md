@@ -67,10 +67,7 @@ screen{sourceSep}"`.
 Styles a sheet needs must be in a package or `custom/site.css`, not in one page's `<style>`,
 because the sheet also appears on the all-sheets page.
 
+`study.py check` reports sheet files that match no page.
+
 ## JavaScript API
 None. The all-sheets page remembers its filter in `Study.store` key `summaries:filter`.
-
-## Notes for migrating existing notes
-- Move an inline summary section's inner HTML into `content/summaries/<id>.html` and replace the section with the marker.
-- If the old combined page used its own anchors (e.g. `#x03`), set `anchor` (e.g. `"x{id}"`) so old links still land.
-- `study.py check` reports sheet files that match no page.

@@ -52,18 +52,15 @@ Several sources (a textbook and a reader with different page offsets):
 The page text, tooltip and link are added by the script; the pill look itself is plain CSS.
 Icons are CSS masks in the text colour; override `--cp-book` / `--cp-page` with your own SVG data URL.
 
+A pill that already contains its page text as `<span class="pg">p. 49</span>` keeps it; the
+script does not add a second label. `tools/add_pages.py` fills in `data-page` from a JSON map of
+citation text to page:
+```sh
+python3 packages/cite-pills/tools/add_pages.py content/units/02.html pages.json           # report
+python3 packages/cite-pills/tools/add_pages.py content/units/02.html pages.json --write   # edit
+```
+It touches only `span.cite` / `td.cite` without a `data-page`.
+
 ## JavaScript API
 None. `Study.enhance(el)` processes citations in content added later. Processed elements carry
 `data-cp`; pills are `span.cite.cp-pill` (or `a.cite.cp-pill` when linked), the page text is `.cp-pg`.
-
-## Notes for migrating existing notes
-- If your pills already contain their page text as `<span class="pg">p. 49</span>`, keep it: an
-  existing `.pg` child is used instead of adding a second label. Add `data-page` if you want links.
-- Rename the class to `cite` (e.g. `class="ref"` → `class="cite"`); the core's own `.ref` class is a
-  small grey reference and is left alone.
-- `tools/add_pages.py` fills in `data-page` from a JSON map of citation text to page:
-  ```sh
-  python3 packages/cite-pills/tools/add_pages.py content/units/02.html pages.json           # report
-  python3 packages/cite-pills/tools/add_pages.py content/units/02.html pages.json --write   # edit
-  ```
-  It touches only `span.cite` / `td.cite` without a `data-page` and lists citations missing from the map.

@@ -63,7 +63,7 @@ page fields.
       "noun": "Unit", "plural": "Units", "short": "Unit",
       "file": "unit-{id}.html",           // output file name
       "source": "units/{id}.html",        // under content/
-      "storageKey": "{id}",               // progress key; keep an old site's ids here when migrating
+      "storageKey": "{id}",               // progress key (localStorage): changing it loses readers' progress
       "eyebrow": "{noun} {badge}",
       "rail": "Sections",                 // rail heading
       "review": true,                     // "Mark section as reviewed" buttons + progress
@@ -144,8 +144,8 @@ multi-file page.
   folder without it). Leave it out when you upload the files somewhere.
 - Rebuilds sync the output folder rather than wiping it, so a large `static/` (source images) is
   copied only when files change.
-- Readers' progress is stored per origin: serve a migrated site where the old one was served (same
-  host, or the same published page) to keep it.
+- Readers' progress is stored per origin (browser storage): moving the site to another address
+  starts everyone afresh.
 
 ## Several kinds
 

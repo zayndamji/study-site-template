@@ -9,7 +9,7 @@
   "js": ["state-machine.js"],
   "build": "build.py",
   "options": {
-    "classPrefix": { "default": "sm-", "description": "Prefix of the classes on hosts (<prefix>sim, <prefix>figure) and on generated elements (<prefix>state, <prefix>edge, …), for page CSS and scripts. Change it to keep an existing site's class names." },
+    "classPrefix": { "default": "sm-", "description": "Prefix of the classes on hosts (<prefix>sim, <prefix>figure) and on generated elements (<prefix>state, <prefix>edge, …), for page CSS and scripts. Change it to use your own class names." },
     "classStyles": {
       "default": false,
       "description": "Also style elements that carry only the prefixed classes (<prefix>tape, <prefix>verdict, <prefix>status, …), e.g. parts a page script builds itself with Study.stateMachine. Without it the package styles only its own generated markup."

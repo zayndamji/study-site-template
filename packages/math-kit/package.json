@@ -65,7 +65,7 @@
     },
     "globalAlias": {
       "default": null,
-      "description": "Also expose the flat helper names (F, fadd, fmt, mat, …, plus Plane, View3D, presetButtons from the other widget packages) as window[globalAlias], for migrating old page scripts. null = off."
+      "description": "Also expose the flat helper names (F, fadd, fmt, mat, …, plus Plane, View3D, presetButtons from the other widget packages) as window[globalAlias], for page scripts that take their helpers from one global object. null = off."
     }
   }
 }

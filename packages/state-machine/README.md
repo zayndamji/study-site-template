@@ -79,9 +79,3 @@ as a box. Two opposite edges between the same states are drawn as parallel arrow
   `closure(model, set)` (ε moves); `accepts(model, set)`;
 - `table(model, active?)` → a transition table element; `mount(host)` (for hosts added later);
   `subHTML(label)` → HTML with subscripts; `prefix`.
-
-## Notes for migrating existing notes
-A site with its own simulator of this kind keeps its markup and page CSS: set `classPrefix` to the
-old prefix (e.g. `"fa-"` for hosts `fa-sim` / `fa-figure` and classes `fa-state`, …). Page scripts
-that called the old global (`Old.fa.model(…)`) can use `Study.stateMachine`, or keep the old name
-through the `legacy-globals` package.

@@ -76,12 +76,3 @@ buttons and show `text` as the note — call it when the reader edits the widget
 
 Notes are inserted as HTML (they come from your own content), so they may contain `<i>`,
 `<span class="m">` and similar.
-
-## Notes for migrating existing notes
-
-A hand-rolled `presetButtons(box, list, onPick)` maps to `Study.presets.mount(box, list, onPick)`.
-Old code that set the first preset and its note itself can pass `{ pickFirst: false }`, or just
-drop that code. Notes that used to be written into a separate paragraph with `textContent` can be
-given as `note` on each preset plus `{ note: thatParagraph }`. With `globalAlias` set in math-kit,
-`presetButtons` (old behaviour: marks the first preset without calling `onPick`, no notes) is on
-the alias object. Remove page-level `.presets` CSS once this package is on.

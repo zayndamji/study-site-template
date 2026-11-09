@@ -119,6 +119,9 @@ decks not named in a run are kept. `--format webp|png|jpeg` and `--width` conver
 If the frames already sit in `<out>/<deck>/` named `1.webp…` or `001.webp…`, the tool only writes the
 manifest. `python3 tools/study.py check` reports a missing manifest and explicit chips naming unknown decks.
 
+References inside quiz explanations become chips when the feedback is shown (core calls
+`Study.enhance`). Links to external pages are never turned into chips.
+
 ## JavaScript API
 ```js
 Study.sources.open('A', 12, 14, anchorEl)   // anchorEl optional: without it the popover opens at the top
@@ -129,11 +132,3 @@ Study.sources.frame('A', 12)                // image URL of a frame, once the ma
 ```
 Theme hooks: `--sv-chip-icon` (glyph before chips), `--sv-frame-bg` / `--sv-frame-ink` (the image area,
 light by default even in dark mode, since most sources are printed on white).
-
-## Notes for migrating existing notes
-- Keep your citation text; set `patterns` to the prefixes you already use and `selectors` to the
-  elements they sit in. One prefix per kind of source.
-- If your deck ids were per-page (e.g. `03c`), use `"deck": "{page}c"`; if page ids differ from the old
-  deck ids, rename decks with `build_sources.py --deck` or the deck folder names.
-- References inside quiz explanations become chips when the feedback is shown (core calls `Study.enhance`).
-- Links to external pages are never turned into chips; keep them as links.

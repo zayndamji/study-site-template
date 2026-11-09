@@ -43,8 +43,3 @@ None.
 
 ## JavaScript API
 None of its own; it only adds the configured globals.
-
-## Notes for migrating existing notes
-List each old global and the members page scripts actually use (`grep -o "Old\.[a-zA-Z]*"`),
-then map them here. `math-kit`'s `globalAlias` does the same for a flat helper object; this package
-is the general form. Once pages are rewritten to call `Study.*`, remove the entries.

@@ -60,11 +60,8 @@ clickable chips when the `source-viewer` package is on (`cite` is in its default
 Suggested house rules (not enforced): quote definitions and theorem statements verbatim; paraphrase
 only explanations; tag every addition; never silently fix the source — quote it in an erratum.
 
+A `span.beyond` that already contains text keeps it; only empty ones get `beyondLabel`. An
+erratum's quote should copy the source's wording exactly, so a reader can find it.
+
 ## JavaScript API
 None. `Study.enhance(el)` fills labels in content added later.
-
-## Notes for migrating existing notes
-- Rename your quote class to `quote` (e.g. `blockquote.myquote` → `blockquote.quote`), or keep your
-  class and add `quote` next to it: `class="myquote quote"`.
-- Existing "beyond" tags that already contain text keep it; only empty ones get `beyondLabel`.
-- An erratum's quote should copy the source's wording exactly, so a reader can find it.

@@ -28,8 +28,8 @@
 | `tags` | `{}` | `{"class": {"light": …, "dark": …, "var": …, "weight": …}}` or `{"class": colour}`; a colour is a CSS colour or a core token (`term`, `bad`, `ok`, `warn-edge`, `muted`, …) |
 
 Each tag's colour is also a CSS variable (`--nt-<class>`, or the name given in `"var"`), so a
-diagram or a package can reuse it: `fill: var(--nt-noun)`. Use `"var"` to keep the variable names
-an existing site already uses.
+diagram or a package can reuse it: `fill: var(--nt-noun)`. Use `"var"` to choose the variable
+names yourself.
 
 ## Markup
 ```html
@@ -54,8 +54,3 @@ an existing site already uses.
 
 ## JavaScript API
 None.
-
-## Notes for migrating existing notes
-A site that defined its own colour variables and classes for notation keeps its markup: list the
-classes under `tags` and set `"var"` to the old variable names. Its truth-table CSS can go once its
-tables use the classes above.

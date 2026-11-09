@@ -83,7 +83,7 @@
     },
     "anchor": {
       "default": "s-{kind}-{id}",
-      "description": "Anchor of a main-kind sheet on the all-sheets page. Fields: {id} {kind}. Set to an old site's format to keep links working."
+      "description": "Anchor of a main-kind sheet on the all-sheets page. Fields: {id} {kind}. Change it to match links you already use."
     },
     "otherAnchor": {
       "default": "s-{kind}-{id}",

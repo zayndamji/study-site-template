@@ -50,7 +50,3 @@ each `<section data-sv-page="…" data-sheet-kind="…">` links to the source of
 References that a page script writes after load (`el.textContent = "§ Heading"`) are linked at
 start-up and whenever `Study.enhance(el)` runs; `Study.sourceLinks.link(el)` does it directly. The
 script reads the page's address from `<meta name="source-links-url">`, which the build adds.
-
-## Notes for migrating existing notes
-A script that turned "§ Heading" text into links from a hard-coded table of page → address becomes
-`sourceUrl` on each page (plus `baseUrl` for the shared prefix).

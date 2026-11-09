@@ -1,6 +1,6 @@
 # Instructions for AI agents
 
-You are probably here to do one of three things. Find yours, then read only what it links.
+You are probably here to do one of two things. Find yours, then read only what it links.
 
 ## A. Make a new study site from this template
 
@@ -14,15 +14,7 @@ You are probably here to do one of three things. Find yours, then read only what
 6. Finish only when `python3 tools/study.py check <dir>` prints `OK` and you have looked at the pages in a
    browser at desktop width and at 375 px.
 
-## B. Move an existing notes site onto the template
-
-Read [docs/migration.md](docs/migration.md). Keep the old URLs, storage prefix, page storage ids and
-section ids so readers keep their progress. Everything the old site does should map onto the
-template's core, packages and options; when something has no equivalent, add it to the template in a
-general form first (generic examples, original demo). Site packages are for new features, which
-are later generalized and moved into the template.
-
-## C. Change the template itself
+## B. Change the template itself
 
 - Layout: `core/` (core.css, core.js) — only features **every** site needs belong here.
 - Features: `packages/<name>/`, following [docs/packages.md](docs/packages.md) exactly

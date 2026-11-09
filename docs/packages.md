@@ -145,7 +145,7 @@ front matter) once it has been read.
 
 1. `package.json` with every option documented and defaulted.
 2. `README.md` sections: *What it does*, *Enable*, *Options*, *Markup*, *JavaScript API*
-   (if any), *Notes for migrating existing notes* (if any).
+   (if any).
 3. `example.html` that exercises every option-free feature, using only generic
    placeholder content.
 4. `python3 tools/study.py packages --check` prints OK.

@@ -27,7 +27,3 @@ Keep `private/` out of version control if the terms themselves are sensitive.
 | `failBuild` | `true` | Fail the build on a hit |
 | `noindex`, `noReferrer` | `true` | Meta tags |
 | `localFonts` | `false` | Remove remote font stylesheets |
-
-## Notes for migrating existing notes
-Run `study.py check` after migrating: it lists every remaining hit so you can rename storage keys, ids and
-comments as well as visible text.

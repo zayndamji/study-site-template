@@ -52,8 +52,3 @@ plot), and the core tokens otherwise.
 
 ## JavaScript API
 None.
-
-## Notes for migrating existing notes
-Pages that each carry the same widget CSS (two-column layouts, readouts, tags, sliders, …) can drop
-those rules once this package is on. Rename one-off class names to these where they mean the same
-thing, e.g. a page's own note box → `.callout`, legend colour classes → `.c1`…`.c4`.

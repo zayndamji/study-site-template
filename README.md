@@ -6,8 +6,8 @@ searchable home page. Static HTML/CSS/JS, no framework, no runtime dependencies;
 only Python 3.9+.
 
 **Live demo:** the [Probability Notebook](https://zayndamji.github.io/study-site-template/) — original notes on introductory
-probability that use every package (except `legacy-globals`, which only matters for sites moved from
-older code; `study.py new --demo` shows it). Its source is in [`demo/`](demo/).
+probability that use every package (except `legacy-globals`, which keeps older page scripts'
+global names working; `study.py new --demo` shows it). Its source is in [`demo/`](demo/).
 
 ## Quick start
 
@@ -31,7 +31,7 @@ study-site-template/            (this repo — shared by every site)
   packages/<name>/              optional features, each self-contained and documented
   tools/study.py                new · build · check · packages · info · serve
   templates/                    starter files for new sites, an agent brief
-  docs/                         configuration, components, packages, migration, agent workflow
+  docs/                         configuration, components, packages, agent workflow
 
 my-notebook/                    (one per course or subject — lives anywhere)
   site.json                     title, theme, page list, groups, packages + options
@@ -84,7 +84,6 @@ Sites can add their own packages or override these (`docs/packages.md`).
 - [docs/components.md](docs/components.md) — core markup
 - [docs/packages.md](docs/packages.md) — using and writing packages
 - [docs/agent-workflow.md](docs/agent-workflow.md) — from source material to a finished site with agents
-- [docs/migration.md](docs/migration.md) — moving an existing hand-built notes site onto the template
 
 ## Design principles
 

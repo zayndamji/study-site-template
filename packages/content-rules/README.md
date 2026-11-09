@@ -62,9 +62,3 @@ None.
 
 ## JavaScript API
 None.
-
-## Notes for migrating existing notes
-A hand-written per-page checker usually mixes generic checks (tag balance, duplicate ids, quiz
-answers, links), which `study.py check` already does, with house rules. Move the house rules here:
-"no `<img>`" → `forbidTags`, "at least N sections" → `minSections`, phrase and citation-format rules
-→ `prose`, with the citation elements listed in `proseExclude`.

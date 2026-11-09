@@ -192,7 +192,7 @@
     vec, m2, mat, col, show,
   };
 
-  // ---------- optional flat aliases for migrating old page scripts ----------
+  // ---------- flat helper names (Study.legacy, optionally window[globalAlias]) ----------
   // Other widget packages add their own names (Plane, drag, View3D, presetButtons, …)
   // to the same shared object, whichever order the packages load in.
   const legacy = Study.legacy = Study.legacy || {};

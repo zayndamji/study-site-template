@@ -28,6 +28,3 @@ To rename, e.g. to "Handout": `"resources": {"kinds": {"handout": {"noun": "Hand
 
 ## Markup
 Same as any page. Leave out `<span class="n">` in headings when sections are not numbered.
-
-## Notes for migrating existing notes
-Keep old file names by setting the kind's `file` (e.g. `"guide-{id}.html"`) and using the old slug as `id`.

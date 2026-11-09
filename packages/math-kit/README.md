@@ -37,7 +37,7 @@ makes Unicode maths (no TeX engine) easier to read. The amount is an option.
 | `infinity` | `"∞"` | What `fmt()` prints for ±Infinity. |
 | `notANumber` | `"—"` | What `fmt()` prints for NaN. |
 | `strict` | `true` | Fractions throw on a zero denominator, division by zero or values past 2^53. `false` = no exceptions (a zero denominator gives `d = 0`, `gcd(0, 0) = 1`), like typical hand-rolled helpers. |
-| `globalAlias` | `null` | Also expose the flat helper names as `window[globalAlias]` (see migration notes). |
+| `globalAlias` | `null` | Also expose the flat helper names (below) as `window[globalAlias]`, for page scripts that take their helpers from one global object. |
 
 The four spacing options are written by the build into a small `<style>` in each page's
 `<head>` as CSS variables (`--mk-letter-spacing`, `--mk-word-spacing`,
@@ -102,16 +102,9 @@ out.innerHTML = 'A = ' + mat([[F(1, 2), 0], [0, 2]]) + ', x = ' + col([1, -1]);
 **SVG**: `svgEl(tag, attrs, parent)` creates an SVG element; `NS` is the SVG namespace; `$(id)`
 is `document.getElementById`.
 
-## Notes for migrating existing notes
-
-Old page scripts often take all their helpers from one global object
-(`const { F, fadd, fmt, mat, Plane } = window.Helpers;`). Set `"globalAlias": "Helpers"` and
-that object exists again, with these flat names: `NS $ el minus fmt gcd lcm F snap clamp fadd fsub
+**Flat helpers** (`Study.legacy`, and `window[globalAlias]` when that option is set): one object
+with short names for scripts that prefer them: `NS $ el minus fmt gcd lcm F snap clamp fadd fsub
 fmul fdiv fneg fzero fval fs parseF fsign vdot vsub vscale vzero mv mm det2 inv2 mat col`, plus
 `Plane drag` (plot-2d), `View3D gramSchmidtFloat` (view-3d) and `presetButtons` (widget-presets)
-when those packages are on. The same object is always available as `Study.legacy`. Differences
-from typical hand-rolled helpers: `inv2` returns `null` for a singular matrix, and with the default
-`strict: true`, `F` throws on a zero denominator and `gcd(0, 0)` is 0. Set `"strict": false` to keep
-old scripts' forgiving behaviour while they are ported, and `"notANumber": "∞"` if they relied on
-`fmt(NaN)` printing ∞. Pick the old matrix look with `bracket`. Move each page's private `.mat` CSS and roomier-spacing rules
-out of the page once this package is on.
+when those packages are on. `inv2` returns `null` for a singular matrix; with `strict: false`, `F`
+never throws (a zero denominator gives `d = 0`) and `gcd(0, 0)` is 1.

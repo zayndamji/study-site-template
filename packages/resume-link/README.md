@@ -20,7 +20,3 @@ None.
 
 ## JavaScript API
 None. Uses `Study.store` key `resume-link:last` (falls back to core's `last-page`).
-
-## Notes for migrating existing notes
-Old sites that stored the last page under another key can be bridged with a few lines in `custom/site.js`
-that copy the old value into `Study.store.set('resume-link:last', href)` once.

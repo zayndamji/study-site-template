@@ -110,11 +110,3 @@ function render() { P.clear(); P.arrow([0, 0], pt.u, 'c1'); P.handle('u', pt.u, 
 drag(svg, P, (id, p) => { pt[id] = [snap(p[0], 0.5), snap(p[1], 0.5)]; render(); });
 render();
 ```
-
-## Notes for migrating existing notes
-
-The API matches the common hand-rolled `Plane`/`drag` helpers, with these differences: the
-plane clears the svg first; `arrow` returns a `<g>` (the class is also set on its shaft and head,
-so CSS written for `line.cls` keeps working); `dot` defaults to radius 4. Keep old colour class
-names with the `colorNames` option instead of renaming markup. Remove page-level `svg.plane` CSS
-once this package is on. Keyboard dragging of handles is not built in.

@@ -70,10 +70,3 @@ Points are `[x, y, z]` with `z` up.
 
 `Study.view3d.gramSchmidt(vectors, eps = 1e-9)` returns an orthonormal list (floats) spanning
 the same space, skipping vectors that are (nearly) dependent on earlier ones.
-
-## Notes for migrating existing notes
-
-Matches the usual hand-rolled `View3D` helper: `V.S = …; V.redraw()` still works alongside
-`V.scale()`. The svg is cleared first (keeping `<title>`/`<desc>`), and gains `tabindex="0"`,
-`role="img"` and an `aria-label` unless it has its own. With `globalAlias` set in math-kit, the
-old names `View3D` and `gramSchmidtFloat` are available on the alias object.

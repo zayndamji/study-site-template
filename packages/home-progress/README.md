@@ -23,7 +23,3 @@ None: rows already carry `data-unit` (the page's `storageKey`).
 ## JavaScript API
 None. Reads `Study.store` keys `reviewed:<unit>` and `total:<unit>` written by core.
 A page's total is recorded the first time the page is opened.
-
-## Notes for migrating existing notes
-Progress survives a migration when the site keeps the old `site.storagePrefix` and each page's old storage id
-(`kinds.<kind>.storageKey`, e.g. `"ch{id}"`), and section ids stay the same.
