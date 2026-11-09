@@ -1,11 +1,11 @@
 /* fidelity: fills marker labels in content added after load (the build fills the static HTML).
-   <span class="beyond"></span> · <div class="beyond-block"> · <div class="erratum"><span class="lbl"></span>… */
+   <span class="beyond"></span> · <div class="beyond-block"> · <div class="erratum"><span class="lbl"></span>… · <div class="source-note"> */
 (function () {
   'use strict';
   const O = Study.options('fidelity');
   const all = (root, sel) => [...(root.matches && root.matches(sel) ? [root] : []), ...root.querySelectorAll(sel)];
   function label(box, text) {
-    if (!text) return;
+    if (!text || box.classList.contains('bare')) return;
     const lbl = [...box.children].find((c) => c.classList.contains('lbl'));
     if (lbl) { if (!lbl.textContent.trim()) lbl.textContent = text; return; }
     box.prepend(Study.h('span', { class: 'lbl', text }));
@@ -15,6 +15,7 @@
       all(root, 'span.beyond').forEach((el) => { if (!el.textContent.trim() && !el.children.length && O.beyondLabel) el.textContent = O.beyondLabel; });
       all(root, '.beyond-block').forEach((el) => label(el, O.beyondBlockLabel));
       all(root, '.erratum').forEach((el) => label(el, O.erratumLabel));
+      all(root, '.source-note').forEach((el) => label(el, O.sourceNoteLabel));
       (O.quoteAliases || []).forEach((c) => all(root, 'blockquote.' + c + ', q.' + c).forEach((el) => el.classList.add('quote')));
     },
   });

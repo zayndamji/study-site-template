@@ -57,7 +57,7 @@
     "one-minute": {},
     "focus-layout": {},
     "summaries": { "require": true, "kinds": ["unit"], "extraLinks": [{ "label": "Self-test", "anchor": "selftest" }] },
-    "fidelity": { "legend": true, "beyondLabel": "Beyond the slides" },
+    "fidelity": { "legend": true, "beyondLabel": "Beyond the slides", "sourceNoteLabel": "Slide note" },
     "source-viewer": {},
     "cite-pills": { "href": "reader.pdf#page={pdfPage}" },
     "worked-examples": {},

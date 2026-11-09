@@ -1,7 +1,7 @@
 {
   "name": "fidelity",
   "title": "Source fidelity markers",
-  "description": "Verbatim quotes, \"beyond the source\" tags and erratum boxes, so readers can tell the source's words from yours.",
+  "description": "Verbatim quotes, the source's own notes, \"beyond the source\" tags and erratum boxes, so readers can tell the source's words from yours.",
   "category": "sources",
   "version": "1.0.0",
   "requires": [],
@@ -24,6 +24,10 @@
     "erratumLabel": {
       "default": "Erratum",
       "description": "Label of an <div class=\"erratum\"> box whose .lbl is empty or missing."
+    },
+    "sourceNoteLabel": {
+      "default": "Source note",
+      "description": "Label of a <div class=\"source-note\"> (a note the source attaches to its own content, quoted verbatim) whose .lbl is empty or missing."
     },
     "legend": {
       "default": false,

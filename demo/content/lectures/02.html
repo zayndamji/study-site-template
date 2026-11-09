@@ -294,7 +294,8 @@ svg.l02-svg .guide { stroke: var(--ink); stroke-width: 1.4; stroke-dasharray: 5 
       <li><div>Start from the definition, with the roles of the events swapped: <span class="m">P(<i>B</i> | <i>A</i>) = P(<i>A</i> ∩ <i>B</i>) / P(<i>A</i>)</span>, which needs <span class="m">P(<i>A</i>) &gt; 0</span>. <span class="ref">s2</span></div></li>
       <li><div>Rewrite the numerator with the multiplication rule: <span class="m">P(<i>A</i> ∩ <i>B</i>) = P(<i>B</i>) · P(<i>A</i> | <i>B</i>)</span>. <span class="ref">s4</span></div></li>
       <li><div>Substitute: <span class="m">P(<i>B</i> | <i>A</i>) = P(<i>A</i> | <i>B</i>) · P(<i>B</i>) / P(<i>A</i>)</span>. This is Bayes’ rule.</div></li>
-      <li><div>Expand the denominator by total probability over the partition <i>B</i>, <i>B</i>′: <span class="m">P(<i>A</i>) = P(<i>A</i> | <i>B</i>)P(<i>B</i>) + P(<i>A</i> | <i>B</i>′)P(<i>B</i>′)</span>. <span class="ref">s7</span></div></li>
+      <li><div>Expand the denominator by total probability over the partition <i>B</i>, <i>B</i>′: <span class="m">P(<i>A</i>) = P(<i>A</i> | <i>B</i>)P(<i>B</i>) + P(<i>A</i> | <i>B</i>′)P(<i>B</i>′)</span>. <span class="ref">s7</span>
+        <div class="source-note"><span class="lbl"></span>Any partition works here; pick the one whose pieces you can describe. <cite>s7</cite></div></div></li>
       <li><div>Now everything is a forward probability: <span class="m">P(<i>B</i> | <i>A</i>) = P(<i>A</i> | <i>B</i>)P(<i>B</i>) / [P(<i>A</i> | <i>B</i>)P(<i>B</i>) + P(<i>A</i> | <i>B</i>′)P(<i>B</i>′)]</span>.</div></li>
       <li><div>Check with the test of section 04 (<i>B</i> = sick, <i>A</i> = positive): <span class="m">(0.99 · 0.01) / (0.99 · 0.01 + 0.05 · 0.99) = 0.0099 / 0.0594 = 1/6</span>. <span class="ref">s9</span></div></li>
     </ol>

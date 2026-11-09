@@ -1,11 +1,12 @@
-"""fidelity build hooks: fill empty marker labels in the HTML (so they also show without JS and in
+"""fidelity build hooks: fill empty marker and box labels in the HTML (so they also show without JS and in
 print) and add the optional legend line at the top of unit pages."""
 import re
 
 _CLS = r'<(?P<tag>{tags})\b[^>]*\bclass="[^"]*(?<![\w-]){name}(?![\w-])[^"]*"[^>]*>'
 BEYOND_RX = re.compile(_CLS.format(tags='span', name='beyond') + r'(?P<body>\s*)</span>', re.I)
-BOX_RX = {name: re.compile(_CLS.format(tags='div|aside|section', name=name), re.I) for name in ('erratum', 'beyond-block')}
+BOX_RX = {name: re.compile(_CLS.format(tags='div|aside|section', name=name), re.I) for name in ('erratum', 'beyond-block', 'source-note')}
 EMPTY_LBL_RX = re.compile(r'\s*<(span|div|p)\b[^>]*\bclass="lbl"[^>]*>\s*</\1>', re.I)
+BARE_RX = re.compile(r'\bclass="[^"]*(?<![\w-])bare(?![\w-])', re.I)
 ANY_LBL_RX = re.compile(r'\s*<(span|div|p)\b[^>]*\bclass="lbl"', re.I)
 
 
@@ -13,7 +14,7 @@ def fill_labels(html, opts, esc):
     beyond = esc(opts.get('beyondLabel') or '')
     if beyond:
         html = BEYOND_RX.sub(lambda m: m.group(0)[:m.start('body') - m.start()] + beyond + '</span>', html)
-    for name, key in (('erratum', 'erratumLabel'), ('beyond-block', 'beyondBlockLabel')):
+    for name, key in (('erratum', 'erratumLabel'), ('beyond-block', 'beyondBlockLabel'), ('source-note', 'sourceNoteLabel')):
         label = esc(opts.get(key) or '')
         if not label:
             continue
@@ -21,6 +22,8 @@ def fill_labels(html, opts, esc):
         for m in BOX_RX[name].finditer(html):
             out.append(html[pos:m.end()])
             pos = m.end()
+            if BARE_RX.search(m.group(0)):
+                continue  # class "bare": the author wants no label
             e = EMPTY_LBL_RX.match(html, pos)
             if e:
                 tag = e.group(1)
