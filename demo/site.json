@@ -50,7 +50,8 @@
     { "id": "reading", "kind": "guide", "title": "How to read these notes", "group": "help",
       "description": "What every marker, chip, fold and button on these pages means" },
     { "id": "checklist", "kind": "guide", "title": "Problem-solving checklist", "group": "help",
-      "description": "Questions to ask before, during and after a probability problem" }
+      "description": "Questions to ask before, during and after a probability problem",
+      "sourceUrl": "https://en.wikipedia.org/wiki/How_to_Solve_It" }
   ],
   "packages": {
     "one-minute": {},
@@ -70,6 +71,7 @@
     "coming-later": {},
     "resources": {},
     "privacy": { "forbid": ["DRAFT-ONLY"], "noindex": false },
+    "source-links": {},
     "content-rules": {
       "kinds": ["lecture"],
       "forbidTags": { "img": "draw diagrams as SVG instead of using images" },

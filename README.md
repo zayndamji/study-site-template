@@ -55,6 +55,7 @@ all come from the page list.
 | `fidelity` | Verbatim quote blocks, "beyond the source" tags, erratum boxes |
 | `source-viewer` | Citation chips that pop up the cited slide or page image |
 | `cite-pills` | Page-number citation pills, optionally linking into a PDF |
+| `source-links` | `§ Heading` references that open that heading of a page's online source |
 | `worked-examples` | Example cards with folded solutions and "load into widget" buttons |
 | `widget-presets` | Annotated preset buttons for any widget |
 | `math-kit` | Exact fractions, vector/matrix helpers and matrix rendering |

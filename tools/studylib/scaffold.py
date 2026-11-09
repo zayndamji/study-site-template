@@ -98,8 +98,10 @@ def _add_demo(dest: Path, cfg: dict):
             _copy_tree(path / 'demo' / 'content', dest / 'content', pid)
         if (path / 'demo' / 'static').exists():
             _copy_tree(path / 'demo' / 'static', dest / 'static', pid)
-        cfg['pages'].append({'id': pid, 'title': meta.get('title', meta['name']), 'label': meta.get('title', meta['name']),
-                             'description': meta.get('description', ''), 'group': cat, 'keywords': meta['name']})
+        entry = {'id': pid, 'title': meta.get('title', meta['name']), 'label': meta.get('title', meta['name']),
+                 'description': meta.get('description', ''), 'group': cat, 'keywords': meta['name']}
+        entry.update(meta.get('demoPage') or {})  # extra page fields the package's demo needs
+        cfg['pages'].append(entry)
         cfg['packages'][meta['name']] = {}
     # extra pages that show off page-level packages
     if 'resources' in cfg['packages']:

@@ -1,0 +1,57 @@
+{
+  "name": "source-links",
+  "title": "Source section links",
+  "description": "\"§ Heading\" references in source lines become links that open that heading of the page's online source.",
+  "category": "sources",
+  "version": "1.0.0",
+  "requires": [],
+  "css": [
+    "source-links.css"
+  ],
+  "build": "build.py",
+  "options": {
+    "urlField": {
+      "default": "sourceUrl",
+      "description": "Page field in site.json that holds the address of the page's online source."
+    },
+    "baseUrl": {
+      "default": "",
+      "description": "Put in front of every relative sourceUrl, e.g. \"https://example.org/handouts/\"."
+    },
+    "marker": {
+      "default": "§",
+      "description": "Text that starts a heading reference; everything after it (up to a separator) is the heading."
+    },
+    "separators": {
+      "default": "·;",
+      "description": "Characters that separate several references in one line."
+    },
+    "selectors": {
+      "default": [
+        "p.src",
+        "span.ref",
+        "cite"
+      ],
+      "description": "Simple selectors (tag, .class or tag.class) of the elements scanned. Only elements that contain plain text (no child tags) are changed."
+    },
+    "textFragments": {
+      "default": true,
+      "description": "Add #:~:text=… so browsers scroll to and highlight the heading. \"Start … End\" in a reference becomes a range; quotes and (asides) are left out."
+    },
+    "linkTitle": {
+      "default": "Open this section of the source",
+      "description": "Tooltip on each link; empty = none."
+    },
+    "newTab": {
+      "default": true,
+      "description": "Open the links in a new tab."
+    },
+    "requireUrl": {
+      "default": false,
+      "description": "Make study.py check report pages that use the marker in a scanned element but have no address (off by default, since \"§\" is also common for plain section numbers)."
+    }
+  },
+  "demoPage": {
+    "sourceUrl": "https://example.org/style-guide.html"
+  }
+}
