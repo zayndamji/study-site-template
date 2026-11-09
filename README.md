@@ -53,6 +53,7 @@ all come from the page list.
 | `one-minute` | An "in one minute" opener of a few bullets |
 | `focus-layout` | Folded derivations and quick checks, expand/collapse all, open-on-link, print unfolded |
 | `fidelity` | Verbatim quote blocks, "beyond the source" tags, erratum boxes |
+| `notation` | Colour-coded notation (one colour per kind of symbol, both themes) and truth-table styling |
 | `source-viewer` | Citation chips that pop up the cited slide or page image |
 | `cite-pills` | Page-number citation pills, optionally linking into a PDF |
 | `source-links` | `§ Heading` references that open that heading of a page's online source |

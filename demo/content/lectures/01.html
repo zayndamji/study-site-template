@@ -31,6 +31,17 @@
     <p>Events combine like sets: the <span class="term">complement</span> <span class="m"><i>E</i>′</span> (not <i>E</i>; many books write <i>E</i><sup>c</sup>), the <span class="term">union</span> <span class="m"><i>E</i> ∪ <i>F</i></span> (at least one happens), the <span class="term">intersection</span> <span class="m"><i>E</i> ∩ <i>F</i></span> (both happen). <i>E</i> and <i>F</i> are <span class="term">disjoint</span> when <span class="m"><i>E</i> ∩ <i>F</i> = ∅</span>.</p>
   </div>
 
+  <p>Whether a combined event happens depends only on whether <span class="ev-e">E</span> and <span class="ev-f">F</span> happen. One outcome falls into one of four cases:</p>
+  <div class="tablewrap"><table class="t tt">
+    <thead><tr><th class="ev-e">in E?</th><th class="ev-f">in F?</th><th class="sep">in E′?</th><th>in E ∪ F?</th><th class="final">in E ∩ F?</th></tr></thead>
+    <tbody>
+      <tr><td class="T">yes</td><td class="T">yes</td><td class="sep F">no</td><td class="T">yes</td><td class="final T">yes</td></tr>
+      <tr><td class="T">yes</td><td class="F">no</td><td class="sep F">no</td><td class="T">yes</td><td class="final F">no</td></tr>
+      <tr><td class="F">no</td><td class="T">yes</td><td class="sep T">yes</td><td class="T">yes</td><td class="final F">no</td></tr>
+      <tr><td class="F">no</td><td class="F">no</td><td class="sep T">yes</td><td class="F">no</td><td class="final F">no</td></tr>
+    </tbody>
+  </table></div>
+
   <p>For two dice, tell them apart (say the first is red and the second blue). An outcome is an ordered pair <span class="m">(<i>i</i>, <i>j</i>)</span>, and there are <span class="m">6 · 6 = 36</span> of them, one per cell of the grid below.</p>
 
   <div class="widget" id="l01-dice">

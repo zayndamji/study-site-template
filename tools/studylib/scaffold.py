@@ -102,7 +102,7 @@ def _add_demo(dest: Path, cfg: dict):
                  'description': meta.get('description', ''), 'group': cat, 'keywords': meta['name']}
         entry.update(meta.get('demoPage') or {})  # extra page fields the package's demo needs
         cfg['pages'].append(entry)
-        cfg['packages'][meta['name']] = {}
+        cfg['packages'][meta['name']] = dict(meta.get('demoOptions') or {})  # options its demo page needs
     # extra pages that show off page-level packages
     if 'resources' in cfg['packages']:
         guides = dest / 'content' / 'guides'

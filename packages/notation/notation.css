@@ -1,0 +1,15 @@
+/* notation: truth tables (the colour tags come from the "tags" option, see build.py).
+   <table class="t tt">: centred maths cells; .sep a vertical rule before a column; .final the result
+   column; td.T / td.F true / false cells; tr.diff a row where two columns disagree; tr.hot a row to look at. */
+table.t.tt { width: auto; min-width: 45%; }
+table.t.tt th, table.t.tt td { text-align: center; padding: 6px 14px; }
+table.t.tt th { font: 600 0.98rem var(--f-math); text-transform: none; letter-spacing: 0; color: var(--ink); white-space: nowrap; }
+table.t.tt td { font-family: var(--f-math); }
+table.t.tt .sep { border-left: 1px solid var(--rule); }
+:where(table.t.tt) td.F { color: var(--muted); }
+table.t.tt .final { background: var(--term-soft); font-weight: 600; }
+table.t.tt td.final.T { color: var(--ok); }
+table.t.tt td.final.F { color: var(--bad); }
+table.t.tt tr.diff td { background: var(--bad-soft); }
+table.t.tt tr.hot td { background: var(--warn-soft); }
+@media print { table.t.tt .final, table.t.tt tr.diff td, table.t.tt tr.hot td { background: none; } table.t.tt .final { text-decoration: underline; } }

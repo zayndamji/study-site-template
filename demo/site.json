@@ -73,6 +73,7 @@
     "privacy": { "forbid": ["DRAFT-ONLY"], "noindex": false },
     "source-links": {},
     "widget-kit": {},
+    "notation": { "tags": { "ev-e": "term", "ev-f": "warn-edge" } },
     "content-rules": {
       "kinds": ["lecture"],
       "forbidTags": { "img": "draw diagrams as SVG instead of using images" },

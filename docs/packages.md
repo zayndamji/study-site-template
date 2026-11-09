@@ -59,8 +59,8 @@ packages/<name>/
 }
 ```
 
-An optional `"demoPage": { … }` adds page fields (e.g. a URL the package reads) to the package's page in
-`study.py new --demo`.
+Optional `"demoPage": { … }` adds page fields (e.g. a URL the package reads) to the package's page in
+`study.py new --demo`, and `"demoOptions": { … }` sets the package's options in that demo site.
 
 Every option **must** have a `default` and a `description`. Mark an option `"private": true` to keep it out of the browser bundle (packages without JS never ship options to the browser). Users override any
 subset; unknown keys produce a build warning. The merged options reach the
