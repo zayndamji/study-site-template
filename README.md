@@ -52,7 +52,7 @@ all come from the page list.
 | `summaries` | A summary sheet per page, written once, shown in the page and on a printable all-sheets page |
 | `one-minute` | An "in one minute" opener of a few bullets |
 | `focus-layout` | Folded derivations and quick checks, expand/collapse all, open-on-link, print unfolded |
-| `fidelity` | Verbatim quote blocks, "beyond the source" tags, erratum boxes |
+| `fidelity` | Verbatim quote blocks, the source's own notes, "beyond the source" tags, erratum boxes |
 | `notation` | Colour-coded notation (one colour per kind of symbol, both themes) and truth-table styling |
 | `source-viewer` | Citation chips that pop up the cited slide or page image |
 | `cite-pills` | Page-number citation pills, optionally linking into a PDF |
