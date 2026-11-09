@@ -5,28 +5,106 @@
   "category": "sources",
   "version": "1.0.0",
   "requires": [],
-  "css": ["source-viewer.css"],
-  "js": ["source-viewer.js"],
+  "css": [
+    "source-viewer.css"
+  ],
+  "js": [
+    "source-viewer.js"
+  ],
   "build": "build.py",
   "options": {
-    "base": { "default": "assets/sources/", "description": "Folder (relative to the built pages) holding index.js / index.json and the images. Put the files in static/assets/sources/ so the build copies them." },
-    "selectors": { "default": ".ref, .src, cite", "description": "CSS selector of the elements whose text is scanned for citations like \"s12\" or \"s12–14\" (see patterns). Empty string turns automatic chips off; explicit .sv-chip / .sv-ref markup still works." },
-    "patterns": { "default": [{ "prefix": "s", "deck": "{page}s" }], "description": "Which citation texts become chips. Each entry: {\"prefix\": text before the number, \"deck\": manifest deck id; {page} = the page id (body data-page, or the nearest data-sv-page attribute), {prefix} = the prefix}. Longer prefixes win." },
-    "pageOverridePrefix": { "default": "P", "description": "Text that lets a citation name another page, e.g. \"P03 s12\" means s12 of page 03's deck. The page id after it must contain a digit. Empty string disables it." },
-    "caption": { "default": "{deckLabel} · {prefix}{n}", "description": "Popover caption. Fields: {deck} {deckLabel} (manifest label, else the deck id) {prefix} {n} {total}." },
-    "position": { "default": "{n} / {total}", "description": "Position text between Prev and Next. Fields as in caption." },
-    "rangeLabel": { "default": "cited {prefix}{from}–{to}", "description": "Badge shown when the chip cites a range; highlighted while the shown frame is inside it. Fields: {prefix} {from} {to}." },
-    "singleLabel": { "default": "", "description": "Badge for a chip that cites one frame (highlighted while that frame is shown); empty = no badge. Fields: {prefix} {from}." },
-    "imageLabel": { "default": "{deckLabel}, {n} of {total}", "description": "Accessible name of the image. Fields as in caption." },
-    "chipTitle": { "default": "Show this in the source", "description": "Tooltip on every chip." },
-    "dialogLabel": { "default": "Source viewer", "description": "Accessible name of the popover." },
-    "loading": { "default": "Loading…", "description": "Shown while an image loads." },
-    "error": { "default": "This image could not be loaded.", "description": "Shown when an image fails to load." },
-    "missing": { "default": "Images for this source are not available.", "description": "Shown when the manifest is missing or does not list the deck." },
-    "prev": { "default": "← Prev", "description": "Previous-frame button." },
-    "next": { "default": "Next →", "description": "Next-frame button." },
-    "close": { "default": "Close", "description": "Accessible name of the close button." },
-    "maxWidth": { "default": 600, "description": "Largest popover width in px." },
-    "minSideWidth": { "default": 340, "description": "Room (px) needed to place the popover beside the chip; with less room on both sides it goes below (or above) the chip." }
+    "base": {
+      "default": "assets/sources/",
+      "description": "Folder (relative to the built pages) holding index.js / index.json and the images. Put the files in static/assets/sources/ so the build copies them."
+    },
+    "manifestGlobal": {
+      "default": "STUDY_SOURCES",
+      "description": "Name of the global variable that index.js sets (window.<name> = {decks: …})."
+    },
+    "selectors": {
+      "default": ".ref, .src, cite",
+      "description": "CSS selector of the elements whose text is scanned for citations like \"s12\" or \"s12–14\" (see patterns). Empty string turns automatic chips off; explicit .sv-chip / .sv-ref markup still works."
+    },
+    "skip": {
+      "default": "",
+      "description": "Extra CSS selector of elements whose text is never turned into chips (added to the built-in list: code, links, buttons, math, [data-sv-skip] …)."
+    },
+    "patterns": {
+      "default": [
+        {
+          "prefix": "s",
+          "deck": "{page}s"
+        }
+      ],
+      "description": "Which citation texts become chips. Each entry: {\"prefix\": text before the number, \"deck\": manifest deck id; {page} = the page id (body data-page, or the nearest data-sv-page attribute), {prefix} = the prefix; optional \"label\": caption label used when the manifest gives the deck none (same fields)}. Longer prefixes win."
+    },
+    "pageOverridePrefix": {
+      "default": "P",
+      "description": "Text that lets a citation name another page, e.g. \"P03 s12\" means s12 of page 03's deck. The page id after it must contain a digit. Empty string disables it."
+    },
+    "skipMissing": {
+      "default": false,
+      "description": "Leave a plain-text citation alone when its deck is not in the manifest (instead of a chip that says the images are missing). Lets one pattern list serve pages that only have some decks."
+    },
+    "caption": {
+      "default": "{deckLabel} · {prefix}{n}",
+      "description": "Popover caption. Fields: {deck} {deckLabel} (manifest label, else the deck id) {prefix} {n} {total}."
+    },
+    "position": {
+      "default": "{n} / {total}",
+      "description": "Position text between Prev and Next. Fields as in caption."
+    },
+    "rangeLabel": {
+      "default": "cited {prefix}{from}–{to}",
+      "description": "Badge shown when the chip cites a range; highlighted while the shown frame is inside it. Fields: {prefix} {from} {to}."
+    },
+    "singleLabel": {
+      "default": "",
+      "description": "Badge for a chip that cites one frame (highlighted while that frame is shown); empty = no badge. Fields: {prefix} {from}."
+    },
+    "imageLabel": {
+      "default": "{deckLabel}, {n} of {total}",
+      "description": "Accessible name of the image. Fields as in caption."
+    },
+    "chipTitle": {
+      "default": "Show this in the source",
+      "description": "Tooltip on every chip."
+    },
+    "dialogLabel": {
+      "default": "Source viewer",
+      "description": "Accessible name of the popover."
+    },
+    "loading": {
+      "default": "Loading…",
+      "description": "Shown while an image loads."
+    },
+    "error": {
+      "default": "This image could not be loaded.",
+      "description": "Shown when an image fails to load."
+    },
+    "missing": {
+      "default": "Images for this source are not available.",
+      "description": "Shown when the manifest is missing or does not list the deck."
+    },
+    "prev": {
+      "default": "← Prev",
+      "description": "Previous-frame button."
+    },
+    "next": {
+      "default": "Next →",
+      "description": "Next-frame button."
+    },
+    "close": {
+      "default": "Close",
+      "description": "Accessible name of the close button."
+    },
+    "maxWidth": {
+      "default": 600,
+      "description": "Largest popover width in px."
+    },
+    "minSideWidth": {
+      "default": 340,
+      "description": "Room (px) needed to place the popover beside the chip; with less room on both sides it goes below (or above) the chip."
+    }
   }
 }

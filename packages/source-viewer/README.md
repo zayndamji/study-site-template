@@ -22,9 +22,12 @@ root). `python3 tools/study.py new <dir> --demo` ships placeholder decks you can
 | Option | Default | Meaning |
 |---|---|---|
 | `base` | `"assets/sources/"` | Folder of the manifest and images, relative to the built pages |
+| `manifestGlobal` | `"STUDY_SOURCES"` | Global variable that `index.js` sets |
 | `selectors` | `".ref, .src, cite"` | Elements whose text is scanned for citations; `""` turns auto chips off |
+| `skip` | `""` | Extra selector of elements never scanned (e.g. `".quiz .lbl"`) |
 | `patterns` | `[{"prefix": "s", "deck": "{page}s"}]` | Citation texts that become chips (below) |
 | `pageOverridePrefix` | `"P"` | `P03 s12` cites s12 of page 03's deck; `""` disables |
+| `skipMissing` | `false` | Leave a citation as plain text when the manifest has no such deck |
 | `caption` | `"{deckLabel} · {prefix}{n}"` | Popover caption. Fields: `{deck} {deckLabel} {prefix} {n} {total}` |
 | `position` | `"{n} / {total}"` | Text between Prev and Next |
 | `rangeLabel` | `"cited {prefix}{from}–{to}"` | Badge for chips citing a range |
@@ -56,6 +59,15 @@ The page id is `body[data-page]`; a `data-sv-page="…"` attribute on any ancest
 on review pages that gather several pages' material; the `summaries` package sets it on every sheet
 of its all-sheets page). `P03 s12` overrides it for one citation.
 
+A pattern may add `"label"` (same fields), the caption label used when the manifest gives the deck
+none: `{ "prefix": "f", "deck": "{page}f", "label": "Part {page} · long version" }`.
+
+With `skipMissing`, one pattern list can serve pages that have only some of the decks: on a page
+without an `h` deck, `h3` stays plain text. Automatic chips then appear once the manifest has loaded.
+
+Widgets that rewrite text containing citations call `Study.sources.chipify(element)` afterwards;
+it scans the element again (text already inside a chip is left alone).
+
 ## Markup
 Automatic (inside an element matched by `selectors`):
 ```html
@@ -72,7 +84,7 @@ Explicit (anywhere):
 `{prefix}` used in the caption (otherwise the deck's `prefix` from the manifest).
 
 ## The manifest and image layouts
-`<base>index.js` sets `window.STUDY_SOURCES` (a script, so it also works when pages are opened from
+`<base>index.js` sets `window.STUDY_SOURCES` (the `manifestGlobal` option renames it; a script, so it also works when pages are opened from
 disk, where `fetch` is blocked); `<base>index.json` holds the same object and is used if the script is
 missing.
 ```js

@@ -4,10 +4,11 @@
    Chips: <button class="sv-chip" data-deck="A" data-from="12" data-to="14">s12–14</button>,
    <span class="sv-ref" …> (upgraded to a button), or plain text such as "s12" / "s12–14" /
    "P03 s12" inside the elements matched by the `selectors` option (see `patterns`).
-   Images: manifest <base>index.js (window.STUDY_SOURCES = {decks: {…}}), falling back to
+   Images: manifest <base>index.js (window.<manifestGlobal> = {decks: {…}}), falling back to
    <base>index.json. Each deck is either sprite sheets (<deck>-<kk>.webp, cols×rows frames
    each) or one file per frame (deck.pattern, e.g. "{deck}/{n:03}.webp").
-   API: Study.sources.open(deck, from, to, anchorEl) · .close() · .chipify(root) · .load()
+   API: Study.sources.open(deck, from, to, anchorEl) · .close() · .chipify(root) (rescans root, e.g. after
+   a widget rewrote its text) · .load()
    ========================================================================== */
 (function () {
   'use strict';
@@ -15,6 +16,7 @@
   const O = Study.options(NAME);
   const base = O.base === undefined ? 'assets/sources/' : String(O.base || '');
   const num = (v, d) => (isFinite(+v) && v !== null && v !== '' ? +v : d);
+  const GLOBAL = O.manifestGlobal || 'STUDY_SOURCES';
 
   // "{n}", "{n:03}" (zero-padded); unknown fields stay as written
   const fill = (tpl, vals) => String(tpl === undefined || tpl === null ? '' : tpl)
@@ -25,10 +27,10 @@
   let manifest = null, loading = null;
   // a <script> also works for pages opened from disk (file:// blocks fetch); index.json is the fallback
   const viaScript = () => new Promise((res) => {
-    if (window.STUDY_SOURCES) { res(window.STUDY_SOURCES); return; }
+    if (window[GLOBAL]) { res(window[GLOBAL]); return; }
     const sc = document.createElement('script');
     sc.src = base + 'index.js';
-    sc.onload = () => res(window.STUDY_SOURCES || null);
+    sc.onload = () => res(window[GLOBAL] || null);
     sc.onerror = () => res(null);
     document.head.append(sc);
   });
@@ -48,18 +50,20 @@
     // [P03 ]s12[–[s]14] — not inside a word, not followed by a letter, digit or "("
     RX = new RegExp(ovr + '(?<![\\w.\\/])(' + alt + ')(\\d{1,4})(?:\\s*[\\u2013-]\\s*(?:\\2)?(\\d{1,4}))?(?![\\w(])', 'g');
   }
-  const SKIP = '.sv-chip, .sv-ref, .sv-pop, script, style, template, textarea, select, button, a, code, pre, .m, .mblock, .eq, [data-sv-skip]';
+  const SKIP = '.sv-chip, .sv-ref, .sv-pop, script, style, template, textarea, select, button, a, code, pre, .m, .mblock, .eq, [data-sv-skip]'
+    + (O.skip ? ', ' + O.skip : '');
   const pageOf = (el) => {
     const c = el.closest && el.closest('[data-sv-page]');
     return c ? c.getAttribute('data-sv-page') : (document.body.dataset.page || '');
   };
   const deckOf = (el) => fill(el.dataset.deck || '', { page: pageOf(el) });
 
-  function makeChip(text, deck, from, to, prefix) {
+  function makeChip(text, deck, from, to, prefix, label) {
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'sv-chip'; b.textContent = text;
     b.dataset.deck = deck; b.dataset.from = from; b.dataset.to = to;
     if (prefix) b.dataset.prefix = prefix;
+    if (label) b.dataset.deckLabel = label;
     prepChip(b);
     return b;
   }
@@ -89,10 +93,13 @@
       const p = byPrefix.get(m[2]);
       const page = m[1] || pageOf(host);
       if (!p || (!page && String(p.deck).includes('{page}'))) continue;
+      const deck = fill(p.deck, { page, prefix: p.prefix });
+      // skipMissing: leave citations of decks the manifest does not list as plain text
+      if (O.skipMissing && manifest && !manifest.decks[deck]) continue;
       const a = +m[3], b = m[4] ? +m[4] : a;
       frag = frag || document.createDocumentFragment();
       frag.append(s.slice(last, m.index));
-      frag.append(makeChip(m[0], fill(p.deck, { page, prefix: p.prefix }), Math.min(a, b), Math.max(a, b), p.prefix));
+      frag.append(makeChip(m[0], deck, Math.min(a, b), Math.max(a, b), p.prefix, p.label ? fill(p.label, { page, prefix: p.prefix }) : ''));
       last = m.index + m[0].length;
     }
     if (!frag) return;
@@ -100,14 +107,15 @@
     node.replaceWith(frag);
   }
 
-  function chipify(root) {
+  // force: scan hosts again even if they were scanned before (text already inside a chip is skipped)
+  function scan(root, force) {
     root = root || document;
     const all = (sel) => [...(root.matches && root.matches(sel) ? [root] : []), ...root.querySelectorAll(sel)];
     all('.sv-ref').forEach(upgrade);
     all('.sv-chip').forEach(prepChip);
     if (!RX || !O.selectors) return;
     all(O.selectors).forEach((host) => {
-      if (host.dataset.svScanned !== undefined) return;
+      if (host.dataset.svScanned !== undefined && !force) return;
       host.dataset.svScanned = '';
       if (host.closest(SKIP)) return;
       const walker = document.createTreeWalker(host, NodeFilter.SHOW_TEXT);
@@ -116,6 +124,12 @@
       while ((t = walker.nextNode())) if (!t.parentElement.closest(SKIP)) nodes.push(t);
       nodes.forEach((n) => chipText(n, host));
     });
+  }
+  /** Turn citations under root into chips. With skipMissing on, this waits for the manifest. */
+  function chipify(root, force) {
+    if (O.skipMissing && RX && O.selectors && !manifest) return load().then(() => scan(root, force));
+    scan(root, force);
+    return Promise.resolve();
   }
 
   // ---------------------------------------------------------------- popover
@@ -228,7 +242,7 @@
   };
   const vals = (i) => {
     const d = deckInfo() || {};
-    return { deck: cur.deck, deckLabel: d.label || cur.deck, prefix: cur.prefix, n: i, total: d.n || '', from: cur.a, to: cur.b };
+    return { deck: cur.deck, deckLabel: d.label || cur.label || cur.deck, prefix: cur.prefix, n: i, total: d.n || '', from: cur.a, to: cur.b };
   };
 
   function go(i) {
@@ -260,7 +274,7 @@
   }
 
   function showMissing() {
-    cap.textContent = cur.deck; rng.textContent = ''; pos.textContent = '';
+    cap.textContent = cur.label || cur.deck; rng.textContent = ''; pos.textContent = '';
     foot.hidden = true;
     frame.style.aspectRatio = '4 / 3';
     img.style.opacity = 0; img.removeAttribute('aria-label');
@@ -273,7 +287,8 @@
       if (!pop) build();
       setAnchor(anchorEl);
       const prefix = (anchorEl && anchorEl.dataset && anchorEl.dataset.prefix) || (m.decks[deck] && m.decks[deck].prefix) || '';
-      cur = { deck: String(deck), a, b, i: a, prefix, missing: !m.decks[deck] };
+      const label = (anchorEl && anchorEl.dataset && anchorEl.dataset.deckLabel) || '';
+      cur = { deck: String(deck), a, b, i: a, prefix, label, missing: !m.decks[deck] };
       pop.hidden = false;
       if (cur.missing) showMissing(); else go(Math.min(a, Math.max(1, num(m.decks[deck].n, 1))));
       place();
@@ -292,6 +307,6 @@
     });
   });
 
-  Study.sources = { open, close: () => close(false), chipify, load, frame: (deck, n) => (manifest && manifest.decks[deck] ? frameOf(deck, manifest.decks[deck], n).url : null) };
-  Study.define(NAME, { enhance(root) { chipify(root); } });
+  Study.sources = { open, close: () => close(false), chipify: (root) => chipify(root, true), load, frame: (deck, n) => (manifest && manifest.decks[deck] ? frameOf(deck, manifest.decks[deck], n).url : null) };
+  Study.define(NAME, { enhance(root) { chipify(root, false); } });
 })();
