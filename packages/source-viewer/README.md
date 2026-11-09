@@ -23,6 +23,7 @@ root). `python3 tools/study.py new <dir> --demo` ships placeholder decks you can
 |---|---|---|
 | `base` | `"assets/sources/"` | Folder of the manifest and images, relative to the built pages |
 | `manifestGlobal` | `"STUDY_SOURCES"` | Global variable that `index.js` sets |
+| `viewer` | `true` | `false`: chips keep their look but are plain labels (no popover, no images). With `skipMissing` the manifest is still read |
 | `selectors` | `".ref, .src, cite"` | Elements whose text is scanned for citations; `""` turns auto chips off |
 | `skip` | `""` | Extra selector of elements never scanned (e.g. `".quiz .lbl"`) |
 | `patterns` | `[{"prefix": "s", "deck": "{page}s"}]` | Citation texts that become chips (below) |

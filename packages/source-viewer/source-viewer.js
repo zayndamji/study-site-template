@@ -7,6 +7,7 @@
    Images: manifest <base>index.js (window.<manifestGlobal> = {decks: {…}}), falling back to
    <base>index.json. Each deck is either sprite sheets (<deck>-<kk>.webp, cols×rows frames
    each) or one file per frame (deck.pattern, e.g. "{deck}/{n:03}.webp").
+   viewer: false keeps the chips but makes them inert <span>s (for a copy published without the images).
    API: Study.sources.open(deck, from, to, anchorEl) · .close() · .chipify(root) (rescans root, e.g. after
    a widget rewrote its text) · .load()
    ========================================================================== */
@@ -17,6 +18,8 @@
   const base = O.base === undefined ? 'assets/sources/' : String(O.base || '');
   const num = (v, d) => (isFinite(+v) && v !== null && v !== '' ? +v : d);
   const GLOBAL = O.manifestGlobal || 'STUDY_SOURCES';
+  // viewer: false → chips are inert labels (same look, no popover, no images needed)
+  const VIEWER = O.viewer !== false;
 
   // "{n}", "{n:03}" (zero-padded); unknown fields stay as written
   const fill = (tpl, vals) => String(tpl === undefined || tpl === null ? '' : tpl)
@@ -63,8 +66,9 @@
   const deckOf = (el) => fill(el.dataset.deck || '', { page: pageOf(el) });
 
   function makeChip(text, deck, from, to, prefix, label) {
-    const b = document.createElement('button');
-    b.type = 'button'; b.className = 'sv-chip'; b.textContent = text;
+    const b = document.createElement(VIEWER ? 'button' : 'span');
+    if (VIEWER) b.type = 'button';
+    b.className = 'sv-chip'; b.textContent = text;
     b.dataset.deck = deck; b.dataset.from = from; b.dataset.to = to;
     if (prefix) b.dataset.prefix = prefix;
     if (label) b.dataset.deckLabel = label;
@@ -74,6 +78,7 @@
   function prepChip(b) {
     if (b.dataset.svReady !== undefined) return;
     b.dataset.svReady = '';
+    if (!VIEWER) { b.classList.add('sv-static'); return; }
     if (b.tagName === 'BUTTON') b.type = 'button';
     if (!b.title && O.chipTitle) b.title = O.chipTitle;
     b.setAttribute('aria-haspopup', 'dialog');
@@ -81,7 +86,7 @@
   }
   // <span class="sv-ref" data-deck … > → <button class="sv-chip" …>
   function upgrade(span) {
-    const b = document.createElement('button');
+    const b = document.createElement(VIEWER ? 'button' : 'span');
     [...span.attributes].forEach((a) => { if (a.name !== 'class') b.setAttribute(a.name, a.value); });
     b.className = ['sv-chip', ...[...span.classList].filter((c) => c !== 'sv-ref')].join(' ');
     while (span.firstChild) b.append(span.firstChild);
@@ -116,7 +121,13 @@
     root = root || document;
     const all = (sel) => [...(root.matches && root.matches(sel) ? [root] : []), ...root.querySelectorAll(sel)];
     all('.sv-ref').forEach(upgrade);
-    all('.sv-chip').forEach(prepChip);
+    all('.sv-chip').forEach(VIEWER ? prepChip : (b) => {
+      if (b.tagName !== 'BUTTON') { prepChip(b); return; }
+      const s = document.createElement('span');
+      [...b.attributes].forEach((a) => { if (a.name !== 'type') s.setAttribute(a.name, a.value); });
+      while (b.firstChild) s.append(b.firstChild);
+      b.replaceWith(s); prepChip(s);
+    });
     if (!RX || !O.selectors) return;
     all(O.selectors).forEach((host) => {
       if (host.dataset.svScanned !== undefined && !force) return;
@@ -301,7 +312,7 @@
   }
 
   document.addEventListener('click', (e) => {
-    const b = e.target.closest && e.target.closest('.sv-chip');
+    const b = VIEWER && e.target.closest && e.target.closest('.sv-chip');
     if (!b || (pop && pop.contains(b))) return;
     e.preventDefault();
     if (anchor === b && pop && !pop.hidden) { close(false); return; }

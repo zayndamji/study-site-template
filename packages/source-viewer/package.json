@@ -21,6 +21,10 @@
       "default": "STUDY_SOURCES",
       "description": "Name of the global variable that index.js sets (window.<name> = {decks: …})."
     },
+    "viewer": {
+      "default": true,
+      "description": "false keeps the chips (same look) but makes them plain labels: no popover and no images, e.g. for a copy published without the source images. The manifest is still read when skipMissing is on, so keep index.js / index.json."
+    },
     "selectors": {
       "default": ".ref, .src, cite",
       "description": "CSS selector of the elements whose text is scanned for citations like \"s12\" or \"s12–14\" (see patterns). Empty string turns automatic chips off; explicit .sv-chip / .sv-ref markup still works."

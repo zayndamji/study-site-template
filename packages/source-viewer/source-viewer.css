@@ -11,6 +11,8 @@
 .sv-chip:hover, .sv-chip:focus-visible { border-color: var(--term); outline: none; }
 .sv-chip::before { content: var(--sv-chip-icon); font-size: 0.85em; margin-right: 3px; opacity: 0.7; }
 .lbl .sv-chip, .src .sv-chip, cite .sv-chip { font-size: 0.75rem; }
+.sv-chip.sv-static { cursor: default; }
+.sv-chip.sv-static:hover { border-color: transparent; }
 .sv-chip.on { border-color: var(--term); background: var(--term); color: var(--surface); }
 
 .sv-pop {
