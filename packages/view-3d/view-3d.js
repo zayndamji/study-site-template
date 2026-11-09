@@ -68,8 +68,8 @@
       if (L < 1) return null;
       const grp = el('g', { class: cls || '' }, g);
       const ux = (q[0] - p[0]) / L, uy = (q[1] - p[1]) / L, s = Math.min(num(opts.arrowHead, 11), L * 0.5);
-      el('line', { x1: p[0], y1: p[1], x2: q[0] - ux * s * 0.8, y2: q[1] - uy * s * 0.8 }, grp);
-      el('polygon', { class: 'plot-head', points: [q[0], q[1], q[0] - ux * s - uy * s * 0.45, q[1] - uy * s + ux * s * 0.45, q[0] - ux * s + uy * s * 0.45, q[1] - uy * s - ux * s * 0.45].join(',') }, grp);
+      el('line', { x1: p[0], y1: p[1], x2: q[0] - ux * s * 0.8, y2: q[1] - uy * s * 0.8, class: cls || '' }, grp);
+      el('polygon', { class: ('plot-head ' + (cls || '')).trim(), points: [q[0], q[1], q[0] - ux * s - uy * s * 0.45, q[1] - uy * s + ux * s * 0.45, q[0] - ux * s + uy * s * 0.45, q[1] - uy * s - ux * s * 0.45].join(',') }, grp);
       return grp;
     };
     /** The three axes from −R to R with their names (default from the axisNames option). */

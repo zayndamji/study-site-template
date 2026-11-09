@@ -40,6 +40,11 @@
       "default": [],
       "description": "Up to four CSS colours for c1…c4 in dark mode. Empty = same as \"colors\" (or the core tokens).",
       "private": true
+    },
+    "colorNames": {
+      "default": {},
+      "private": true,
+      "description": "Extra colour class names, each mapped to a palette slot 1–4, a core token name (e.g. \"ink\", \"muted\", \"term\") or a CSS colour: {\"blue\": 1, \"grey\": \"muted\"}. Lets existing markup keep its own class names."
     }
   }
 }

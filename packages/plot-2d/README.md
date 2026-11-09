@@ -23,6 +23,7 @@ Requires `math-kit` (added automatically).
 | `hitRadius` | `16` | Radius of the invisible touch target around a handle. |
 | `colors` | `[]` | Up to four CSS colours for `c1`…`c4` in light mode; empty = core tokens. |
 | `darkColors` | `[]` | Up to four CSS colours for `c1`…`c4` in dark mode. |
+| `colorNames` | `{}` | Extra colour class names mapped to a slot `1`–`4`, a core token (`"ink"`, `"muted"`) or a CSS colour, e.g. `{"blue": 1, "grey": "muted"}`. |
 
 Without `colors`, `c1`…`c4` are `--term`, `--bad`, `--ok`, `--warn-edge`. The palette is also
 available as CSS variables `--plot-c1`…`--plot-c4`.
@@ -96,7 +97,7 @@ render();
 ## Notes for migrating existing notes
 
 The API matches the common hand-rolled `Plane`/`drag` helpers, with these differences: the
-plane clears the svg first; `arrow` returns a `<g>` whose class colours both shaft and head; `dot`
-defaults to radius 4. Map old colour classes onto `c1`…`c4` (or add rules for them in
-`custom/site.css` using `--pc`, e.g. `svg.plane .blue { --pc: var(--term); }`). Remove page-level
-`svg.plane` CSS once this package is on. Keyboard dragging of handles is not built in.
+plane clears the svg first; `arrow` returns a `<g>` (the class is also set on its shaft and head,
+so CSS written for `line.cls` keeps working); `dot` defaults to radius 4. Keep old colour class
+names with the `colorNames` option instead of renaming markup. Remove page-level `svg.plane` CSS
+once this package is on. Keyboard dragging of handles is not built in.
