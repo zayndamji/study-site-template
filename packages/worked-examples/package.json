@@ -5,15 +5,48 @@
   "category": "content",
   "version": "1.0.0",
   "requires": [],
-  "css": ["worked-examples.css"],
-  "js": ["worked-examples.js"],
+  "css": [
+    "worked-examples.css"
+  ],
+  "js": [
+    "worked-examples.js"
+  ],
   "options": {
-    "solutionLabel": { "default": "Show solution", "description": "Text for an empty or missing <summary> in details.exm-sol." },
-    "loadLabel": { "default": "Load in widget", "description": "Text for a load button left empty in the markup." },
-    "numbering": { "default": true, "description": "Fill each empty .exm-n with its number on the page (cards that already have text are left alone)." },
-    "numberLabel": { "default": "Example {n}", "description": "Text for automatic numbering; {n} is the card's position on the page." },
-    "eventName": { "default": "load", "description": "Name of the CustomEvent a load button dispatches on its target. Change it if a target is an element that fires native load events (img, iframe, svg)." },
-    "scroll": { "default": true, "description": "Scroll the target into view after loading (smooth unless the reader prefers reduced motion)." },
-    "flashMs": { "default": 1200, "description": "How long the target keeps the exm-flash highlight, in milliseconds; 0 = no highlight." }
+    "solutionLabel": {
+      "default": "Show solution",
+      "description": "Text for an empty or missing <summary> in details.exm-sol."
+    },
+    "loadLabel": {
+      "default": "Load in widget",
+      "description": "Text for a load button left empty in the markup."
+    },
+    "numbering": {
+      "default": true,
+      "description": "Fill each empty .exm-n with its number on the page (cards that already have text are left alone)."
+    },
+    "numberLabel": {
+      "default": "Example {n}",
+      "description": "Text for automatic numbering; {n} is the card's position on the page."
+    },
+    "eventName": {
+      "default": "load",
+      "description": "Name of the CustomEvent a load button dispatches on its target. Change it if a target is an element that fires native load events (img, iframe, svg)."
+    },
+    "scroll": {
+      "default": true,
+      "description": "Scroll the target into view after loading (smooth unless the reader prefers reduced motion)."
+    },
+    "flashMs": {
+      "default": 1200,
+      "description": "How long the target keeps the exm-flash highlight, in milliseconds; 0 = no highlight."
+    },
+    "selector": {
+      "default": ".exm [data-target], .exm-load[data-target]",
+      "description": "CSS selector of the load buttons the package wires up. A matched element needs data-target and either data-load or data-load-<key> attributes; anything else is left to the page's own script."
+    },
+    "fillFields": {
+      "default": true,
+      "description": "When the loaded value is an object, write each key into the target's form controls that have a matching data-field or name (firing input and change), before the load event."
+    }
   }
 }
