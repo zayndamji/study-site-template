@@ -32,7 +32,7 @@ It requires `memory-diagram`, `code-blocks` and `widget-presets` (added automati
 | `resetLabel` `backLabel` `stepLabel` `overLabel` `outLabel` `playLabel` `pauseLabel` `endLabel` | Reset, Back, Step, Step over, Step out, Play, Pause, Run to end | Buttons |
 | `countLabel` | `"Step {k} of {n}"` | Status |
 | `codeLabel` `exprLabel` `stackLabel` `treeLabel` `stateLabel` `outputLabel` `statsLabel` | Code, Expression, Call stack, Call tree, State, Output, Counts | Pane headings |
-| `callsLabel` `depthLabel` `maxDepthLabel` `returnsOrderLabel` | Calls so far, Depth now, Deepest so far, Returned, in order | Counters |
+| `callsLabel` `depthLabel` `maxDepthLabel` `returnsOrderLabel` `tagCountLabel` | Calls so far, Depth now, Deepest so far, Returned, in order, Marked “{note}” | Counters (one tag row per note used with `rx.tag`) |
 | `returnsLabel`, `treeReturn`, `frameName`, `mainName` | `"returns"`, `"→ {value}"`, `"{name}()"`, `"main()"` | Frame row on return, tree note, frame names |
 | `startText` `callText` `returnText` `returnVoidText` `printText` `setText` `lineText` `endText` `endValueText` | see `study.py info recursion-explorer` | The sentence shown for each step unless the program gives one with `rx.note` |
 | `limitText`, `depthText`, `errorText`, `ownValues` | | Messages |
@@ -71,6 +71,7 @@ Study.recursion.mount('#my-explorer', {
 | `views` | panes to show, in this order of preference: `code expr stack tree state output stats` (default all; a pane the run never uses hides itself) |
 | `steps` | `"all"` (default: every event is a step) or `"calls"` (calls, returns, output and state only) |
 | `mainName`, `mainFrame` | the driver frame's name; `false` hides that frame |
+| `frameName` | this widget's frame names (`{name}`, `{call}`), overriding the `frameName` option |
 | `above` | static frames drawn above the driver, e.g. `[{ "name": "main()" }]` |
 | `stackScene`, `treeScene` | extra memory-diagram scene keys for the stack (e.g. `base: ["Text"]`) and the tree (e.g. `arrows`) |
 | `treeMain` | `true` puts the driver at the root of the tree even with one top-level call |

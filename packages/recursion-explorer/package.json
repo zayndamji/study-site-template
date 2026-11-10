@@ -179,6 +179,10 @@
     "errorText": {
       "default": "The program stopped with an error: {message}",
       "description": "Shown when the program throws."
+    },
+    "tagCountLabel": {
+      "default": "Marked “{note}”",
+      "description": "Counter row for calls tagged with a note (rx.tag(mark, note)); {note} is the note."
     }
   }
 }

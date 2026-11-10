@@ -102,7 +102,7 @@
 
   /** The state after events[0..k]. */
   function stateAt(run, k) {
-    const st = { stack: [], calls: [], output: [], shows: {}, line: null, note: '', lastPrint: -1, depth: 0, maxDepth: 0, nCalls: 0, returned: [], done: null };
+    const st = { tags: new Map(), stack: [], calls: [], output: [], shows: {}, line: null, note: '', lastPrint: -1, depth: 0, maxDepth: 0, nCalls: 0, returned: [], done: null };
     const info = new Map(); // id → {vars: Map, wait, resolved, ret, mark, tagNote, line}
     const get = (id) => { if (!info.has(id)) info.set(id, { vars: new Map(), wait: null, resolved: null, ret: undefined, mark: '', tagNote: '', line: null }); return info.get(id); };
     let live = [0];
@@ -135,7 +135,7 @@
         case 'print': st.output.push(e.text); st.lastPrint = i; break;
         case 'set': me.vars.set(e.name, e.value); break;
         case 'show': st.shows[e.key] = e.scene; break;
-        case 'tag': me.mark = e.mark || ''; me.tagNote = e.note || ''; break;
+        case 'tag': me.mark = e.mark || ''; me.tagNote = e.note || ''; if (e.note) st.tags.set(e.note, (st.tags.get(e.note) || 0) + 1); break;
         case 'note': if (i === k) st.note = e.html; break;
         default: break;
       }
@@ -219,7 +219,8 @@
       const f = run.frames[id], i = st.info.get(id) || { vars: new Map() };
       if (f.main && spec.mainFrame === false) return;
       const vars = [...i.vars].map(([name, value]) => ({ name, value }));
-      const fr = { name: f.main ? f.label : t('frameName', { name: f.name, call: f.label }), vars };
+      const fname = spec.frameName ? String(spec.frameName).replace('{name}', f.name).replace('{call}', f.label) : t('frameName', { name: f.name, call: f.label });
+      const fr = { name: f.main ? f.label : fname, vars };
       if (id === st.top) fr.on = true;
       if (id === st.done) {
         fr.done = true;
@@ -395,6 +396,7 @@
         row('depthLabel', Math.max(0, st.depth));
         row('maxDepthLabel', st.maxDepth);
         if (spec.showReturns !== false) row('returnsOrderLabel', st.returned.filter((v) => v !== undefined).join(', ') || '—');
+        st.tags.forEach((c, note) => { dl.appendChild(el('dt', {}, t('tagCountLabel', { note }))); dl.appendChild(el('dd', {}, String(c))); });
         vStats.body.appendChild(dl);
       }
       bar.querySelector('[data-a="back"]').disabled = k === 0;
