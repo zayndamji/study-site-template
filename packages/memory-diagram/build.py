@@ -52,7 +52,7 @@ def check(ctx, opts, outputs):
             if 'steps' in cfg:
                 if not cfg['steps']:
                     problems.append(f'{where}: "steps" is empty')
-                parts = ('stack', 'heap', 'tree', 'array', 'layout')
+                parts = ('stack', 'heap', 'tree', 'array', 'grid', 'layout')
                 base = {k: cfg[k] for k in parts if k in cfg}
                 for s in cfg['steps']:
                     base = dict(base, **{k: s[k] for k in parts if k in s})
@@ -67,6 +67,6 @@ def check(ctx, opts, outputs):
                     to = c.get('ptr')
                     if to and str(to).split('#')[0].split('.')[0] not in ids:
                         problems.append(f'{where}' + (f' (step {k + 1})' if len(scenes) > 1 else '') + f': pointer to unknown heap object {to!r}')
-                if sc.get('layout') != 'memory' and not any(sc.get(p) for p in ('stack', 'heap', 'tree', 'array')):
-                    problems.append(f'{where}' + (f' (step {k + 1})' if len(scenes) > 1 else '') + ': nothing to draw (no stack, heap, tree or array)')
+                if sc.get('layout') != 'memory' and not any(sc.get(p) for p in ('stack', 'heap', 'tree', 'array', 'grid')):
+                    problems.append(f'{where}' + (f' (step {k + 1})' if len(scenes) > 1 else '') + ': nothing to draw (no stack, heap, tree, array or grid)')
     return problems

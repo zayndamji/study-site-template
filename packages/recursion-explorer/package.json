@@ -1,0 +1,184 @@
+{
+  "name": "recursion-explorer",
+  "title": "Recursion explorer",
+  "description": "Runs a recursive function for real and steps through the run: the current line, the call stack, the call tree growing in call order with return values, the output, a nested expression and counters, all in sync.",
+  "category": "widgets",
+  "version": "1.0.0",
+  "requires": [
+    "memory-diagram",
+    "code-blocks",
+    "widget-presets"
+  ],
+  "css": [
+    "recursion-explorer.css"
+  ],
+  "js": [
+    "recursion-explorer.js"
+  ],
+  "options": {
+    "classPrefix": {
+      "default": "rx-",
+      "description": "Prefix of the classes on the host and generated elements."
+    },
+    "maxSteps": {
+      "default": 3000,
+      "description": "Stop recording after this many events (a runaway recursion stays harmless)."
+    },
+    "maxDepth": {
+      "default": 200,
+      "description": "Stop recording when calls nest deeper than this."
+    },
+    "speed": {
+      "default": 700,
+      "description": "Milliseconds between steps while playing."
+    },
+    "resetLabel": {
+      "default": "Reset",
+      "description": "Button: back to the first step."
+    },
+    "backLabel": {
+      "default": "Back",
+      "description": "Button: previous step."
+    },
+    "stepLabel": {
+      "default": "Step",
+      "description": "Button: next step (into calls)."
+    },
+    "overLabel": {
+      "default": "Step over",
+      "description": "Button: run the next call to completion."
+    },
+    "outLabel": {
+      "default": "Step out",
+      "description": "Button: run until the current call returns."
+    },
+    "playLabel": {
+      "default": "Play",
+      "description": "Button: step automatically."
+    },
+    "pauseLabel": {
+      "default": "Pause",
+      "description": "Button while playing."
+    },
+    "endLabel": {
+      "default": "Run to end",
+      "description": "Button: jump to the last step."
+    },
+    "countLabel": {
+      "default": "Step {k} of {n}",
+      "description": "Status: {k} = current step, {n} = number of steps."
+    },
+    "codeLabel": {
+      "default": "Code",
+      "description": "Heading of the code pane."
+    },
+    "exprLabel": {
+      "default": "Expression",
+      "description": "Heading of the nested-expression pane (calls given a \"wait\" template)."
+    },
+    "stackLabel": {
+      "default": "Call stack",
+      "description": "Heading of the stack pane."
+    },
+    "treeLabel": {
+      "default": "Call tree",
+      "description": "Heading of the call-tree pane (click a call to jump to it)."
+    },
+    "stateLabel": {
+      "default": "State",
+      "description": "Heading of the pane with rx.show() scenes."
+    },
+    "outputLabel": {
+      "default": "Output",
+      "description": "Heading of the output pane."
+    },
+    "statsLabel": {
+      "default": "Counts",
+      "description": "Heading of the counters pane."
+    },
+    "callsLabel": {
+      "default": "Calls so far",
+      "description": "Counter: calls made so far."
+    },
+    "depthLabel": {
+      "default": "Depth now",
+      "description": "Counter: calls in progress."
+    },
+    "maxDepthLabel": {
+      "default": "Deepest so far",
+      "description": "Counter: most calls in progress at once."
+    },
+    "returnsOrderLabel": {
+      "default": "Returned, in order",
+      "description": "Counter: values returned so far, in order."
+    },
+    "returnsLabel": {
+      "default": "returns",
+      "description": "Row added to a frame on the step where it returns."
+    },
+    "treeReturn": {
+      "default": "→ {value}",
+      "description": "Note beside a call in the tree once it has returned."
+    },
+    "frameName": {
+      "default": "{name}()",
+      "description": "Name of a call's stack frame; {name} = function name, {call} = the call with its arguments."
+    },
+    "mainName": {
+      "default": "main()",
+      "description": "Name of the driver frame (spec mainName overrides it)."
+    },
+    "ownValues": {
+      "default": "Your own values.",
+      "description": "Preset note after the reader edits an input."
+    },
+    "startText": {
+      "default": "{call} starts.",
+      "description": "Step note: the driver starts."
+    },
+    "callText": {
+      "default": "{caller} calls {call}.",
+      "description": "Step note: a call."
+    },
+    "returnText": {
+      "default": "{call} returns {value}.",
+      "description": "Step note: a return with a value."
+    },
+    "returnVoidText": {
+      "default": "{call} returns.",
+      "description": "Step note: a return without a value."
+    },
+    "printText": {
+      "default": "{call} prints {text}.",
+      "description": "Step note: output."
+    },
+    "setText": {
+      "default": "{call} sets {name} to {value}.",
+      "description": "Step note: a local variable changes."
+    },
+    "lineText": {
+      "default": "{call} runs line {line}.",
+      "description": "Step note: a line runs."
+    },
+    "endText": {
+      "default": "Done.",
+      "description": "Step note: the run is over."
+    },
+    "endValueText": {
+      "default": "Done: the result is {value}.",
+      "description": "Step note: the run is over and the driver returned a value."
+    },
+    "limitText": {
+      "default": "Stopped after {n} steps.",
+      "description": "Shown when maxSteps is reached."
+    },
+    "depthText": {
+      "default": "Stopped: more than {n} calls deep.",
+      "description": "Shown when maxDepth is reached."
+    },
+    "errorText": {
+      "default": "The program stopped with an error: {message}",
+      "description": "Shown when the program throws."
+    }
+  }
+}

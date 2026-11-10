@@ -40,7 +40,7 @@ It requires `code-blocks` (added automatically), which highlights the tracer's c
   <script type="application/json">{ "code": "…", "lang": "cpp", "steps": [ {scene + line, note, out}, … ] }</script></div>
 ```
 
-**Scene** (any mix of the parts; they are drawn top to bottom: memory, tree, array):
+**Scene** (any mix of the parts; they are drawn top to bottom: memory, tree, array, grid):
 
 | Key | Meaning |
 |---|---|
@@ -51,9 +51,10 @@ It requires `code-blocks` (added automatically), which highlights the tracer's c
 | `layout` | `"columns"` (default: heap to the right of the stack) or `"rows"` (heap below) |
 | layout `"memory"` | one memory column: frames stacked at the top (a frame's name and its first variable share a row), free space with growth arrows, the heap band with its objects, then `base` bands; keys `base` (e.g. `["Text"]`), `gap` (free space, default 70; 0 = none), `grow` (`false` hides the arrows), `regionLabels` (`true` writes the stack and heap labels beside the column), `addresses` (`{top, bottom}` labels beside it, e.g. `"0"`) |
 | `regionLabels` | other layouts: `false` hides the "Stack" / "Heap" headings |
-| `tree` | `{v, l, r}` (binary) or `{v, c: [children]}`; each node may have `on`, `dim`, `e` (label on the edge from its parent), `note` (text to its right) |
+| `tree` | `{v, l, r}` (binary) or `{v, c: [children]}`; each node may have `on`, `dim`, `mark` (`ok` / `bad` / `path`), `key` (written as `data-key` on the node, for scripts), `e` (label on the edge from its parent), `note` (text to its right) |
 | `arrows`, `spacing`, `levelGap` | tree edges with arrowheads; extra horizontal space between nodes (default 14); vertical distance between levels (default 64) |
 | `array` | `[cell]` or `{cells, index: true \| first index, label}` |
+| `grid` | rows of cells `[[cell, …], …]` or `{cells, index: true, label}`; a cell may have `kind`: `wall`, `path`, `goal`, `bad` (and `on`, `dim`) |
 | `title`, `note`, `scale` | accessible title; a line under a figure (HTML; source chips work); display scale (default 1) |
 
 **Tracer**: `code` (plain text, `\n` between lines), `lang` (a code-blocks language), `codeTitle`, and

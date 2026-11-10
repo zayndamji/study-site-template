@@ -1,6 +1,6 @@
 /* ==========================================================================
    memory-diagram — memory pictures (stack frames, heap objects, pointer arrows,
-   linked nodes), trees (binary or any arity) and arrays, drawn as SVG from a JSON
+   linked nodes), trees (binary or any arity), arrays and grids, drawn as SVG from a JSON
    scene; and a tracer that steps through a list of scenes beside a code listing.
    --------------------------------------------------------------------------
    Markup: <div class="md-figure"> (one scene) or <div class="widget md-trace">
@@ -166,8 +166,9 @@
     const gap = scene.gap === undefined ? 70 : scene.gap;
     if (gap > 0) {
       const ax = cx + colW / 2;
-      if (scene.grow !== false && stack.length) el('path', Object.assign(role('grow'), { d: `M${ax},${y + 6} L${ax},${y + 26}`, 'marker-end': 'url(#' + reg.mk + '-grow)' }), g);
-      if (scene.grow !== false && (heap.length || base.length)) el('path', Object.assign(role('grow'), { d: `M${ax},${y + gap - 6} L${ax},${y + gap - 26}`, 'marker-end': 'url(#' + reg.mk + '-grow)' }), g);
+      const len = Math.min(20, (gap - 16) / 2);
+      if (len >= 8 && scene.grow !== false && stack.length) el('path', Object.assign(role('grow'), { d: `M${ax},${y + 5} L${ax},${y + 5 + len}`, 'marker-end': 'url(#' + reg.mk + '-grow)' }), g);
+      if (len >= 8 && scene.grow !== false && (heap.length || base.length)) el('path', Object.assign(role('grow'), { d: `M${ax},${y + gap - 5} L${ax},${y + gap - 5 - len}`, 'marker-end': 'url(#' + reg.mk + '-grow)' }), g);
       y += gap;
     }
     if (heap.length) {
@@ -266,7 +267,9 @@
     const L = layoutTree(scene.tree);
     if (!L.nodes.length) return { w: 0, h: 0 };
     const wOf = (n) => Math.max(34, str(n.v).length * CH + 16);
-    const sw = Math.max(...L.nodes.map((m) => wOf(m.n))) + (scene.spacing || 14);
+    const noteW = (n) => (n.note !== undefined && str(n.note) !== '' ? str(n.note).length * CH_S + 8 : 0);
+    // a slot fits the widest node plus its side note (notes sit to the right)
+    const sw = Math.max(...L.nodes.map((m) => wOf(m.n) + noteW(m.n))) + (scene.spacing || 14);
     const vh = scene.levelGap || 64;
     const pos = (m) => ({ x: x0 + m.slot * sw + sw / 2, y: y0 + m.depth * vh + 16 });
     let w = 0, h = 0;
@@ -283,7 +286,8 @@
     });
     L.nodes.forEach((m) => {
       const p = pos(m), nw = wOf(m.n);
-      const ng = el('g', role('tnode', [m.n.on && 'on', m.n.dim && 'dim'].filter(Boolean).join(' ')), g);
+      const ng = el('g', role('tnode', [m.n.on && 'on', m.n.dim && 'dim', m.n.mark].filter(Boolean).join(' ')), g);
+      if (m.n.key !== undefined) { ng.setAttribute('data-key', String(m.n.key)); ng.setAttribute('tabindex', '-1'); }
       el('rect', { x: p.x - nw / 2, y: p.y - CELL_H / 2, width: nw, height: CELL_H, rx: 4 }, ng);
       text(ng, p.x, p.y + 5, str(m.n.v), Object.assign(role('val'), { 'text-anchor': 'middle' }));
       if (m.n.note !== undefined) text(ng, p.x + nw / 2 + 6, p.y + 5, str(m.n.note), role('tnote'));
@@ -308,6 +312,29 @@
     return { w: x - x0, h: CELL_H + (a.index !== undefined && a.index !== false ? 16 : 0) };
   }
 
+  // ---- grid part --------------------------------------------------------------
+  // grid: [[cell, …], …] or {cells: rows, index: true, label}; cell: "x" or {value, on, dim, kind: wall|path|goal|bad}
+  function gridPart(scene, g, x0, y0) {
+    const G = Array.isArray(scene.grid) ? { cells: scene.grid } : scene.grid;
+    const rows = (G.cells || []).map((r) => r.map(norm));
+    const cols = Math.max(0, ...rows.map((r) => r.length));
+    const sz = Math.max(CELL_H, ...rows.flat().map((c) => str(c.value).length * CH + 12));
+    const ix = G.index ? 22 : 0;
+    let y = y0;
+    if (G.label) { text(g, x0, y + 13, str(G.label), role('olabel')); y += 20; }
+    if (G.index) for (let c = 0; c < cols; c++) text(g, x0 + ix + c * sz + sz / 2, y + 12, String(c), Object.assign(role('idx'), { 'text-anchor': 'middle' }));
+    if (G.index) y += 16;
+    rows.forEach((r, ri) => {
+      if (G.index) text(g, x0 + ix - 6, y + ri * sz + sz / 2 + 4, String(ri), Object.assign(role('idx'), { 'text-anchor': 'end' }));
+      r.forEach((c, ci) => {
+        const cg = el('g', role('gcell', [c.on && 'on', c.dim && 'dim', c.kind].filter(Boolean).join(' ')), g);
+        el('rect', { x: x0 + ix + ci * sz, y: y + ri * sz, width: sz, height: sz }, cg);
+        if (str(c.value)) text(cg, x0 + ix + ci * sz + sz / 2, y + ri * sz + sz / 2 + 5, str(c.value), Object.assign(role('val'), { 'text-anchor': 'middle' }));
+      });
+    });
+    return { w: ix + cols * sz, h: y - y0 + rows.length * sz };
+  }
+
   /** One scene → <svg>. */
   function draw(scene) {
     const mk = P + 'arrow-' + (++uid);
@@ -324,6 +351,7 @@
     if (scene.stack || scene.heap) { const r = memoryPart(scene, g, 4, y, reg); w = Math.max(w, r.w); y += r.h + 18; }
     if (scene.tree) { const r = treePart(scene, g, 4, y, mk); w = Math.max(w, r.w); y += r.h + 18; }
     if (scene.array) { const r = arrayPart(scene, g, 4, y, reg); w = Math.max(w, r.w); y += r.h + 18; }
+    if (scene.grid) { const r = gridPart(scene, g, 4, y); w = Math.max(w, r.w); y += r.h + 18; }
     drawArrows(el('g', {}, svg), reg, mk);
     // the arrows may route below or beyond the boxes: measure them when possible
     let W = w + 12, H = y;
@@ -340,7 +368,7 @@
     if (Study.enhance) Study.enhance(node);
   }
 
-  const PARTS = ['stack', 'heap', 'tree', 'array', 'layout', 'base', 'gap', 'grow', 'regionLabels', 'addresses', 'arrows', 'spacing', 'levelGap', 'scale'];
+  const PARTS = ['stack', 'heap', 'tree', 'array', 'grid', 'layout', 'base', 'gap', 'grow', 'regionLabels', 'addresses', 'arrows', 'spacing', 'levelGap', 'scale'];
 
   /** Turn a .<prefix>figure / .<prefix>trace host into a diagram (or a tracer). */
   function mount(host) {
