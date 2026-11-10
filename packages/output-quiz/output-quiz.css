@@ -1,0 +1,40 @@
+/* output-quiz: "predict the output" widgets (see README.md). */
+.oq .oq-field { margin-top: 12px; }
+.oq .oq-input { font: 0.9rem/1.5 var(--f-mono); font-variant-ligatures: none; width: 100%; box-sizing: border-box; }
+.oq textarea.oq-input { resize: vertical; white-space: pre; overflow-x: auto; tab-size: 4; }
+.oq .oq-input[readonly] { background: var(--surface); color: var(--muted); }
+.oq .oq-controls { margin-bottom: 0; }
+.oq .oq-status { font: 0.8rem var(--f-mono); color: var(--muted); margin-left: auto; }
+.oq .oq-result { margin-top: 12px; }
+.oq .oq-result[hidden], .oq [hidden] { display: none; }
+.oq .oq-verdict { font: 650 0.95rem/1.4 var(--f-display); margin: 0 0 8px; }
+.oq .oq-verdict.ok { color: var(--ok); }
+.oq .oq-verdict.no { color: var(--bad); }
+.oq .oq-verdict.shown { color: var(--warn-ink); }
+
+/* the line-by-line view scrolls inside its own box, never the page */
+.oq .oq-diff { overflow-x: auto; border: 1px solid var(--rule); border-radius: var(--radius-sm); background: var(--paper); }
+.oq .oq-diff:empty { display: none; }
+.oq .oq-table { border-collapse: collapse; min-width: 100%; font: 0.85rem/1.5 var(--f-mono); font-variant-ligatures: none; }
+.oq .oq-table th { font: 600 0.8rem var(--f-display); color: var(--muted); text-align: left; padding: 6px 12px 4px 0; border-bottom: 1px solid var(--rule); }
+.oq .oq-table td { padding: 2px 12px 2px 0; white-space: pre; vertical-align: top; color: var(--ink); }
+.oq .oq-table .oq-n { width: 1%; padding-left: 10px; padding-right: 8px; color: var(--muted); text-align: right; }
+.oq .oq-table .oq-m { width: 1%; padding-right: 10px; font-weight: 700; }
+.oq .oq-table tr.oq-ok .oq-m { color: var(--ok); }
+.oq .oq-table tr.oq-no .oq-m { color: var(--bad); }
+.oq .oq-table tr.oq-no td { background: var(--bad-soft); }
+.oq .oq-table tr.oq-no .oq-exp { background: var(--ok-soft); }
+.oq .oq-table tbody tr:first-child td { padding-top: 6px; }
+.oq .oq-table tbody tr:last-child td { padding-bottom: 6px; }
+.oq .oq-table .oq-none { color: var(--muted); font-style: italic; }
+.oq .oq-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.oq-value .oq-table .oq-n { padding-right: 0; }
+
+.oq .oq-note { margin: 8px 0 0; color: var(--muted); font-size: 0.95rem; }
+.oq .oq-explain-out { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--rule); }
+.oq .oq-explain-out > :first-child { margin-top: 0; }
+.oq .oq-explain-out > :last-child { margin-bottom: 0; }
+
+@media print {
+  .oq .oq-controls { display: none; }
+}

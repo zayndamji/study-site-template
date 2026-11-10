@@ -1,0 +1,50 @@
+/* growth-chart: growth curves and measured points (see README.md). Drawn on a plot-2d plane.
+   Palette: --gc-1 … --gc-8 (the plot-2d colours first, then four more; override in site CSS). */
+:root {
+  --gc-1: var(--plot-c1); --gc-2: var(--plot-c2); --gc-3: var(--plot-c3); --gc-4: var(--plot-c4);
+  --gc-5: #7a3fb0; --gc-6: #0e7a82; --gc-7: #9a5412; --gc-8: var(--muted);
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --gc-5: #c49cf0; --gc-6: #5ccbd2; --gc-7: #e3a866; } }
+:root[data-theme="dark"] { --gc-5: #c49cf0; --gc-6: #5ccbd2; --gc-7: #e3a866; }
+
+.gc-chart .gc-controls { margin-top: 0; }
+.gc-chart .gc-max { flex: 1 1 14rem; }
+.gc-chart .gc-max input[type="range"] { padding: 0; border: 0; background: none; accent-color: var(--term); min-height: 28px; }
+.gc-chart .gc-max-out { font: 600 0.85rem var(--f-mono); color: var(--ink); }
+.gc-chart .gc-log { align-self: flex-end; }
+
+.gc-chart .gc-plot { min-width: 0; }
+.gc-chart svg.gc-svg { touch-action: pan-y; cursor: crosshair; }
+.gc-chart svg.gc-svg:focus-visible { outline: 2px solid var(--term); outline-offset: 2px; }
+.gc-chart svg.gc-svg .gc-curve { stroke-width: 2.2; stroke-linejoin: round; }
+.gc-chart svg.gc-svg .gc-link { stroke-opacity: 0.55; }
+.gc-chart svg.gc-svg .gc-pt { stroke: var(--surface); stroke-width: 1.2; }
+.gc-chart svg.gc-svg .gc-fitline { stroke-opacity: 0.8; }
+.gc-chart svg.gc-svg .gc-guide { stroke: var(--muted); stroke-opacity: 0.7; }
+.gc-chart svg.gc-svg .gc-mark.hollow { fill: none; }
+.gc-chart svg.gc-svg text.gc-title { fill: var(--muted); font-size: 13px; }
+
+.gc-chart .gc-at { margin: 10px 0 6px; font: 600 0.9rem var(--f-display); color: var(--ink); }
+.gc-chart .gc-legend { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr)); gap: 6px 14px; }
+.gc-chart .gc-legend li { display: flex; align-items: center; gap: 8px; min-width: 0; margin: 0; }
+.gc-chart .gc-val { margin-left: auto; font: 0.85rem var(--f-mono); color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.gc-chart .btn.gc-key { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; font-family: var(--f-math); font-weight: 400; font-size: 0.95rem; min-width: 0; }
+.gc-chart .btn.gc-key[aria-pressed="true"] { background: var(--surface); color: var(--ink); border-color: var(--rule); }
+.gc-chart .btn.gc-key[aria-pressed="true"]:hover { border-color: var(--term); }
+.gc-chart .btn.gc-key[aria-pressed="false"] { background: var(--paper); color: var(--muted); border-style: dashed; }
+.gc-chart .btn.gc-key[aria-pressed="false"] + .gc-val { color: var(--muted); }
+.gc-chart .gc-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gc-chart .gc-sw { flex: none; width: 18px; height: 0; border-top: 3px solid var(--gc-c); border-radius: 2px; }
+.gc-chart .gc-sw.gc-dash { border-top-style: dashed; }
+.gc-chart .gc-sw.gc-sw-series { width: 10px; height: 10px; border: 0; border-radius: 50%; background: var(--gc-c); }
+.gc-chart .btn.gc-key[aria-pressed="false"] .gc-sw { opacity: 0.3; }
+.gc-chart .gc-fit { margin-top: 10px; }
+.gc-chart .gc-fit p { margin: 0 0 4px; font-size: 0.95rem; color: var(--muted); }
+.gc-chart .gc-fit[hidden] { display: none; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .gc-chart .gc-sw { transition: opacity 0.15s; }
+}
+@media print {
+  .gc-chart .gc-controls { display: none; }
+}

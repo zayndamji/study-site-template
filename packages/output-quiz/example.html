@@ -1,0 +1,71 @@
+<section class="note" id="oq-print">
+  <h2><span class="n">01</span> What does it print?</h2>
+  <p>Read the loop, type the lines you expect it to print, one per line, and press Check
+  (or Ctrl+Enter). Each line is marked; after three tries, or with Show answer, the expected
+  lines appear next to yours.</p>
+  <div class="widget oq" data-id="oq-demo-even">
+    <div class="lbl">Predict the output · Odd and even</div>
+    <pre data-lang="js">
+      for (let i = 1; i &lt;= 4; i++) {
+        if (i % 2 === 0) console.log(i + " even");
+        else console.log(i);
+      }
+    </pre>
+    <script type="text/plain" class="oq-expected">
+      1
+      2 even
+      3
+      4 even
+    </script>
+    <template class="oq-explain">
+      <p>The loop runs for <span class="m"><i>i</i> = 1, 2, 3, 4</span>. Only the even values take the
+      first branch, so every second line gets the word <code>even</code>.</p>
+    </template>
+  </div>
+</section>
+<section class="note" id="oq-shape">
+  <h2><span class="n">02</span> Unlimited tries</h2>
+  <p>This one allows as many checks as you like and shows the expected lines after every wrong
+  check. Spacing inside a line is ignored, and so are blank lines.</p>
+  <div class="widget oq" data-id="oq-demo-stairs" data-attempts="0" data-show-expected="wrong"
+       data-collapse-spaces="true" data-ignore-blank-lines="true">
+    <div class="lbl">Predict the output · A staircase</div>
+    <pre data-lang="cpp" data-title="stairs.cpp">
+      for (int row = 1; row &lt;= 3; row++) {
+          for (int k = 0; k &lt; row; k++) std::cout &lt;&lt; "#";
+          std::cout &lt;&lt; "\n";
+      }
+    </pre>
+    <script type="text/plain" class="oq-expected">
+      #
+      ##
+      ###
+    </script>
+    <template class="oq-explain">
+      <p>Row <span class="m"><i>r</i></span> prints <span class="m"><i>r</i></span> marks and then ends the line.</p>
+    </template>
+  </div>
+</section>
+<section class="note" id="oq-value">
+  <h2><span class="n">03</span> What does it return?</h2>
+  <p>The value variant has a one-line field. Every line of the expected block is an accepted
+  answer, so quoted and unquoted forms can both count.</p>
+  <div class="widget oq" data-id="oq-demo-repeat" data-mode="value">
+    <div class="lbl">Predict the value · Repeat a tag</div>
+    <pre data-lang="py">
+      def repeat(tag, times):
+          return tag * times
+
+      repeat("ab", 3)
+    </pre>
+    <script type="text/plain" class="oq-expected">
+      ababab
+      "ababab"
+      'ababab'
+    </script>
+    <template class="oq-explain">
+      <p>Multiplying a string by a whole number repeats it, so <code data-lang="py">"ab" * 3</code>
+      is the tag written three times in a row.</p>
+    </template>
+  </div>
+</section>

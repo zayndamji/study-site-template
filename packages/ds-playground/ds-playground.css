@@ -1,0 +1,39 @@
+/* ds-playground: operation buttons, the picture (memory-diagram), step controls, cost counters and the
+   operation log. Styled through data-dsp roles, so the class prefix (option classPrefix) can be anything. */
+[data-dsp="fields"] .field { flex: 1 1 7rem; }
+[data-dsp="ops"] { gap: 6px; margin-top: 4px; }
+[data-dsp="op"] { font-family: var(--f-mono); font-weight: 500; }
+[data-dsp="status"] { margin: 12px 0 2px; font: 600 0.85rem var(--f-display); color: var(--muted); }
+[data-dsp="dia"] { margin: 4px 0; min-height: 44px; overflow-x: auto; }
+[data-dsp="note"] { margin: 4px 0; min-height: 1.5em; font-size: 0.97rem; }
+[data-dsp="stepbar"] { margin: 6px 0; }
+[data-dsp="count"] { font: 0.8rem var(--f-mono); color: var(--muted); }
+[data-dsp="result"] { margin: 8px 0 6px; min-height: 1.5em; font: 0.95rem var(--f-mono); color: var(--ink); overflow-wrap: anywhere; }
+[data-dsp="result"][data-error] { color: var(--bad); }
+[data-dsp="costs"] { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 4px; }
+[data-dsp="cost"] {
+  flex: 1 1 11rem; min-width: 0; padding: 8px 12px; background: var(--paper); border-radius: var(--radius-sm);
+  display: grid; grid-template-columns: auto 1fr auto 1fr; align-items: baseline; gap: 0 6px;
+}
+[data-dsp="cname"] { grid-column: 1 / -1; font: 600 0.85rem var(--f-display); color: var(--ink); margin-bottom: 2px; }
+[data-dsp="cnum"] { font: 650 1.3rem/1.2 var(--f-display); font-variant-numeric: tabular-nums; color: var(--term); }
+[data-dsp="csub"] { font-size: 0.8rem; color: var(--muted); }
+[data-dsp="loghead"] { margin: 12px 0 4px; font: 600 0.85rem var(--f-display); color: var(--muted); }
+[data-dsp="log"] {
+  margin: 0; padding: 6px 10px 6px 2.4em; max-height: 11rem; overflow-y: auto;
+  background: var(--paper); border-radius: var(--radius-sm); font-size: 0.9rem; line-height: 1.45;
+}
+[data-dsp="log"] li { margin: 2px 0; overflow-wrap: anywhere; }
+[data-dsp="log"] code { font-size: 0.85rem; }
+[data-dsp="logitem"].bad [data-dsp="lres"] { color: var(--bad); }
+[data-dsp="lcost"] { color: var(--muted); }
+[data-dsp="logempty"] { list-style: none; margin-left: -1.4em; color: var(--muted); }
+[data-dsp="tools"] { margin-bottom: 0; }
+@media (prefers-reduced-motion: reduce) {
+  [data-dsp="playground"] *, [data-dsp="playground"] *::before { transition: none !important; animation: none !important; }
+  [data-dsp="log"] { scroll-behavior: auto; }
+}
+@media print {
+  [data-dsp="fields"], [data-dsp="ops"], [data-dsp="presets"], [data-dsp="stepbar"], [data-dsp="tools"] { display: none; }
+  [data-dsp="log"] { max-height: none; }
+}

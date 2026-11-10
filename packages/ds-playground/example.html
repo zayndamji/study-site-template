@@ -1,0 +1,149 @@
+<section class="note" id="dsp-vector">
+  <h2><span class="n">01</span> A growable array</h2>
+  <p>A vector keeps its elements side by side in one array. Reading or writing a position is one step, but
+  inserting near the front shifts every later element one place to the right. When the array is full, adding
+  copies everything into a bigger one. Watch the counter: it counts every element moved.</p>
+  <div class="widget dsp-playground" id="dsp-vec">
+    <div class="lbl">Try it · A vector of numbers</div>
+    <script type="application/json">
+    { "kind": "vector", "initial": [3, 8, 1], "capacity": 4, "suggest": [5, 12, 7, 20, 9, 14],
+      "presets": [
+        { "name": "Insert at the front of a long vector", "initial": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          "ops": [["insert", 0, 99]], "note": "Ten elements move to make room: the cost grows with the length." },
+        { "name": "Add at the end", "initial": [1, 2, 3, 4, 5, 6, 7],
+          "ops": [["add", 99]], "note": "Nothing moves, as long as there is room left in the array." },
+        { "name": "Fill past the capacity", "initial": [],
+          "ops": [["add", 1], ["add", 2], ["add", 3], ["add", 4], ["add", 5]], "watch": "all",
+          "note": "Four cheap adds, then one that copies all four elements into a larger array." }
+      ] }
+    </script>
+  </div>
+</section>
+
+<section class="note" id="dsp-lines">
+  <h2><span class="n">02</span> Stacks and queues</h2>
+  <p>A stack only lets you reach its top, like a pile of plates. A queue takes from the front and adds at the
+  back, like a line at a counter. Every operation touches one element, however long they get.</p>
+  <div class="widget dsp-playground" id="dsp-stack">
+    <div class="lbl">Try it · A stack of colours</div>
+    <script type="application/json">
+    { "kind": "stack", "initial": ["red", "blue"], "suggest": ["green", "amber", "teal", "pink", "grey"],
+      "presets": [
+        { "name": "Last in, first out", "initial": [], "ops": [["push", "red"], ["push", "blue"], ["push", "green"], ["pop"]],
+          "note": "The colour pushed last is the first one popped." }
+      ] }
+    </script>
+  </div>
+  <div class="widget dsp-playground" id="dsp-queue">
+    <div class="lbl">Try it · A queue of fruit</div>
+    <script type="application/json">
+    { "kind": "queue", "initial": ["apple", "pear"], "suggest": ["fig", "kiwi", "plum", "lime", "date"] }
+    </script>
+  </div>
+</section>
+
+<section class="note" id="dsp-sorted">
+  <h2><span class="n">03</span> Sets and maps</h2>
+  <p>A set holds each value once; a map links each key to one value. Both are shown in sorted order, and a
+  lookup halves the part still in question at every comparison, so even a long set needs only a few.</p>
+  <div class="widget dsp-playground" id="dsp-set">
+    <div class="lbl">Try it · A set of numbers</div>
+    <script type="application/json">
+    { "kind": "set", "initial": [4, 9, 15, 23, 42, 8, 16], "suggest": [11, 30, 2, 19],
+      "presets": [
+        { "name": "Look for a missing value", "ops": [["contains", 10]],
+          "note": "Three comparisons rule out every position." }
+      ] }
+    </script>
+  </div>
+  <div class="widget dsp-playground" id="dsp-map">
+    <div class="lbl">Try it · Fruit and how many are left</div>
+    <script type="application/json">
+    { "kind": "map", "initial": { "apple": 3, "fig": 7, "pear": 2 }, "fields": { "value": 5 }, "suggest": ["kiwi", "lime", "plum", "date"] }
+    </script>
+  </div>
+</section>
+
+<section class="note" id="dsp-heap">
+  <h2><span class="n">04</span> A priority queue on a heap</h2>
+  <p>A binary heap is a complete tree stored in an array: the children of the entry at index <i>i</i> sit at
+  2<i>i</i> and 2<i>i</i> + 1. Each parent comes before its children, so the first entry is always at the root.
+  A new entry starts at the end and bubbles up; taking the root moves the last entry up and lets it bubble
+  down. Step through either one and count the swaps.</p>
+  <div class="widget dsp-playground" id="dsp-minheap">
+    <div class="lbl">Try it · Smallest number first</div>
+    <script type="application/json">
+    { "kind": "pq-heap", "initial": [5, 9, 7, 12, 10, 8], "suggest": "random",
+      "presets": [
+        { "name": "A new smallest number", "ops": [["enqueue", 1]], "note": "It bubbles all the way to the root: one swap per level." },
+        { "name": "Take the smallest", "ops": [["dequeue"]], "note": "The last entry jumps to the root, then sinks back down." }
+      ] }
+    </script>
+  </div>
+  <p>The same structure with the largest priority first, entries that carry a value, and the array counted from 0:</p>
+  <div class="widget dsp-playground" id="dsp-maxheap">
+    <div class="lbl">Try it · Largest priority first</div>
+    <script type="application/json">
+    { "kind": "pq-heap", "order": "max", "base": 0, "pairs": true,
+      "initial": [["fig", 4], ["kiwi", 9], ["lime", 2]], "fields": { "priority": 6 }, "suggest": ["plum", "date", "pear", "sloe"] }
+    </script>
+  </div>
+</section>
+
+<section class="note" id="dsp-list">
+  <h2><span class="n">05</span> Linked lists</h2>
+  <p>A linked list keeps each value in its own node, with a pointer to the next node. Adding at the front is
+  one step. Reaching position <i>i</i> means walking <i>i</i> nodes from the head; step through and watch
+  the <code>cur</code> pointer move.</p>
+  <div class="widget dsp-playground" id="dsp-ll">
+    <div class="lbl">Try it · A list of numbers</div>
+    <script type="application/json">
+    { "kind": "linked-list", "initial": [4, 8, 15], "suggest": [16, 23, 42, 7],
+      "presets": [
+        { "name": "Add at the front", "initial": [1, 2, 3, 4, 5, 6], "ops": [["addFront", 0]], "note": "No walking at all." },
+        { "name": "Add at the end", "initial": [1, 2, 3, 4, 5, 6], "ops": [["add", 7]], "note": "Without a tail pointer the walk visits every node." }
+      ] }
+    </script>
+  </div>
+</section>
+
+<section class="note" id="dsp-tree">
+  <h2><span class="n">06</span> Binary search trees</h2>
+  <p>In a binary search tree every key to the left of a node is smaller and every key to the right is larger.
+  A search follows one path down, so its cost is at most the height, and the height depends on the order of
+  the insertions.</p>
+  <div class="widget dsp-playground" id="dsp-bst">
+    <div class="lbl">Try it · A tree of numbers</div>
+    <script type="application/json">
+    { "kind": "bst", "initial": [50, 30, 70, 20, 40, 60, 80], "suggest": [65, 35, 10, 90, 55],
+      "presets": [
+        { "name": "Sorted insertions", "initial": [], "ops": [["put", 1], ["put", 2], ["put", 3], ["put", 4], ["put", 5], ["put", 6], ["put", 7]],
+          "note": "Every key goes right: the tree is a path, as tall as it is big." },
+        { "name": "Middle first", "initial": [], "ops": [["put", 4], ["put", 2], ["put", 6], ["put", 1], ["put", 3], ["put", 5], ["put", 7]],
+          "note": "The same seven keys in another order make a tree of height 3." },
+        { "name": "Remove a key with two children", "ops": [["remove", 50]],
+          "note": "The smallest key on its right takes its place." }
+      ] }
+    </script>
+  </div>
+</section>
+
+<section class="note" id="dsp-api">
+  <h2><span class="n">07</span> Counting without a widget</h2>
+  <p>A page script can use the model on its own. This one inserts at the front of vectors of growing length
+  and prints how many elements each insertion moved.</p>
+  <div class="widget" id="dsp-count">
+    <div class="lbl">Results · Cost of insert(0, x)</div>
+    <div class="out" id="dsp-count-out"></div>
+  </div>
+  <script>
+  Study.ready(function () {
+    var rows = [];
+    [1, 2, 4, 8].forEach(function (n) {
+      var m = Study.playground.model('vector', { initial: Array.from({ length: n }, function (_, i) { return i; }) });
+      rows.push('n = ' + n + ': ' + m.apply('insert', [0, 99]).cost.moved);
+    });
+    document.getElementById('dsp-count-out').textContent = rows.join(' · ');
+  });
+  </script>
+</section>

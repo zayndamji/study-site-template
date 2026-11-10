@@ -1,0 +1,41 @@
+<section class="note" id="gc-curves">
+  <h2><span class="n">01</span> How fast things grow</h2>
+  <p>Four standard growth curves. Move across the chart (or focus it and use the arrow keys) to read
+  every curve at one input size, press a legend entry to hide it, and drag the slider to see what
+  happens for larger inputs. On a linear axis the fastest curve soon hides the others; the log scale
+  button brings them back into view.</p>
+  <div class="widget gc-chart">
+    <div class="lbl">Try it · Four growth rates</div>
+    <script type="application/json">
+    { "x": [1, 20], "yScale": "linear", "yLabel": "steps",
+      "curves": [ { "fn": "n" }, { "fn": "n log n" }, { "fn": "n^2" }, { "fn": "2^n" } ] }
+    </script>
+  </div>
+</section>
+<section class="note" id="gc-data">
+  <h2><span class="n">02</span> Counted steps and a best match</h2>
+  <p>A data series is a list of <span class="m">[<i>n</i>, count]</span> pairs, here a made-up tally of
+  steps at six input sizes. With <code>"fit": true</code> the chart compares the tally with the standard
+  curves and draws the closest one, scaled to the data, as a dashed line.</p>
+  <div class="widget gc-chart">
+    <div class="lbl">Try it · A tally against two curves</div>
+    <script type="application/json">
+    { "x": [1, 128], "yScale": "log", "maxN": false, "yLabel": "steps",
+      "curves": [ { "fn": "n log n" }, { "fn": "n^3", "scale": 0.01, "dash": true } ],
+      "series": [ { "label": "Counted steps", "points": [[4, 20], [8, 56], [16, 176], [32, 608], [64, 2240], [128, 8576]], "fit": true } ] }
+    </script>
+  </div>
+</section>
+<section class="note" id="gc-loglog">
+  <h2><span class="n">03</span> Both axes on a log scale</h2>
+  <p>With both axes logarithmic, every power of <span class="m"><i>n</i></span> is a straight line whose
+  slope is its exponent, while exponential and factorial curves still bend upwards.</p>
+  <div class="widget gc-chart">
+    <div class="lbl">Try it · Powers, an exponential and a factorial</div>
+    <script type="application/json">
+    { "x": [1, 100], "xScale": "log", "yScale": "log", "maxN": false, "logToggle": false, "height": 320,
+      "curves": [ { "fn": "1" }, { "fn": "log n" }, { "fn": "n" }, { "fn": "n^2" }, { "fn": "n^3" },
+                  { "fn": "c^n", "base": 1.5 }, { "fn": "n!", "hidden": true } ] }
+    </script>
+  </div>
+</section>
