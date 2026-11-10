@@ -152,6 +152,19 @@
     <p>Set rules carry over word for word. For example “not (E or F)” is “not E and not F”: <span class="m">(<i>E</i> ∪ <i>F</i>)′ = <i>E</i>′ ∩ <i>F</i>′</span> (De Morgan’s law). In the last preset, the outcomes outside <i>E</i> ∪ <i>F</i> are exactly those with both dice odd. <span class="beyond"></span></p>
   </div></details>
 
+  <details class="reveal more"><summary>An event is a set of outcomes</summary><div class="body">
+    <p>Build an event one outcome at a time: add outcomes, take them out, ask whether one is in it.
+    A set keeps each outcome once, so adding an outcome twice changes nothing. <span class="beyond"></span></p>
+    <div class="widget dsp-playground" id="l01-event-set">
+      <div class="lbl">Try it · The event “the card is a heart”</div>
+      <script type="application/json">
+      { "kind": "set", "initial": ["A♥", "7♥", "Q♥"], "suggest": ["K♥", "2♠", "7♥"],
+        "presets": [ { "name": "Add an outcome twice", "ops": [["add", "7♥"]], "note": "Already in the event: the set is unchanged." },
+                     { "name": "Is it in the event?", "ops": [["contains", "2♠"]], "note": "A spade is not a heart." } ] }
+      </script>
+    </div>
+  </div></details>
+
   <details class="reveal check"><summary>Quick check</summary><div class="body">
     <p>How many outcomes are in the event “the two dice show different numbers”?</p>
     <p><b>Answer:</b> its complement is doubles, 6 outcomes, so <span class="m">36 − 6 = 30</span>.</p>
@@ -343,6 +356,34 @@
 
   <details class="reveal more"><summary>Why divide by k!</summary><div class="body">
     <p>Build an ordered list of <i>k</i> from <i>n</i> in two steps: first choose which <i>k</i> objects (C(<i>n</i>, <i>k</i>) ways), then put them in order (<i>k</i>! ways). The multiplication rule gives <span class="m"><sub><i>n</i></sub>P<sub><i>k</i></sub> = C(<i>n</i>, <i>k</i>) · <i>k</i>!</span>, and dividing gives the formula for C(<i>n</i>, <i>k</i>). The committee preset shows it: 720 ordered = 120 committees · 6 orders.</p>
+  </div></details>
+
+  <details class="reveal more"><summary>Counting choices with a recursion</summary><div class="body">
+    <p>Pascal’s rule, <span class="m">C(<i>n</i>, <i>k</i>) = C(<i>n</i> − 1, <i>k</i> − 1) + C(<i>n</i> − 1, <i>k</i>)</span>,
+    splits a choice on whether the first item is taken. Run it as a recursion and watch the calls branch;
+    notice how often the same smaller count is worked out again. <span class="beyond"></span></p>
+    <div class="widget" id="l01-pascal"><div class="lbl">Try it · C(n, k) by Pascal’s rule</div></div>
+    <script>
+    Study.recursion.mount('#l01-pascal', {
+      lang: 'py',
+      code: 'def C(n, k):\n    if k == 0 or k == n:\n        return 1\n    return C(n - 1, k - 1) + C(n - 1, k)',
+      inputs: [{ name: 'n', label: 'n', value: 5, min: 1, max: 7 }, { name: 'k', label: 'k', value: 2, min: 0, max: 7 }],
+      presets: [ { label: 'C(5, 2)', values: { n: 5, k: 2 }, note: 'Ten ways, found by adding ones at the edges of the tree.' },
+                 { label: 'C(4, 0)', values: { n: 4, k: 0 }, note: 'An edge of the triangle: one call, no branching.' },
+                 { label: 'C(6, 3)', values: { n: 6, k: 3 }, note: 'The middle of the triangle: the widest tree.' } ],
+      steps: 'calls', views: ['code', 'tree', 'stats'],
+      main: (rx, v) => rx.call('C', [v.n, Math.min(v.k, v.n)]),
+      functions: { C(rx, n, k) { rx.line(2); if (k === 0 || k === n) { rx.line(3); rx.tag('ok'); return 1; } rx.line(4); return rx.call('C', [n - 1, k - 1]) + rx.call('C', [n - 1, k]); } },
+    });
+    </script>
+    <p>How fast the counts in this lecture grow with <span class="m"><i>n</i></span>: choosing 2 of
+    <span class="m"><i>n</i></span>, all subsets, and all orderings.</p>
+    <div class="widget gc-chart"><div class="lbl">Try it · Pairs, subsets and orderings</div>
+      <script type="application/json">
+      { "x": [1, 12], "yScale": "log", "yLabel": "count",
+        "curves": [ { "fn": "n^2", "label": "pairs ≈ n²/2", "scale": 0.5 }, { "fn": "2^n", "label": "subsets 2ⁿ" }, { "fn": "n!", "label": "orderings n!" } ] }
+      </script>
+    </div>
   </div></details>
 
   <details class="reveal check"><summary>Quick check</summary><div class="body">

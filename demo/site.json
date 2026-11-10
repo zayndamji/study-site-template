@@ -81,6 +81,10 @@
     "state-machine": {},
     "code-blocks": {},
     "memory-diagram": {},
+    "recursion-explorer": {},
+    "ds-playground": {},
+    "output-quiz": {},
+    "growth-chart": {},
     "notation": { "tags": { "ev-e": "term", "ev-f": "warn-ink" } },
     "content-rules": {
       "kinds": ["unit"],

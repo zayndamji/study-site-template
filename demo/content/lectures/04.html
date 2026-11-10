@@ -137,6 +137,25 @@
 
   <div class="pitfall"><span class="lbl">Pitfall</span><p>The formula needs a fixed number of trials, independence and the same <span class="m"><i>p</i></span> every time. Drawing cards <em>without replacement</em> fails the last two: the chance of a heart on the second draw depends on the first. <span class="beyond"></span></p></div>
 
+  <details class="reveal more"><summary>Predict the output: a row of binomial counts</summary><div class="body">
+    <p>Each line is the number of ways to get <span class="m"><i>k</i></span> successes in three trials. <span class="beyond"></span></p>
+    <div class="widget oq" data-id="l04-oq-row">
+      <div class="lbl">Predict the output · Three trials</div>
+      <pre data-lang="py">
+        from math import comb
+        for k in range(4):
+            print(k, comb(3, k))
+      </pre>
+      <script type="text/plain" class="oq-expected">
+        0 1
+        1 3
+        2 3
+        3 1
+      </script>
+      <template class="oq-explain"><p>The counts 1, 3, 3, 1 add up to 2³ = 8, every outcome of three trials.</p></template>
+    </div>
+  </div></details>
+
   <details class="reveal check"><summary>Quick check</summary><div class="body">
     <p>A fair die is rolled 4 times. What is the probability of exactly one six?</p>
     <p><span class="m">C(4, 1) · (1/6) · (5/6)³ = 4 · 125/1296 = 125/324 ≈ 0.386</span>.</p>
