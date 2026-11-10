@@ -49,7 +49,56 @@
   }
 
   // ---- memory part: stack frames and heap objects ---------------------------
+  const varsW = (v) => (v.cells ? v.cells.map(norm).reduce((a, c) => a + cellWidth(c), 0) : cellWidth(norm(v)));
+
+  /** Heap objects in rows, left to right; returns the size used. */
+  function heapRows(heap, g, hx0, hy0, reg) {
+    let hy = hy0, w = 0;
+    const byRow = new Map();
+    heap.forEach((o) => { const r = o.row === undefined ? 0 : o.row; if (!byRow.has(r)) byRow.set(r, []); byRow.get(r).push(o); });
+    [...byRow.keys()].sort((a, b) => a - b).forEach((r, ri) => {
+      let hx = hx0, rowH = 0;
+      if (ri) hy += 22;
+      byRow.get(r).forEach((o) => {
+        const cells = (o.cells || o.fields || []).map(norm);
+        const named = o.fields && cells.some((c) => c.name !== undefined);
+        const top = (named ? 18 : 0) + (o.label ? 18 : 0);
+        const bottom = o.index ? 16 : 0;
+        if (o.x !== undefined) hx = hx0 + o.x;
+        const og = el('g', role('obj', [o.on && 'on', o.freed && 'freed', o.dim && 'dim'].filter(Boolean).join(' ')), g);
+        let cx = hx;
+        if (o.label) text(og, hx, hy + 13, str(o.label), role('olabel'));
+        cells.forEach((c, j) => {
+          const cw = cellWidth(c);
+          if (named && c.name !== undefined) text(og, cx + cw / 2, hy + 13 + (o.label ? 18 : 0), str(c.name), Object.assign(role('field'), { 'text-anchor': 'middle' }));
+          drawCell(og, cx, hy + top, cw, c, reg, o.index ? j : null, o.id + '#' + j, o.id + '.' + (c.name || j));
+          cx += cw;
+        });
+        if (!cells.length) { el('rect', { x: hx, y: hy + top, width: MIN_CELL, height: CELL_H, 'data-md': 'cell' }, og); cx = hx + MIN_CELL; }
+        reg.objects.set(o.id, { x: hx, y: hy + top, w: cx - hx, h: CELL_H, freed: !!o.freed });
+        rowH = Math.max(rowH, top + CELL_H + bottom);
+        w = Math.max(w, cx - hx0);
+        hx = cx + (o.gap === undefined ? 48 : o.gap);
+      });
+      hy += rowH;
+    });
+    return { w, h: hy - hy0 };
+  }
+
+  function frameClass(f) { return role('frame', [f.on && 'on', f.dim && 'dim', f.done && 'done'].filter(Boolean).join(' ')); }
+
+  function drawVar(fg, v, x, y, nameRight, reg) {
+    text(fg, nameRight, y + 20, str(v.name), Object.assign(role('vname'), { 'text-anchor': 'end' }));
+    let cx = x;
+    (v.cells ? v.cells.map(norm) : [norm(v)]).forEach((c, j) => {
+      const cw = cellWidth(c);
+      drawCell(fg, cx, y, cw, Object.assign({}, c, { on: c.on || (!v.cells && v.on) }), reg, v.cells && v.index ? j : null);
+      cx += cw;
+    });
+  }
+
   function memoryPart(scene, g, x0, y0, reg) {
+    if (scene.layout === 'memory') return columnPart(scene, g, x0, y0, reg);
     const stack = scene.stack || [], heap = scene.heap || [];
     const rows = scene.layout === 'rows';
     let w = 0, h = 0;
@@ -57,28 +106,17 @@
     let sx = x0, sy = y0, fw = 0;
     if (stack.length) {
       const nameW = Math.max(0, ...stack.flatMap((f) => (f.vars || []).map((v) => str(v.name).length * CH)));
-      const valW = Math.max(MIN_CELL, ...stack.flatMap((f) => (f.vars || []).map((v) => (v.cells ? v.cells.map(norm).reduce((a, c) => a + cellWidth(c), 0) : cellWidth(norm(v))))));
+      const valW = Math.max(MIN_CELL, ...stack.flatMap((f) => (f.vars || []).map(varsW)));
       fw = Math.max(nameW + valW + 32, ...stack.map((f) => str(f.name).length * CH + 24), 120);
-      text(g, sx, sy + 13, t('stackLabel'), role('region'));
-      sy += 22;
+      if (scene.regionLabels !== false) { text(g, sx, sy + 13, t('stackLabel'), role('region')); sy += 22; }
       stack.forEach((f) => {
         const vars = f.vars || [];
-        const fh = 30 + vars.length * (CELL_H + 8) + 6;
-        const fg = el('g', role('frame', [f.on && 'on', f.dim && 'dim', f.done && 'done'].filter(Boolean).join(' ')), g);
+        const fh = vars.length ? 30 + vars.length * (CELL_H + 8) + 6 : 28;
+        const fg = el('g', frameClass(f), g);
         el('rect', { x: sx, y: sy, width: fw, height: fh, rx: 4 }, fg);
-        el('line', { x1: sx, y1: sy + 26, x2: sx + fw, y2: sy + 26, 'data-md': 'rule' }, fg);
+        if (vars.length) el('line', { x1: sx, y1: sy + 26, x2: sx + fw, y2: sy + 26, 'data-md': 'rule' }, fg);
         text(fg, sx + 10, sy + 18, str(f.name), role('fname'));
-        vars.forEach((v, k) => {
-          const vy = sy + 32 + k * (CELL_H + 8);
-          text(fg, sx + 10 + nameW, vy + 20, str(v.name), Object.assign(role('vname'), { 'text-anchor': 'end' }));
-          let cx = sx + 20 + nameW;
-          const cells = v.cells ? v.cells.map(norm) : [norm(v)];
-          cells.forEach((c, j) => {
-            const cw = cellWidth(c);
-            drawCell(fg, cx, vy, cw, Object.assign({}, c, { on: c.on || (!v.cells && v.on) }), reg, v.cells && v.index ? j : null);
-            cx += cw;
-          });
-        });
+        vars.forEach((v, k) => drawVar(fg, v, sx + 20 + nameW, sy + 32 + k * (CELL_H + 8), sx + 10 + nameW, reg));
         sy += fh + GAP;
       });
       w = fw; h = sy - y0;
@@ -87,39 +125,69 @@
     if (heap.length) {
       const hx0 = stack.length && !rows ? x0 + fw + 64 : x0;
       let hy = stack.length && rows ? y0 + h + 16 : y0;
-      text(g, hx0, hy + 13, t('heapLabel'), role('region'));
-      hy += 22;
-      const byRow = new Map();
-      heap.forEach((o) => { const r = o.row === undefined ? 0 : o.row; if (!byRow.has(r)) byRow.set(r, []); byRow.get(r).push(o); });
-      [...byRow.keys()].sort((a, b) => a - b).forEach((r) => {
-        let hx = hx0;
-        let rowH = 0;
-        byRow.get(r).forEach((o) => {
-          const cells = (o.cells || o.fields || []).map(norm);
-          const named = o.fields && cells.some((c) => c.name !== undefined);
-          const top = (named ? 18 : 0) + (o.label ? 18 : 0);
-          const bottom = o.index ? 16 : 0;
-          if (o.x !== undefined) hx = hx0 + o.x;
-          const og = el('g', role('obj', [o.on && 'on', o.freed && 'freed', o.dim && 'dim'].filter(Boolean).join(' ')), g);
-          let cx = hx;
-          if (o.label) text(og, hx, hy + 13, str(o.label), role('olabel'));
-          cells.forEach((c, j) => {
-            const cw = cellWidth(c);
-            if (named && c.name !== undefined) text(og, cx + cw / 2, hy + 13 + (o.label ? 18 : 0), str(c.name), Object.assign(role('field'), { 'text-anchor': 'middle' }));
-            drawCell(og, cx, hy + top, cw, c, reg, o.index ? j : null, o.id + '#' + j, o.id + '.' + (c.name || j));
-            cx += cw;
-          });
-          if (!cells.length) { el('rect', { x: hx, y: hy + top, width: MIN_CELL, height: CELL_H, 'data-md': 'cell' }, og); cx = hx + MIN_CELL; }
-          reg.objects.set(o.id, { x: hx, y: hy + top, w: cx - hx, h: CELL_H, freed: !!o.freed });
-          rowH = Math.max(rowH, top + CELL_H + bottom);
-          hx = cx + (o.gap === undefined ? 48 : o.gap);
-          w = Math.max(w, hx - 48 - x0);
-        });
-        hy += rowH + 22;
-      });
-      h = Math.max(h, hy - y0 - 12);
+      if (scene.regionLabels !== false) { text(g, hx0, hy + 13, t('heapLabel'), role('region')); hy += 22; }
+      const r = heapRows(heap, g, hx0, hy, reg);
+      w = Math.max(w, hx0 - x0 + r.w);
+      h = Math.max(h, hy + r.h - y0);
     }
     return { w, h };
+  }
+
+  /** layout "memory": one memory column, stack frames on top (name and first variable on one row), free
+      space with growth arrows, the heap band, then the "base" bands (e.g. ["Text"]); addresses beside it. */
+  function columnPart(scene, g, x0, y0, reg) {
+    const stack = scene.stack || [], heap = scene.heap || [], base = scene.base || [];
+    const labels = scene.regionLabels === true;
+    const addr = scene.addresses || {};
+    const LW = labels ? Math.max(t('stackLabel').length, t('heapLabel').length) * CH_S + 14 : 0;
+    const AW = Math.max(str(addr.top).length, str(addr.bottom).length) * CH_S + (addr.top || addr.bottom ? 10 : 0);
+    const fnW = Math.max(0, ...stack.map((f) => str(f.name).length * CH));
+    const nameW = Math.max(0, ...stack.flatMap((f) => (f.vars || []).map((v) => str(v.name).length * CH)));
+    const valW = Math.max(0, ...stack.flatMap((f) => (f.vars || []).map(varsW)));
+    const frameW = 10 + fnW + (nameW ? 8 + nameW : 0) + (valW ? 8 + valW : 0) + 10;
+    // measure the heap in a scratch group first
+    const scratch = el('g', {});
+    const hm = heap.length ? heapRows(heap, scratch, 0, 0, { cells: new Map(), objects: new Map(), arrows: [] }) : { w: 0, h: 0 };
+    const colW = Math.max(150, frameW, hm.w + 28, ...base.map((b) => str(b).length * CH + 24));
+    const cx = x0 + Math.max(LW, AW);
+    let y = y0;
+    const col = el('g', {}, g);
+    const bg = el('rect', Object.assign(role('column'), { x: cx, y: y0, width: colW }), col);
+    if (labels && stack.length) text(g, cx - 8, y0 + 20, t('stackLabel'), Object.assign(role('region'), { 'text-anchor': 'end' }));
+    stack.forEach((f) => {
+      const vars = f.vars || [];
+      const fh = Math.max(1, vars.length) * (CELL_H + 6) + 6;
+      const fg = el('g', frameClass(f), g);
+      el('rect', { x: cx, y, width: colW, height: fh }, fg);
+      text(fg, cx + 10, y + 6 + 20, str(f.name), role('fname'));
+      vars.forEach((v, k) => drawVar(fg, v, cx + colW - 10 - varsW(v), y + 6 + k * (CELL_H + 6), cx + colW - 18 - varsW(v), reg));
+      y += fh;
+    });
+    const gap = scene.gap === undefined ? 70 : scene.gap;
+    if (gap > 0) {
+      const ax = cx + colW / 2;
+      if (scene.grow !== false && stack.length) el('path', Object.assign(role('grow'), { d: `M${ax},${y + 6} L${ax},${y + 26}`, 'marker-end': 'url(#' + reg.mk + '-grow)' }), g);
+      if (scene.grow !== false && (heap.length || base.length)) el('path', Object.assign(role('grow'), { d: `M${ax},${y + gap - 6} L${ax},${y + gap - 26}`, 'marker-end': 'url(#' + reg.mk + '-grow)' }), g);
+      y += gap;
+    }
+    if (heap.length) {
+      if (labels) text(g, cx - 8, y + 20, t('heapLabel'), Object.assign(role('region'), { 'text-anchor': 'end' }));
+      el('rect', Object.assign(role('band'), { x: cx, y, width: colW, height: hm.h + 28 }), col);
+      heapRows(heap, g, cx + 14, y + 14, reg);
+      y += hm.h + 28;
+    }
+    base.forEach((b) => {
+      el('rect', Object.assign(role('band'), { x: cx, y, width: colW, height: 34 }), col);
+      text(g, cx + colW / 2, y + 22, str(b), Object.assign(role('bname'), { 'text-anchor': 'middle' }));
+      y += 34;
+    });
+    if (y === y0) y += 40;
+    bg.setAttribute('height', y - y0);
+    if (addr.top !== undefined) text(g, cx - 6, y0 + 13, str(addr.top), Object.assign(role('idx'), { 'text-anchor': 'end' }));
+    if (addr.bottom !== undefined) text(g, cx - 6, y - 3, str(addr.bottom), Object.assign(role('idx'), { 'text-anchor': 'end' }));
+    const ptrs = reg.arrows.length;
+    if (ptrs) reg.colRight = cx + colW;
+    return { w: cx - x0 + colW + (ptrs ? 34 : 0), h: y - y0 };
   }
 
   function drawCell(g, x, y, w, c, reg, index, key, key2) {
@@ -146,7 +214,11 @@
       if (!box) { console.warn('[study] memory-diagram: pointer to unknown target', a.to); return; }
       let x2, y2, c1, c2;
       const d = (u) => Math.max(24, Math.abs(u) / 2);
-      if (box.x >= a.x + 14 && !hash) { // to the right: into the left edge
+      if (reg.colRight !== undefined && box.y > a.y + 6) { // memory column: down the right margin, into the right edge
+        const m = reg.colRight + 34;
+        x2 = box.x + box.w; y2 = box.y + box.h / 2;
+        c1 = [m, a.y]; c2 = [m, y2];
+      } else if (box.x >= a.x + 14 && !hash) { // to the right: into the left edge
         x2 = box.x; y2 = box.y + box.h / 2;
         c1 = [a.x + d(x2 - a.x), a.y]; c2 = [x2 - d(x2 - a.x), y2];
       } else if (box.y > a.y + 6) { // below: into the top
@@ -242,12 +314,12 @@
     const svg = el('svg', Object.assign(role('svg'), { role: 'img' }));
     if (scene.title) el('title', {}, svg).textContent = scene.title;
     const defs = el('defs', {}, svg);
-    [['', 'head'], ['-on', 'head on'], ['-bad', 'head bad']].forEach(([sfx, cls]) => {
+    [['', 'head'], ['-on', 'head on'], ['-bad', 'head bad'], ['-grow', 'head grow']].forEach(([sfx, cls]) => {
       const m = el('marker', { id: mk + sfx, viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse' }, defs);
       el('path', Object.assign(role('head'), { d: 'M0,0 L10,5 L0,10 z', 'data-md': cls }), m);
     });
     const g = el('g', {}, svg);
-    const reg = { cells: new Map(), objects: new Map(), arrows: [] };
+    const reg = { cells: new Map(), objects: new Map(), arrows: [], mk };
     let y = 4, w = 0;
     if (scene.stack || scene.heap) { const r = memoryPart(scene, g, 4, y, reg); w = Math.max(w, r.w); y += r.h + 18; }
     if (scene.tree) { const r = treePart(scene, g, 4, y, mk); w = Math.max(w, r.w); y += r.h + 18; }
@@ -268,7 +340,7 @@
     if (Study.enhance) Study.enhance(node);
   }
 
-  const PARTS = ['stack', 'heap', 'tree', 'array', 'layout', 'arrows', 'spacing', 'levelGap', 'scale'];
+  const PARTS = ['stack', 'heap', 'tree', 'array', 'layout', 'base', 'gap', 'grow', 'regionLabels', 'addresses', 'arrows', 'spacing', 'levelGap', 'scale'];
 
   /** Turn a .<prefix>figure / .<prefix>trace host into a diagram (or a tracer). */
   function mount(host) {

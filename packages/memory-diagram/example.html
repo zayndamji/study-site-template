@@ -17,6 +17,14 @@
               { "id": "n2", "fields": [ { "name": "value", "value": "5", "on": true }, { "name": "next", "ptr": "n3" } ] },
               { "id": "n3", "fields": [ { "name": "value", "value": "?" }, { "name": "next", "value": "?" } ], "freed": true } ] }
   </script></div>
+  <p>The same kind of picture as one memory column: frames at the top, free space in the middle (the arrows
+  show which way each region grows), the heap and the program text at the bottom, address 0 at the bottom.</p>
+  <div class="md-figure"><script type="application/json">
+  { "layout": "memory", "regionLabels": true, "base": ["Text"], "addresses": { "bottom": "0" },
+    "stack": [ { "name": "main()", "vars": [ { "name": "count", "value": "3" }, { "name": "scores", "ptr": "a" } ] },
+               { "name": "report()", "on": true, "vars": [ { "name": "best", "value": "9" } ] } ],
+    "heap": [ { "id": "a", "cells": ["7", "4", "9"], "index": true } ] }
+  </script></div>
 </section>
 
 <section class="note" id="md-tree">
