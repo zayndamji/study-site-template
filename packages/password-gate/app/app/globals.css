@@ -1,0 +1,15 @@
+/* The login page. Same tokens and colours as the template's core.css, system fonts only (the page
+   makes no outside requests). */
+:root { --paper: #f6f7f9; --surface: #fff; --ink: #161c28; --muted: #5d6679; --rule: #dfe3ec; --term: #2348c9; --bad: #b3261e; --radius: 10px; --radius-sm: 4px; color-scheme: light dark; }
+@media (prefers-color-scheme: dark) { :root { --paper: #0f131b; --surface: #161b26; --ink: #e4e8ef; --muted: #98a2b4; --rule: #2a3142; --term: #93acff; --bad: #f2897e; } }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 16px; background: var(--paper); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.card { width: 100%; max-width: 360px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 28px 24px; }
+h1 { margin: 0 0 6px; font-size: 1.5rem; letter-spacing: -0.01em; }
+.muted { margin: 0 0 20px; color: var(--muted); }
+label { display: block; font-weight: 600; margin-bottom: 6px; }
+input[type=password] { width: 100%; font: inherit; min-height: 44px; padding: 10px 12px; border: 1px solid var(--rule); border-radius: var(--radius-sm); background: var(--paper); color: var(--ink); }
+input[type=password]:focus { outline: 2px solid var(--term); outline-offset: 1px; }
+.error { color: var(--bad); margin: 8px 0 0; }
+button { margin-top: 16px; width: 100%; min-height: 44px; font: inherit; font-weight: 600; border: 0; border-radius: 999px; background: var(--term); color: var(--surface); cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--term); outline-offset: 2px; }

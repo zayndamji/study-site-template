@@ -1,3 +1,7 @@
 dist/
 .DS_Store
 __pycache__/
+# password-gate: the password, its salt and secret, and the generated app folders
+.gate-password
+.gate-state.json
+*-gate/

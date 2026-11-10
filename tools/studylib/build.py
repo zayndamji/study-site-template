@@ -645,6 +645,11 @@ def build(site_dir: Path, force=False, quiet=False, out_dir=None, copy_static=Tr
     for rel in [r for r in ctx.extra_assets if excluded(ctx, r)]:
         del ctx.extra_assets[rel]
     write_outputs(ctx, force=force, copy_static=copy_static)
+    if copy_static:  # a complete build (check's temporary build leaves static/ out and skips this)
+        for p in ctx.packages:
+            fn = p.hook('after_write')
+            if fn:
+                fn(ctx, p.options)
     if not quiet:
         name = '' if ctx.variant == 'default' else f' (variant {ctx.variant})'
         log(f'built {len(ctx.outputs)} pages with {len(ctx.packages)} packages{name} -> {ctx.out_dir}')

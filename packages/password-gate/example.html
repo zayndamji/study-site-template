@@ -1,0 +1,5 @@
+<section class="note" id="pg-about">
+  <h2><span class="n">01</span> Password gate</h2>
+  <p>With <code>"password-gate": {}</code> on and a password in <code>.gate-password</code>, every build also writes <code>dist-gate/</code>: this site inside a small Next.js app that asks for the password before it serves any page, image or script. Upload that folder to a Next.js host.</p>
+  <p>The folder holds a salted hash of the password, never the password itself, and every response tells search engines not to index it. Rebuilding with the same password keeps readers signed in.</p>
+</section>

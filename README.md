@@ -70,6 +70,7 @@ all come from the page list.
 | `coming-later` | Planned pages shown greyed out |
 | `preview-pages` | Provisional pages flagged on the home page, with a banner under the title |
 | `privacy` | Forbidden-term scanning, noindex, no third-party requests |
+| `password-gate` | A copy of the built site behind a password, as a Next.js app ready to upload |
 | `content-rules` | A site's own writing rules (forbidden tags and phrases, minimum sections), reported by `check` |
 
 `python3 tools/study.py packages` lists them; `python3 tools/study.py info <name>` shows options.

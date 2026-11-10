@@ -33,5 +33,7 @@ You are probably here to do one of two things. Find yours, then read only what i
   examples, docs or commit messages. Examples use generic placeholders, and `demo/` content is original,
   non-copyrighted writing on a topic unrelated to any particular course.
 - No external runtime dependencies or CDN scripts. Vanilla JS in the browser, Python stdlib in tools.
+  The one exception is `packages/password-gate/app/`, a Next.js app the host installs when the gated
+  copy is uploaded; building a site never needs it or node.
 - Every reader-facing string in a package comes from an option.
 - Commit messages: 5–10 lowercase words describing the main change, no body.

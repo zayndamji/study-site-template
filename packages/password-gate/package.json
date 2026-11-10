@@ -1,0 +1,61 @@
+{
+  "name": "password-gate",
+  "title": "Password gate",
+  "description": "Wraps the built site in a small Next.js app that asks for a password before serving any file, ready to upload to a Next.js host.",
+  "category": "site",
+  "version": "1.0.0",
+  "requires": [],
+  "build": "build.py",
+  "options": {
+    "passwordFile": {
+      "default": ".gate-password",
+      "private": true,
+      "description": "Path (relative to the site) of a text file whose first non-empty line is the password, at least 8 characters. Keep it out of version control. While the file is missing the build warns and writes no gate folder."
+    },
+    "stateFile": {
+      "default": ".gate-state.json",
+      "private": true,
+      "description": "Path (relative to the site) where the salt and signing secret are kept between builds, so rebuilding with the same password keeps readers signed in. Keep it out of version control; deleting it signs everyone out."
+    },
+    "outDir": {
+      "default": "",
+      "description": "Folder (relative to the site) to write the gated app into. Empty = the build's output folder plus \"-gate\" (dist-gate, dist-public-gate). Hosts that name a project after the folder (drag-and-drop uploads) use its last part, so pick a neutral name."
+    },
+    "title": {
+      "default": "",
+      "description": "Heading and tab title of the login page. Empty = the site title."
+    },
+    "intro": {
+      "default": "This site is private. Enter the password to continue.",
+      "description": "Line under the login heading."
+    },
+    "passwordLabel": {
+      "default": "Password",
+      "description": "Label of the password field."
+    },
+    "wrongPassword": {
+      "default": "That password isn’t right.",
+      "description": "Shown after a wrong password."
+    },
+    "submitLabel": {
+      "default": "Continue",
+      "description": "Text of the sign-in button."
+    },
+    "lang": {
+      "default": "en",
+      "description": "The login page's lang attribute."
+    },
+    "sessionDays": {
+      "default": 30,
+      "description": "How long a sign-in lasts, in days."
+    },
+    "cookie": {
+      "default": "study_session",
+      "description": "Name of the session cookie. Changing it signs everyone out."
+    },
+    "iterations": {
+      "default": 210000,
+      "description": "PBKDF2-SHA256 iterations for the stored password hash. Changing it makes a new secret, which signs everyone out."
+    }
+  }
+}

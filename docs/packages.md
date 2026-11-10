@@ -120,6 +120,7 @@ package's merged options) first.
 | `extra_pages(ctx, opts)` | once | list of `(relative_path, html)` |
 | `finalize(ctx, opts, outputs)` | once; `outputs` maps path → HTML and may be edited in place | — |
 | `check(ctx, opts, outputs)` | by `study.py check` | list of problem strings |
+| `after_write(ctx, opts)` | once, after the output folder is written (`build` only, not `check`); for work on the finished folder, e.g. packaging it for a host | — |
 
 Useful `ctx` members:
 
