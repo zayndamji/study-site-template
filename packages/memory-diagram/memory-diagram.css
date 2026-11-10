@@ -1,0 +1,42 @@
+/* memory-diagram: memory pictures, trees and arrays (SVG), and the step-through tracer.
+   Styled through data-md roles, so the class prefix (option classPrefix) can be anything. */
+[data-md="figure"] { margin: 18px 0; }
+[data-md="dia"] { margin: 6px 0; overflow-x: auto; }
+svg[data-md="svg"] { display: block; margin-inline: auto; font-family: var(--f-mono); }
+svg[data-md="svg"] [data-md="region"] { font: 600 13px var(--f-display); fill: var(--muted); }
+[data-md~="frame"] > rect { fill: var(--surface); stroke: var(--ink); stroke-width: 1.4; }
+[data-md~="frame"] > [data-md="rule"] { stroke: var(--rule); stroke-width: 1.2; }
+[data-md~="frame"].on > rect { stroke: var(--term); stroke-width: 2.4; }
+[data-md~="frame"].dim, [data-md~="obj"].dim, [data-md~="tnode"].dim, [data-md~="cell"].dim { opacity: 0.4; }
+[data-md~="frame"].done > rect { stroke-dasharray: 5 4; }
+svg[data-md="svg"] [data-md="fname"] { font: 700 14px var(--f-mono); fill: var(--ink); }
+svg[data-md="svg"] [data-md="vname"] { font: 14px var(--f-mono); fill: var(--ink); }
+svg[data-md="svg"] [data-md="field"], svg[data-md="svg"] [data-md="idx"] { font: 12px var(--f-mono); fill: var(--muted); }
+svg[data-md="svg"] [data-md="olabel"] { font: 600 13px var(--f-display); fill: var(--ink); }
+[data-md~="cell"] > rect, [data-md~="tnode"] > rect { fill: var(--paper); stroke: var(--ink); stroke-width: 1.3; transition: fill .2s; }
+[data-md~="cell"].on > rect, [data-md~="tnode"].on > rect, [data-md~="obj"].on [data-md~="cell"] > rect { fill: var(--mark); }
+svg[data-md="svg"] [data-md~="cell"].on [data-md="val"], svg[data-md="svg"] [data-md~="tnode"].on [data-md="val"], svg[data-md="svg"] [data-md~="obj"].on [data-md="val"] { fill: var(--mark-ink); }
+svg[data-md="svg"] [data-md="val"] { font: 15px var(--f-mono); fill: var(--ink); }
+svg[data-md="svg"] [data-md~="cell"].null [data-md="val"], svg[data-md="svg"] [data-md~="cell"].junk [data-md="val"] { fill: var(--muted); font-style: italic; }
+[data-md~="obj"].freed [data-md~="cell"] > rect { stroke-dasharray: 4 3; fill: none; stroke: var(--muted); }
+svg[data-md="svg"] [data-md~="obj"].freed [data-md="val"] { fill: var(--muted); }
+[data-md="dot"] { fill: var(--term); }
+[data-md~="arrow"] { fill: none; stroke: var(--term); stroke-width: 1.8; }
+[data-md~="arrow"].on { stroke: var(--warn-edge); stroke-width: 2.6; }
+[data-md~="arrow"].dangling { stroke: var(--bad); stroke-dasharray: 5 4; }
+[data-md~="head"] { fill: var(--term); }
+[data-md~="head"][data-md~="on"] { fill: var(--warn-edge); }
+[data-md~="head"][data-md~="bad"] { fill: var(--bad); }
+[data-md~="tedge"] { stroke: var(--muted); stroke-width: 1.5; }
+[data-md~="tedge"].on { stroke: var(--term); stroke-width: 2.4; }
+svg[data-md="svg"] [data-md="elabel"] { font: 13px var(--f-mono); fill: var(--term); }
+svg[data-md="svg"] [data-md="tnote"] { font: 13px var(--f-mono); fill: var(--term); }
+[data-md="trace"] [data-md="code"] { max-height: 22rem; overflow: auto; margin: 6px 0 10px; }
+[data-md="trace"] .controls { align-items: center; }
+[data-md="count"] { font: 0.8rem var(--f-mono); color: var(--muted); margin-left: 4px; }
+[data-md="note"] { min-height: 1.6em; margin: 6px 0; }
+[data-md="out"] { margin: 6px 0 0; }
+[data-md="out"][hidden] { display: none; }
+[data-md="outlabel"] { display: block; font: 600 0.8rem var(--f-display); color: var(--muted); margin-bottom: 2px; }
+[data-md="outtext"] { margin: 0; padding: 6px 10px; min-height: 1.5em; white-space: pre-wrap; }
+@media print { [data-md="trace"] .controls { display: none; } }

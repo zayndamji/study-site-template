@@ -1,0 +1,18 @@
+{
+  "name": "code-blocks",
+  "title": "Code blocks",
+  "description": "Syntax-highlighted code listings (C, C++, Java, JavaScript, Python) with marked lines, optional line numbers and a file-name caption; also highlights inline code that names its language.",
+  "category": "content",
+  "version": "1.0.0",
+  "requires": [],
+  "css": ["code-blocks.css"],
+  "js": ["code-blocks.js"],
+  "options": {
+    "defaultLang": { "default": "", "description": "Language of a <pre> that names none (e.g. \"cpp\"); empty = leave such blocks unhighlighted." },
+    "lineNumbers": { "default": false, "description": "Number the lines of every block; a block can override it with data-numbers=\"true|false\"." },
+    "inline": { "default": false, "description": "Also highlight inline <code> that has no language, in defaultLang. Inline code with data-lang or class language-x is always highlighted." },
+    "types": { "default": [], "description": "Extra identifiers to colour as type names in every language (e.g. library container classes), on top of the built-in ones. Any identifier that starts with a capital letter is coloured as a type anyway." },
+    "titleLabel": { "default": "{title}", "description": "Caption above a block with data-title; {title} is replaced by the attribute's value." },
+    "markLabel": { "default": "marked line", "description": "Accessible note read on a marked line (data-mark)." }
+  }
+}

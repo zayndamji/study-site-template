@@ -1,0 +1,24 @@
+/* code-blocks: highlighted listings. Token colours are --cb-* custom properties (light and dark). */
+:root { --cb-kw: #a2268a; --cb-ty: #1d5fae; --cb-str: #2f7a1f; --cb-num: #b0490c; --cb-com: #6b7385; --cb-pre: #8a5a00; --cb-fn: #1f3fa8; --cb-mark: rgba(246, 213, 74, 0.32); --cb-mark-edge: #d9a400; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --cb-kw: #e59ad6; --cb-ty: #7fb7f2; --cb-str: #9fd38a; --cb-num: #f2a66e; --cb-com: #8b95a8; --cb-pre: #d9b45e; --cb-fn: #a9bcff; --cb-mark: rgba(212, 178, 58, 0.2); --cb-mark-edge: #b88c12; } }
+:root[data-theme="dark"] { --cb-kw: #e59ad6; --cb-ty: #7fb7f2; --cb-str: #9fd38a; --cb-num: #f2a66e; --cb-com: #8b95a8; --cb-pre: #d9b45e; --cb-fn: #a9bcff; --cb-mark: rgba(212, 178, 58, 0.2); --cb-mark-edge: #b88c12; }
+.cb-kw { color: var(--cb-kw); }
+.cb-ty { color: var(--cb-ty); }
+.cb-str { color: var(--cb-str); }
+.cb-num { color: var(--cb-num); }
+.cb-com { color: var(--cb-com); font-style: italic; }
+.cb-pre { color: var(--cb-pre); }
+.cb-fn { color: var(--cb-fn); }
+figure.cb-figure { margin: 16px 0; }
+figure.cb-figure > pre { margin: 0; border-top-left-radius: 0; }
+.cb-title { display: inline-block; font: 600 0.8rem var(--f-mono); color: var(--muted); background: var(--surface); border: 1px solid var(--rule); border-bottom: 0; border-radius: var(--radius-sm) var(--radius-sm) 0 0; padding: 3px 10px; }
+pre.cb, code.cb-inline { font-variant-ligatures: none; }
+pre.cb { line-height: 1.5; tab-size: 4; }
+pre.cb > code { display: block; min-width: max-content; }
+pre.cb .cb-line { display: block; padding-inline: 14px; margin-inline: -14px; }
+pre.cb .cb-line.cb-on { background: var(--cb-mark); box-shadow: inset 3px 0 0 var(--cb-mark-edge); }
+pre.cb.cb-numbered > code { counter-reset: cb-line; }
+pre.cb.cb-numbered .cb-line::before { counter-increment: cb-line; content: counter(cb-line); display: inline-block; width: 2.2em; margin-right: 0.9em; text-align: right; color: var(--muted); opacity: 0.7; user-select: none; }
+pre.cb .cb-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+:not(pre) > code.cb-inline { white-space: pre-wrap; }
+@media print { pre.cb .cb-line.cb-on { background: none; font-weight: 700; } }

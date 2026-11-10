@@ -79,6 +79,8 @@
     "source-links": {},
     "widget-kit": {},
     "state-machine": {},
+    "code-blocks": {},
+    "memory-diagram": {},
     "notation": { "tags": { "ev-e": "term", "ev-f": "warn-ink" } },
     "content-rules": {
       "kinds": ["unit"],

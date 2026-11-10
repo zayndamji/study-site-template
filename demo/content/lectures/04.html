@@ -479,6 +479,38 @@
     <p>The standard deviation of <span class="m"><i>X</i> − <i>np</i></span> is <span class="m">√(<i>np</i>(1 − <i>p</i>))</span>: 5 heads for 100 fair flips, 50 for 10 000, 500 for a million. Dividing by <span class="m"><i>n</i></span> turns these into 0.05, 0.005 and 0.0005. Watch the <em>count gap</em> readout in the simulator: it wanders and often grows, while <span class="m">|<i>X</i>/<i>N</i> − <i>p</i>|</span> shrinks.</p>
   </div></details>
 
+  <details class="reveal more"><summary>Simulating running proportions</summary><div class="body">
+    <p>A few lines of code flip a simulated coin and track the running proportion. The marked line is
+    the update that the law of large numbers is about. <span class="beyond"></span></p>
+    <pre data-lang="py" data-mark="7" data-title="running.py">
+      import random
+
+      def running_proportions(n, p):
+          heads, out = 0, []
+          for i in range(1, n + 1):
+              heads += random.random() &lt; p   # True counts as 1
+              out.append(heads / i)
+          return out
+    </pre>
+    <p>Step through four flips (H, T, H, H) and watch the two variables change:</p>
+    <div class="widget md-trace" id="l04-run-trace"><div class="lbl">Try it · Four flips, by hand</div>
+    <script type="application/json">
+    { "lang": "py", "code": "heads = 0\nfor i in range(1, 5):\n    heads += flip()\n    print(heads / i)",
+      "steps": [
+        { "line": 1, "stack": [ { "name": "running", "vars": [ { "name": "heads", "value": "0", "on": true }, { "name": "i", "value": "?", "junk": true } ] } ], "note": "Nothing flipped yet.", "out": "" },
+        { "line": [3, 4], "stack": [ { "name": "running", "vars": [ { "name": "heads", "value": "1", "on": true }, { "name": "i", "value": "1" } ] } ], "note": "Flip 1 is H: the proportion is 1/1.", "out": "1.0" },
+        { "line": [3, 4], "stack": [ { "name": "running", "vars": [ { "name": "heads", "value": "1" }, { "name": "i", "value": "2", "on": true } ] } ], "note": "Flip 2 is T: heads stays 1, so the proportion drops to 1/2.", "out": "1.0\n0.5" },
+        { "line": [3, 4], "stack": [ { "name": "running", "vars": [ { "name": "heads", "value": "2", "on": true }, { "name": "i", "value": "3" } ] } ], "note": "Flip 3 is H: 2/3.", "out": "1.0\n0.5\n0.666…" },
+        { "line": [3, 4], "stack": [ { "name": "running", "vars": [ { "name": "heads", "value": "3", "on": true }, { "name": "i", "value": "4" } ] } ], "note": "Flip 4 is H: 3/4. Each new flip moves the proportion by less than the one before.", "out": "1.0\n0.5\n0.666…\n0.75" }
+      ] }
+    </script></div>
+    <p>The same four flips as a path through the tree of outcomes (each branch has chance ½):</p>
+    <div class="md-figure"><script type="application/json">
+    { "title": "Tree of the first two flips", "spacing": 22,
+      "tree": { "v": "start", "c": [ { "v": "H", "e": "½", "on": true, "c": [ { "v": "HH", "e": "½" }, { "v": "HT", "e": "½", "on": true, "note": "1/2" } ] },
+                                    { "v": "T", "e": "½", "c": [ { "v": "TH", "e": "½" }, { "v": "TT", "e": "½" } ] } ] } }
+    </script></div>
+  </div></details>
   <details class="reveal check"><summary>Quick check</summary><div class="body">
     <p>For 2500 flips of a fair coin, what are the variance and standard deviation of the proportion of heads?</p>
     <p><span class="m">Var(<i>X</i>/<i>n</i>) = (1/4)/2500 = 1/10 000</span>, so the standard deviation is <span class="m">0.01</span>.</p>

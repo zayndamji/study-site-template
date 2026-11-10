@@ -1,0 +1,50 @@
+<section class="note" id="md-memory">
+  <h2><span class="n">01</span> Stack, heap and pointers</h2>
+  <p>A function keeps its local variables in its stack frame. Memory it asks for at run time lives on
+  the heap, and a pointer variable holds the address of that memory, drawn as an arrow.</p>
+  <div class="md-figure"><script type="application/json">
+  { "title": "One frame pointing at a heap array",
+    "stack": [ { "name": "main()", "vars": [ { "name": "count", "value": "3" },
+                                            { "name": "scores", "ptr": "a" },
+                                            { "name": "spare", "ptr": null } ] } ],
+    "heap": [ { "id": "a", "cells": ["7", "4", "9"], "index": true } ],
+    "note": "<code>scores</code> points at three numbers on the heap; <code>spare</code> points nowhere." }
+  </script></div>
+  <p>Nodes that point at each other make a chain. The last one is freed, so the pointer into it is dangling.</p>
+  <div class="md-figure"><script type="application/json">
+  { "stack": [ { "name": "main()", "vars": [ { "name": "first", "ptr": "n1" } ] } ],
+    "heap": [ { "id": "n1", "fields": [ { "name": "value", "value": "2" }, { "name": "next", "ptr": "n2" } ] },
+              { "id": "n2", "fields": [ { "name": "value", "value": "5", "on": true }, { "name": "next", "ptr": "n3" } ] },
+              { "id": "n3", "fields": [ { "name": "value", "value": "?" }, { "name": "next", "value": "?" } ], "freed": true } ] }
+  </script></div>
+</section>
+
+<section class="note" id="md-tree">
+  <h2><span class="n">02</span> Trees and arrays</h2>
+  <p>A tree with labelled edges (here, the chances of each branch), and an array with its indices.</p>
+  <div class="md-figure"><script type="application/json">
+  { "tree": { "v": "start", "c": [ { "v": "rain", "e": "0.3", "c": [ { "v": "late", "e": "0.6", "on": true }, { "v": "on time", "e": "0.4" } ] },
+                                   { "v": "dry", "e": "0.7", "c": [ { "v": "late", "e": "0.1" }, { "v": "on time", "e": "0.9" } ] } ] },
+    "array": { "cells": ["3", "8", "1", "6"], "index": true, "label": "values" } }
+  </script></div>
+  <p>A binary tree keeps left and right children apart, even when one is missing:</p>
+  <div class="md-figure"><script type="application/json">
+  { "arrows": true, "tree": { "v": "8", "l": { "v": "3", "l": { "v": "1" }, "r": { "v": "6", "note": "← new" } }, "r": { "v": "10", "r": { "v": "14" } } } }
+  </script></div>
+</section>
+
+<section class="note" id="md-trace">
+  <h2><span class="n">03</span> Tracing code</h2>
+  <p>Step through the calls. Each step marks the line that runs and shows the frames on the stack.</p>
+  <div class="widget md-trace"><div class="lbl">Try it · Adding 1..n with recursion</div>
+  <script type="application/json">
+  { "lang": "cpp", "code": "int total(int n) {\n    if (n == 0) return 0;\n    return n + total(n - 1);\n}\n\nint main() {\n    int t = total(2);\n}",
+    "steps": [
+      { "line": 7, "stack": [ { "name": "main()", "vars": [ { "name": "t", "value": "?", "junk": true } ] } ], "note": "<code>main</code> calls <code>total(2)</code>." },
+      { "line": 3, "stack": [ { "name": "main()", "vars": [ { "name": "t", "value": "?", "junk": true } ] }, { "name": "total(2)", "on": true, "vars": [ { "name": "n", "value": "2" } ] } ], "note": "2 is not 0, so it calls <code>total(1)</code>." },
+      { "line": 3, "stack": [ { "name": "main()", "vars": [ { "name": "t", "value": "?", "junk": true } ] }, { "name": "total(2)", "vars": [ { "name": "n", "value": "2" } ] }, { "name": "total(1)", "on": true, "vars": [ { "name": "n", "value": "1" } ] } ], "note": "1 is not 0 either: one more call." },
+      { "line": 2, "stack": [ { "name": "main()", "vars": [ { "name": "t", "value": "?", "junk": true } ] }, { "name": "total(2)", "vars": [ { "name": "n", "value": "2" } ] }, { "name": "total(1)", "vars": [ { "name": "n", "value": "1" } ] }, { "name": "total(0)", "on": true, "vars": [ { "name": "n", "value": "0" } ] } ], "note": "The base case returns 0." },
+      { "line": 7, "stack": [ { "name": "main()", "on": true, "vars": [ { "name": "t", "value": "3", "on": true } ] } ], "note": "The frames return 0, then 1 + 0, then 2 + 1, and <code>t</code> is 3.", "out": "" }
+    ] }
+  </script></div>
+</section>

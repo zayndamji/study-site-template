@@ -64,6 +64,8 @@ all come from the page list.
 | `plot-2d` | A coordinate-plane SVG widget with draggable handles |
 | `view-3d` | A rotatable 3D SVG viewer |
 | `state-machine` | State diagrams from a JSON spec and a step-by-step simulator |
+| `code-blocks` | Highlighted code listings with marked lines, line numbers and file-name captions |
+| `memory-diagram` | Stack/heap pictures with pointer arrows, trees and arrays, and a code tracer that steps through them |
 | `home-progress` | Review meters on the home page |
 | `resume-link` | "Continue: …" link to the last page read |
 | `topic-details` | Show page descriptions on the home page |

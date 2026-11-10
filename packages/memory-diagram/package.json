@@ -1,0 +1,22 @@
+{
+  "name": "memory-diagram",
+  "title": "Memory diagrams",
+  "description": "Pictures of memory (stack frames, heap objects, arrays, pointer arrows, linked nodes), trees of any arity and arrays, drawn from a small JSON scene; and a tracer that steps through scenes beside a code listing.",
+  "category": "widgets",
+  "version": "1.0.0",
+  "requires": ["code-blocks"],
+  "css": ["memory-diagram.css"],
+  "js": ["memory-diagram.js"],
+  "build": "build.py",
+  "options": {
+    "classPrefix": { "default": "md-", "description": "Prefix of the classes on hosts (<prefix>figure, <prefix>trace) and on generated elements (<prefix>frame, <prefix>cell, <prefix>arrow, …), for page CSS and scripts." },
+    "stackLabel": { "default": "Stack", "description": "Heading of the stack region." },
+    "heapLabel": { "default": "Heap", "description": "Heading of the heap region." },
+    "nullLabel": { "default": "null", "description": "Text in a pointer cell whose \"ptr\" is null (e.g. \"nullptr\", \"None\")." },
+    "resetLabel": { "default": "Reset", "description": "Tracer: back to the first step." },
+    "backLabel": { "default": "Back", "description": "Tracer: previous step." },
+    "nextLabel": { "default": "Next", "description": "Tracer: next step." },
+    "stepLabel": { "default": "Step {k} of {n}", "description": "Tracer status: {k} = current step, {n} = number of steps." },
+    "outputLabel": { "default": "Output", "description": "Tracer: heading of a step's printed output (the step's \"out\")." }
+  }
+}

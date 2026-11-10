@@ -1,0 +1,19 @@
+<section class="note" id="listing">
+  <h2><span class="n">01</span>A listing</h2>
+  <p>The marked line is the one the next paragraph talks about.</p>
+  <pre data-lang="cpp" data-mark="4" data-title="example.cpp" data-numbers="true">
+    #include &lt;iostream&gt;
+    // Add the numbers 1..n.
+    int total(int n) {
+        if (n == 0) return 0;          // nothing left to add
+        return n + total(n - 1);
+    }
+  </pre>
+  <p>The same idea in another language:</p>
+  <pre data-lang="py">
+    def total(n):
+        """Add the numbers 1..n."""
+        return 0 if n == 0 else n + total(n - 1)
+  </pre>
+  <p>Inline code can be coloured too: <code data-lang="cpp">total(3)</code> returns <code data-lang="cpp">6</code>.</p>
+</section>
