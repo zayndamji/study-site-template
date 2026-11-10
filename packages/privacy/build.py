@@ -7,12 +7,13 @@ from studylib.common import StudyError
 
 def _terms(ctx, opts):
     terms = [t for t in (opts['forbid'] or []) if str(t).strip()]
-    if opts['forbidFile']:
-        p = ctx.site_dir / opts['forbidFile']
+    files = opts['forbidFile'] or []
+    for rel in [files] if isinstance(files, str) else files:
+        p = ctx.site_dir / rel
         if p.exists():
             terms += [ln.strip() for ln in p.read_text(encoding='utf-8').splitlines() if ln.strip() and not ln.startswith('#')]
         else:
-            ctx.warn(f'privacy: forbidFile {opts["forbidFile"]} not found')
+            ctx.warn(f'privacy: forbidFile {rel} not found')
     return terms
 
 

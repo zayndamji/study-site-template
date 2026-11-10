@@ -8,6 +8,7 @@ a new secret, which signs everyone out.
 """
 from __future__ import annotations
 
+import fnmatch
 import hashlib
 import json
 import os
@@ -20,7 +21,6 @@ from studylib.common import StudyError, log
 
 APP_DIR = Path(__file__).resolve().parent / 'app'
 MARKER = '.study-gate'
-KEEP = {'node_modules', '.next', MARKER}      # left alone on a rebuild (a local npm install / test build)
 SKIP = {'.DS_Store', '.study-build'}           # never copied into public/
 TEXT = {'.html', '.js', '.css', '.json', '.txt', '.svg', '.xml', '.md', '.csv'}
 
@@ -59,12 +59,18 @@ def _leaks(folder: Path, password: str):
     return out
 
 
+def _refused(folder: Path, globs):
+    return sorted(f.relative_to(folder).as_posix() for f in folder.rglob('*') if f.is_file() and any(
+        fnmatch.fnmatchcase(f.relative_to(folder).as_posix(), g) for g in globs))
+
+
 def _problems(ctx, opts, password):
+    refused = [f'password-gate: {rel} matches "refuse"' for rel in _refused(ctx.out_dir, opts['refuse'] or [])]
     if password is None:
-        return []
+        return refused
     if len(password) < 8:
         return [f'password-gate: the password in {opts["passwordFile"]} is shorter than 8 characters']
-    return [f'password-gate: {rel} contains the password' for rel in _leaks(ctx.out_dir, password)]
+    return refused + [f'password-gate: {rel} contains the password' for rel in _leaks(ctx.out_dir, password)]
 
 
 def configure(ctx, opts):
@@ -109,9 +115,8 @@ def after_write(ctx, opts):
     st, fresh = _state(ctx, opts, password)
 
     out.mkdir(parents=True, exist_ok=True)
-    for child in out.iterdir():
-        if child.name not in KEEP:
-            shutil.rmtree(child) if child.is_dir() else child.unlink()
+    for child in out.iterdir():  # always a clean folder: a drag-and-drop upload sends everything in it
+        shutil.rmtree(child) if child.is_dir() else child.unlink()
     shutil.copytree(APP_DIR, out, dirs_exist_ok=True, ignore=shutil.ignore_patterns(*SKIP, 'node_modules', '.next'))
     name = re.sub(r'[^a-z0-9-]+', '-', out.name.lower()).strip('-') or 'study-gate'
     pkg = json.loads((out / 'package.json').read_text(encoding='utf-8'))

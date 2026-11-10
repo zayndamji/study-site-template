@@ -21,6 +21,10 @@
       "default": "",
       "description": "Folder (relative to the site) to write the gated app into. Empty = the build's output folder plus \"-gate\" (dist-gate, dist-public-gate). Hosts that name a project after the folder (drag-and-drop uploads) use its last part, so pick a neutral name."
     },
+    "refuse": {
+      "default": [],
+      "description": "Globs of built paths that must never be in the gated copy (e.g. [\"assets/private/**\"]); the build stops if one is there. A safety net for a variant's \"exclude\"."
+    },
     "title": {
       "default": "",
       "description": "Heading and tab title of the login page. Empty = the site title."

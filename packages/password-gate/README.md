@@ -48,6 +48,7 @@ secret); turn it off in a variant with `"password-gate": false`. Give each gated
 | `passwordFile` | `".gate-password"` | File (relative to the site) holding the password. Private. |
 | `stateFile` | `".gate-state.json"` | Salts and secrets, per variant. Private. Deleting it signs everyone out. |
 | `outDir` | `""` | Where to write the app; empty = build output + `-gate`. Drag-and-drop hosts name the project after the folder, so pick a neutral name. |
+| `refuse` | `[]` | Globs of built paths (`assets/private/**`) that must not be in the gated copy; the build stops if one is. |
 | `title` | `""` | Login heading and tab title; empty = the site title. |
 | `intro`, `passwordLabel`, `wrongPassword`, `submitLabel` | English | The login page's text. |
 | `lang` | `"en"` | The login page's `lang`. |
@@ -67,12 +68,15 @@ None: the package changes no page. It adds the `after_write` build hook's output
 
 ## Trying it locally
 
+Copy the folder somewhere else first, so `node_modules/` and `.next/` never end up in an upload
+(every rebuild empties the gate folder anyway):
+
 ```bash
-cd dist-gate
+cp -R dist-gate /tmp/gate-test && cd /tmp/gate-test
 npm ci && npx next build && npx next start --hostname 127.0.0.1 --port 4180
 ```
 
-`node_modules/` and `.next/` survive rebuilds. The app's tests run from the template:
+The app's tests run from the template:
 `node --test packages/password-gate/tests/`.
 
 ## How the app is put together

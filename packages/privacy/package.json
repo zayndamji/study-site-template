@@ -15,7 +15,7 @@
     "forbidFile": {
       "default": "",
       "private": true,
-      "description": "Optional path (relative to the site) of a text file with one forbidden term per line; keep it out of version control if the terms themselves are sensitive."
+      "description": "Optional path (relative to the site) of a text file with one forbidden term per line, or a list of such paths (e.g. a sibling site's list too); keep them out of version control if the terms themselves are sensitive."
     },
     "wholeWords": {
       "default": false,
